@@ -2,8 +2,8 @@ import React from 'react';
 import { Typography } from '@mui/material';
 
 // A simple placeholder for the register page
-const RegisterPage = () => {
+const Register = () => {
   return <Typography variant="h4">Register Page</Typography>;
 };
 
-export default RegisterPage;
+export default Register;

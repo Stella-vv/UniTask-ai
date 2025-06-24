@@ -1,7 +1,6 @@
-//import React from 'react';
 import { Typography } from '@mui/material';
 
-const DashboardPage = () => {
+const Dashboard = () => {
   return (
     <div>
       <Typography variant="h5" gutterBottom>
@@ -14,4 +13,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default Dashboard;
