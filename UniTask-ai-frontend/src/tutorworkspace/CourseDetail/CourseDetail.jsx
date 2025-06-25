@@ -1,3 +1,18 @@
+// 不添加路由的情况下预览当前的 CourseDetail 页面:
+// 在 Dashboard.jsx 中临时导入并渲染 CourseDetail：
+// 在 Dashboard.jsx 顶部添加
+// import CourseDetail from '../CourseDetail/CourseDetail';
+
+// // 在 Dashboard 组件的 return 中临时替换
+// const Dashboard = () => {
+//   return (
+//     // <Box sx={dashboardStyles.container}>
+//     //   {/* Dashboard 内容 */}
+//     // </Box>
+//     <CourseDetail />  // 临时显示 CourseDetail
+//   );
+// };
+
 import React from 'react';
 import { 
   Box, 
