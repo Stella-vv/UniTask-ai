@@ -12,6 +12,7 @@ const palette = {
   text: {
     primary: '#1E293B', // A dark color for primary text for readability
     secondary: '#64748B',
+    courseText: '#325c8c',
   }
 };
 
