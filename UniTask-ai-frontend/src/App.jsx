@@ -5,6 +5,7 @@ import MainLayout from './components/MainLayout';
 import LoginPage from './tutorworkspace/Login/Login';
 import RegisterPage from './tutorworkspace/Register/Register';
 import Dashboard from './tutorworkspace/Dashboard/Dashboard'; // Import the new DashboardPage
+import CourseDetail from './tutorworkspace/CourseDetail/CourseDetail';
 
 function App() {
   return (
@@ -13,6 +14,8 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           {/* The index route now renders the DashboardPage */}
           <Route index element={<Dashboard />} />
+
+          <Route path="course-detail" element={<CourseDetail />} /> 
           
           {/* You can add routes for other pages here later */}
           {/* For example, for highlighting to work on a "Courses" page: */}
