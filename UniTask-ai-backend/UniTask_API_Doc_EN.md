@@ -4,11 +4,27 @@ This document describes the currently implemented backend features and API endpo
 
 ---
 
+## Backend startup
+
+### 1️⃣ Create Database
+
+```bash
+export UNITASK_MOCK=false
+python create_tables.py
+```
+### 2️⃣ Startup Backend
+
+```bash
+export UNITASK_MOCK=false
+python main.py
+```
+
 ## ✅ Features Implemented
 
 - User Registration (`/api/register`)
 - User Login (`/api/login`)
 - PostgreSQL database connection
+- Connect the frontand backend
 - SQLAlchemy ORM model for 5 core tables:
   - users
   - courses

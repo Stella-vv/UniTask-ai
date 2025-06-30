@@ -5,13 +5,19 @@
 ---
 
 ## 后端启动
-- 1️⃣ 先创建数据库
+
+### 1️⃣ 先创建数据库
+
+```bash
 export UNITASK_MOCK=false
 python create_tables.py
+```
+### 2️⃣ 再启动后端
 
-- 2️⃣ 再启动后端
+```bash
 export UNITASK_MOCK=false
 python main.py
+```
 
 ## ✅ 已实现功能
 
