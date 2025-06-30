@@ -4,11 +4,21 @@
 
 ---
 
+## 后端启动
+- 1️⃣ 先创建数据库
+export UNITASK_MOCK=false
+python create_tables.py
+
+- 2️⃣ 再启动后端
+export UNITASK_MOCK=false
+python main.py
+
 ## ✅ 已实现功能
 
 - 用户注册（`/api/register`）
 - 用户登录（`/api/login`）
 - 连接 PostgreSQL 数据库
+- 连接前后端
 - 使用 SQLAlchemy ORM 管理以下数据表：
   - users 用户表
   - courses 课程表
