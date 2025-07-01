@@ -45,8 +45,6 @@ export const styles = {
     boxShadow: '0 4px 12px rgba(0,0,0,0.05)', 
     border: '1px solid rgba(0,0,0,0.02)', 
     flexGrow: 1, 
-    overflowY: 'auto',
-    minHeight: 0,
   },
   pageContentText: {
     color: 'text.secondary', 
