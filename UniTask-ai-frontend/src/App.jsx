@@ -4,8 +4,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/MainLayout';
 import LoginPage from './tutorworkspace/Login/Login';
 import RegisterPage from './tutorworkspace/Register/Register';
-import Dashboard from './tutorworkspace/Dashboard/Dashboard'; // Import the new DashboardPage
+import Dashboard from './tutorworkspace/Dashboard/Dashboard'; 
 import CourseDetail from './tutorworkspace/CourseDetail/CourseDetail';
+import AssignmentUpload from './tutorworkspace/AssignmentUpload/AssignmentUpload';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
 
           <Route path="course-detail" element={<CourseDetail />} /> 
           
+          <Route path="assignment-upload" element={<AssignmentUpload />} />
           {/* You can add routes for other pages here later */}
           {/* For example, for highlighting to work on a "Courses" page: */}
           {/* <Route path="courses" element={<div>Courses Page</div>} /> */}
