@@ -6,6 +6,7 @@ import LoginPage from './tutorworkspace/Login/Login';
 import RegisterPage from './tutorworkspace/Register/Register';
 import Dashboard from './tutorworkspace/Dashboard/Dashboard'; // Import the new DashboardPage
 import CourseDetail from './tutorworkspace/CourseDetail/CourseDetail';
+import AssignmentForumPage from './tutorworkspace/Forum/AssignmentForumPage'; 
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route index element={<Dashboard />} />
 
           <Route path="course-detail" element={<CourseDetail />} /> 
+          <Route path="assignments/:assignmentId/forum" element={<AssignmentForumPage />} />
           
           {/* You can add routes for other pages here later */}
           {/* For example, for highlighting to work on a "Courses" page: */}
@@ -24,6 +26,8 @@ function App() {
 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+
       </Routes>
     </BrowserRouter>
   );
