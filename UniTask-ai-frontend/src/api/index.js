@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const api = axios.create({
   // 后端基址：mock 或实际服务器
-  baseURL: import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000/api',
+  baseURL: import.meta.env.VITE_BACKEND_URL || 'http://localhost:8008/api',
   withCredentials: false        // 若要携带 cookie 可改 true
 });
 

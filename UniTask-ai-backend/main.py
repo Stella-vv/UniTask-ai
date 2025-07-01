@@ -64,4 +64,4 @@ if not USE_MOCK:
 
 # ===== 启动应用 =====
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=8008)
