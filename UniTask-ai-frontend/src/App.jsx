@@ -7,6 +7,7 @@ import RegisterPage from './tutorworkspace/Register/Register';
 import Dashboard from './tutorworkspace/Dashboard/Dashboard'; 
 import CourseDetail from './tutorworkspace/CourseDetail/CourseDetail';
 import AssignmentUpload from './tutorworkspace/AssignmentUpload/AssignmentUpload';
+import AssignmentForumPage from './tutorworkspace/Forum/AssignmentForumPage'; 
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route index element={<Dashboard />} />
 
           <Route path="course-detail" element={<CourseDetail />} /> 
+          <Route path="assignments/:assignmentId/forum" element={<AssignmentForumPage />} />
           
           <Route path="assignment-upload" element={<AssignmentUpload />} />
           {/* You can add routes for other pages here later */}
@@ -26,6 +28,8 @@ function App() {
 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+
       </Routes>
     </BrowserRouter>
   );
