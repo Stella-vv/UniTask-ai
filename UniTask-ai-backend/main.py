@@ -29,13 +29,15 @@ if not USE_MOCK:
     from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_TRACK_MODIFICATIONS
     from models import db
     from routes.user import user_bp  # 注册蓝图（注册/登录接口）
+    from routes.assignment import assignment_bp
 
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = SQLALCHEMY_TRACK_MODIFICATIONS
 
     db.init_app(app)
     app.register_blueprint(user_bp)
-
+    app.register_blueprint(assignment_bp)
+    
     # 提前 push context，方便 create_all 使用
     app.app_context().push()
 
