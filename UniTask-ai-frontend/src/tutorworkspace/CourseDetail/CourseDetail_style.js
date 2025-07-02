@@ -8,10 +8,22 @@ export const courseDetailStyles = {
 
   topBlueHeader: {
     bgcolor: 'primary.main',
-    height: '80px',
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    p: 3, 
+    mt: -4, 
+    ml: -4,
+    mr: -4,
+    width: 'calc(100% + 64px)',
+    boxSizing: 'border-box',
+  },
 
+  headerTitle: { 
+    color: 'white',
+    fontWeight: 600,
+    fontSize: '1.75rem', 
   },
 
   contentArea: {
