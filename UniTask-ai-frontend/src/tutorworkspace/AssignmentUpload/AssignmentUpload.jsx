@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -22,6 +23,7 @@ import {
 import { assignmentUploadStyles } from './AssignmentUpload_style';
 
 const AssignmentUpload = () => {
+  const navigate = useNavigate();
   // 表单状态管理
   const [formData, setFormData] = useState({
     courseName: 'Web Front-End Programming',
@@ -140,6 +142,7 @@ const AssignmentUpload = () => {
       
       // 成功后的处理（如跳转页面、显示成功消息等）
       alert('Upload successful!');
+      navigate('/Assignment'); // 返回到AssignmentList页面
       
     } catch (error) {
       console.error('Upload failed:', error);
@@ -153,6 +156,7 @@ const AssignmentUpload = () => {
   const handleCancel = () => {
     // TODO: 根据实际需求处理取消逻辑（如返回上一页）
     if (window.confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
+      navigate('/Assignment');
       // 重置表单或导航回上一页
       console.log('Cancel action');
     }
