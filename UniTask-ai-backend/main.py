@@ -28,28 +28,32 @@ def after_request(response):
 if not USE_MOCK:
     from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_TRACK_MODIFICATIONS
     from models import db
-    from routes.user import user_bp  # 注册蓝图（注册/登录接口）
-    from routes.assignment import assignment_bp
+    from routes.user import user_bp  # 注册蓝图：用户相关
+    from routes.assignment import assignment_bp  # 注册蓝图：作业相关
 
+    # 配置数据库
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = SQLALCHEMY_TRACK_MODIFICATIONS
 
+    # 初始化数据库
     db.init_app(app)
+
+    # 注册蓝图
     app.register_blueprint(user_bp)
     app.register_blueprint(assignment_bp)
-    
-    # 提前 push context，方便 create_all 使用
+
+    # 推送上下文，供外部建表脚本使用
     app.app_context().push()
 
     print("🔗 Running with REAL PostgreSQL backend")
 
-# ===== Mock 内存模式（开发用） =====
+# ===== Mock 内存模式（开发测试用） =====
 else:
     from routes.mock_user import mock_bp
     app.register_blueprint(mock_bp)
     print("🧪 Running in MOCK mode – no DB required")
 
-# ===== 测试根路由 =====
+# ===== 根路由测试 =====
 @app.route("/")
 def index():
     return (
@@ -58,12 +62,11 @@ def index():
         else "UniTask MOCK backend is up!"
     )
 
-# ===== 暴露对象供其他文件导入（如 create_all 脚本）=====
+# ===== 暴露对象供外部使用（如 create_all 脚本）=====
 __all__ = ["app"]
-
 if not USE_MOCK:
     __all__.append("db")
 
-# ===== 启动应用 =====
+# ===== 启动 Flask 应用 =====
 if __name__ == "__main__":
     app.run(debug=True, port=8008)
