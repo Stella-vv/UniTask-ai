@@ -16,12 +16,13 @@ import {
   Description as DescriptionIcon,
   AttachFile as AttachFileIcon,
 } from '@mui/icons-material';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { assignmentDetailStyles } from './AssignmentDetail_style';
 
 const AssignmentDetail = () => {
   // 从路由获取作业ID
   const { assignmentId } = useParams();
+  const navigate = useNavigate();
   
   // 状态管理
   const [assignmentData, setAssignmentData] = useState(null);
@@ -80,8 +81,8 @@ const AssignmentDetail = () => {
         setAssignmentData(mockAssignmentData);
         
       } catch (err) {
-        console.error('获取作业详情失败:', err);
-        setError('获取作业详情失败');
+        console.error('Failed to fetch assignment details:', err);
+        setError('Failed to fetch assignment details');
       } finally {
         setLoading(false);
       }
@@ -95,37 +96,37 @@ const AssignmentDetail = () => {
   // 修改作业
   const handleModify = () => {
     // TODO: 导航到修改页面或打开修改对话框
-    console.log('修改作业:', assignmentData.id);
+    console.log('Modify assignment:', assignmentData.id);
     // navigate(`/assignments/${assignmentData.id}/edit`);
   };
 
   // 删除作业
   const handleDelete = async () => {
-    if (window.confirm('确定要删除这个作业吗？此操作无法撤销。')) {
+    if (window.confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) {
       try {
         // TODO: 调用删除API
         // await fetch(`/api/assignments/${assignmentData.id}`, {
         //   method: 'DELETE'
         // });
         
-        console.log('删除作业:', assignmentData.id);
-        alert('作业删除成功！');
+        console.log('Delete assignment:', assignmentData.id);
+        alert('Assignment deleted successfully!');
         
         // TODO: 导航回作业列表页面
         // navigate('/assignments');
         
       } catch (err) {
-        console.error('删除作业失败:', err);
-        alert('删除作业失败，请重试');
+        console.error('Failed to delete assignment:', err);
+        alert('Failed to delete assignment, please try again');
       }
     }
   };
 
   // 跳转到论坛
   const handleGoToForum = () => {
-    // TODO: 导航到论坛页面
-    console.log('跳转到论坛');
-    // navigate(`/assignments/${assignmentData.id}/forum`);
+    const targetAssignmentId = assignmentId || assignmentData?.id || '12345'; // 使用路由参数、数据ID或默认值
+    console.log('Navigate to forum, assignment ID:', targetAssignmentId);
+    navigate(`/assignments/${targetAssignmentId}/forum`);
   };
 
   // 下载文件
@@ -161,7 +162,7 @@ const AssignmentDetail = () => {
         </Box>
         <Box sx={assignmentDetailStyles.contentArea}>
           <Typography variant="h6" sx={{ textAlign: 'center', py: 4 }}>
-            正在加载作业详情...
+            Loading assignment details...
           </Typography>
         </Box>
       </Box>
