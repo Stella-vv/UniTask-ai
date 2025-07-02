@@ -16,9 +16,9 @@ import customLogo from '../assets/logo.png';
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import ForumIcon from '@mui/icons-material/Forum';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LiveHelpIcon from '@mui/icons-material/LiveHelp';
+import { NavLink } from 'react-router-dom';
 
 const drawerWidth = 280;
 
@@ -40,12 +40,12 @@ const Logo = () => (
 
 const Sidebar = () => {
   const navItems = [
-    { text: 'Home', icon: <HomeIcon /> },
-    { text: 'Course', icon: <SchoolIcon /> },
-    { text: 'Assignment', icon: <AssignmentIcon /> },
-    { text: 'Q&As', icon: <LiveHelpIcon /> },
-    { text: 'Forum', icon: <ForumIcon /> },
-    { text: 'FAQs', icon: <HelpOutlineIcon /> },
+    { text: 'Home', icon: <HomeIcon />, path: '/' },
+    { text: 'Course', icon: <SchoolIcon />, path: '/course-detail' },
+    { text: 'Assignment', icon: <AssignmentIcon />, path: '/assignment' },
+    { text: 'Q&As', icon: <LiveHelpIcon />, path: '/qnas' },
+    // 移除了 Forum 导航项
+    { text: 'FAQs', icon: <HelpOutlineIcon />, path: '/faqs' },
   ];
 
   return (
@@ -67,7 +67,28 @@ const Sidebar = () => {
         <List>
           {navItems.map((item) => (
             <ListItem key={item.text} disablePadding>
-              <ListItemButton selected={item.text === 'Home'}>
+              <ListItemButton 
+                component={NavLink}
+                to={item.path}
+                sx={{
+                  borderRadius: 12,
+                  margin: '10px 16px',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  },
+                  '&.active': { 
+                    backgroundColor: '#EFF8FF',
+                    color: '#3B82F6',
+                    '&:hover': {
+                      backgroundColor: '#EFF8FF',
+                    },
+                    '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                      fontWeight: '600',
+                      color: '#3B82F6',
+                    },
+                  },
+                }}
+              >
                 <ListItemIcon>
                   {item.icon}
                 </ListItemIcon>

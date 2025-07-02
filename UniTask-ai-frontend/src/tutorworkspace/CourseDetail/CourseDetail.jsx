@@ -48,7 +48,11 @@ const CourseDetail = () => {
   return (
     <Box sx={courseDetailStyles.container}>
       {/* Top Dark Blue Header */}
-      <Box sx={courseDetailStyles.topBlueHeader}></Box>
+      <Box sx={courseDetailStyles.topBlueHeader}>
+        <Typography variant="h4" sx={courseDetailStyles.headerTitle}>
+          Course Detail
+        </Typography>
+      </Box>
       
       {/* Main Content Area - Light Blue */}
       <Box sx={courseDetailStyles.contentArea}>

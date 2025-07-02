@@ -9,6 +9,7 @@ import CourseDetail from './tutorworkspace/CourseDetail/CourseDetail';
 import AssignmentUpload from './tutorworkspace/AssignmentUpload/AssignmentUpload';
 import AssignmentDetail from './tutorworkspace/AssignmentDetail/AssignmentDetail'; 
 import AssignmentForumPage from './tutorworkspace/Forum/AssignmentForumPage'; 
+import AssignmentList from './tutorworkspace/AssignmentList/AssignmentList';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route index element={<Dashboard />} />
 
           <Route path="course-detail" element={<CourseDetail />} /> 
+          <Route path="Assignment" element={<AssignmentList />} />
           <Route path="assignments/:assignmentId/forum" element={<AssignmentForumPage />} />
           
           
