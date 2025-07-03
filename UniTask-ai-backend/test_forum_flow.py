@@ -44,3 +44,14 @@ assignment_id = assignment_data["assignment"]["id"]
 forum_id = assignment_data["forum"]["id"]
 
 print(f"\n✅ 论坛已自动创建：forum_id = {forum_id}，对应 assignment_id = {assignment_id}")
+
+# 5. 添加问题到论坛
+print("\n📌 向论坛添加问题...")
+question_res = requests.post(f"{BASE}/forum/{forum_id}/questions", json={
+    "content": "请问这个作业的截止时间可以延期吗？",
+    "user_id": user["id"]   # ← 加上这个
+})
+if question_res.status_code == 201:
+    print("✅ 问题添加成功")
+else:
+    print("❌ 添加失败:", question_res.status_code, question_res.text)
