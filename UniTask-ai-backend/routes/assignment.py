@@ -58,3 +58,9 @@ def create_assignment():
         db.session.rollback()
         print("❌ Commit failed:", e)
         return jsonify({"error": str(e)}), 500
+    
+@assignment_bp.route("/<int:user_id>", methods=["GET"])
+def get_assignments(user_id):
+    # 将 user_id 更改为 uploaded_by
+    assignments = Assignment.query.filter_by(user_id=user_id).all()
+    return jsonify([a.to_dict() for a in assignments])

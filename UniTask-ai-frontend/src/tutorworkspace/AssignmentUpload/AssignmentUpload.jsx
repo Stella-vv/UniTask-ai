@@ -73,7 +73,7 @@ const AssignmentUpload = () => {
       
       // 使用你在数据库中创建的课程数据
       const courses = [
-        { id: 2, name: 'Web Front-End Programming' }
+        { id: 1, name: 'COMP9900 - Capstone Project' }
       ];
       
       setCourses(courses);
