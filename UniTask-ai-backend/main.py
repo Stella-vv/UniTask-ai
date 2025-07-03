@@ -17,13 +17,6 @@ CORS(
     supports_credentials=False,
 )
 
-@app.after_request
-def after_request(response):
-    response.headers.add("Access-Control-Allow-Origin", "http://localhost:5173")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
-    response.headers.add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
-    return response
-
 # ===== 真实数据库模式 =====
 if not USE_MOCK:
     from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_TRACK_MODIFICATIONS

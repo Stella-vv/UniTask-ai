@@ -49,6 +49,17 @@ class Assignment(db.Model):
         }
 
 
+    # <<<<<<< 在这里添加 to_dict() 方法 >>>>>>>
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "due_date": self.due_date.isoformat() if self.due_date else None, # 将 datetime 对象转换为 ISO 格式字符串
+            "course_id": self.course_id,
+            "uploaded_by": self.uploaded_by
+        }
+
 class FAQ(db.Model):
     __tablename__ = "faqs"
 
