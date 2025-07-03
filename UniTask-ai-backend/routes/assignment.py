@@ -11,6 +11,7 @@ def create_assignment():
     description = data.get("description")
     due_date_str = data.get("due_date")
     user_id = data.get("user_id")
+    course_id = data.get("course_id")
 
     if not name or not due_date_str or not user_id:
         return jsonify({"error": "Missing required fields"}), 400
@@ -21,7 +22,8 @@ def create_assignment():
         name=name,
         description=description,
         due_date=due_date,
-        user_id=user_id
+        user_id=user_id,
+        course_id=course_id
     )
 
     db.session.add(new_assignment)

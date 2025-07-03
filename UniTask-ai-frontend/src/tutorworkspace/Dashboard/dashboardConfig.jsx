@@ -18,12 +18,12 @@ export const dashboardCardData = [
     description: '5 submissions to review',
     path: '/assignment',
   },
-  {
-    icon: <ForumIcon />,
-    title: 'Forum',
-    description: '2 unanswered questions',
-    path: '/forum',
-  },
+  // {
+  //   icon: <ForumIcon />,
+  //   title: 'Forum',
+  //   description: '2 unanswered questions',
+  //   path: '/forum',
+  // },
   {
     icon: <LiveHelpIcon />,
     title: 'Q&As',
