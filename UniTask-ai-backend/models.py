@@ -35,9 +35,19 @@ class Assignment(db.Model):
     due_date = db.Column(db.DateTime, nullable=True)
 
     course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
-    uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     questions = db.relationship("Question", back_populates="assignment", lazy=True)
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "due_date": self.due_date.strftime("%Y-%m-%d %H:%M:%S") if self.due_date else None,
+            "course_id": self.course_id,
+            "user_id": self.user_id   
+        }
+
 
     forum = db.relationship("Forum", back_populates="assignment", uselist=False)
 
