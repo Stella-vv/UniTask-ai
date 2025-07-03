@@ -20,19 +20,37 @@ def get_forum(assignment_id):
 
 # 发帖提问
 @forum_bp.route("/<int:forum_id>/questions", methods=["POST"])
-# @jwt_required()
 def create_question(forum_id):
     data = request.get_json()
     content = data.get("content")
-    # user_id = get_jwt_identity()
-    user_id = data.get("user_id")  # 🟡 临时用前端传入 user_id
+    user_id = data.get("user_id")
 
     forum = Forum.query.get(forum_id)
     if not forum:
         return jsonify({"error": "Forum not found"}), 404
 
-    question = Question(content=content, user_id=user_id, forum_id=forum_id)
+    question = Question(
+        content=content,
+        user_id=user_id,
+        forum_id=forum.id,
+        assignment_id=forum.assignment_id  # ✅ 关键补充
+    )
+
     db.session.add(question)
     db.session.commit()
 
     return jsonify({"message": "Question created successfully"}), 201
+# 获取论坛中所有问题
+@forum_bp.route("/<int:forum_id>/questions", methods=["GET"])
+def get_forum_questions(forum_id):
+    forum = Forum.query.get(forum_id)
+    if not forum:
+        return jsonify({"error": "Forum not found"}), 404
+
+    return jsonify([
+        {
+            "id": q.id,
+            "content": q.content,
+            "user_id": q.user_id
+        } for q in forum.questions
+    ]), 200
