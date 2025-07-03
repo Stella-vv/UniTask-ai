@@ -166,17 +166,26 @@ const AssignmentUpload = () => {
   // 表单验证
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.courseName.trim()) {
       newErrors.courseName = 'Please select course';
     }
-    
+
     if (!formData.title.trim()) {
       newErrors.title = 'Please input assignment title';
     }
-    
+
     if (!formData.dueDate) {
       newErrors.dueDate = 'Please select deadline';
+    } else {
+      // New validation: Due date cannot be in the past
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set to start of today for comparison
+      const selectedDate = new Date(formData.dueDate);
+
+      if (selectedDate < today) {
+        newErrors.dueDate = 'Due date cannot be in the past';
+      }
     }
 
     setErrors(newErrors);
@@ -373,13 +382,6 @@ const AssignmentUpload = () => {
             error={!!errors.dueDate}
             helperText={errors.dueDate}
             sx={assignmentUploadStyles.dateField}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <CalendarIcon sx={{ color: '#62BBF5' }} />
-                </InputAdornment>
-              ),
-            }}
           />
         </Box>
 
