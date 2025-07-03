@@ -17,7 +17,7 @@ class User(db.Model):
 class Course(db.Model):
     __tablename__ = "courses"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
     year = db.Column(db.Integer, nullable=True)  # e.g., 2025
     description = db.Column(db.Text, nullable=True)

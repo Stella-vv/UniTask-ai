@@ -24,6 +24,8 @@ if not USE_MOCK:
     from routes.user import user_bp  # 注册蓝图：用户相关
     from routes.assignment import assignment_bp  # 注册蓝图：作业相关
     from routes.forum import forum_bp
+    from routes.course import course_bp
+
     # 配置数据库
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = SQLALCHEMY_TRACK_MODIFICATIONS
@@ -35,6 +37,7 @@ if not USE_MOCK:
     app.register_blueprint(user_bp)
     app.register_blueprint(assignment_bp)
     app.register_blueprint(forum_bp)
+    app.register_blueprint(course_bp) 
     
 
     # 推送上下文，供外部建表脚本使用
