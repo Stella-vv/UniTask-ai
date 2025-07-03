@@ -26,7 +26,7 @@ def create_assignment():
         name=name,
         description=description,
         due_date=due_date,
-        user_id=user_id,
+        user_id=user_id, # <--- 将 user_id 更改为 uploaded_by
         course_id=course_id
     )
 
