@@ -1,5 +1,3 @@
-#models.py
-
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -42,8 +40,8 @@ class Assignment(db.Model):
 
     uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)  # 新增字段
 
-    questions = db.relationship("Question", backref="assignment", lazy=True)  
-    # ✅ 新增一对一论坛关系
+    questions = db.relationship("Question", backref="assignment", lazy=True)  # 保留反向引用
+
     forum = db.relationship("Forum", back_populates="assignment", uselist=False)
 
 class FAQ(db.Model):
@@ -66,7 +64,7 @@ class Question(db.Model):
     forum_id = db.Column(db.Integer, db.ForeignKey("forums.id"), nullable=False)
 
     forum = db.relationship("Forum", back_populates="questions")  # ✅ 使用 back_populates 替代 backref
-
+    
 class Forum(db.Model):
     __tablename__ = "forums"
 
