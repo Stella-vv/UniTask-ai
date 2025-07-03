@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -22,6 +23,7 @@ import {
 import { faqListStyles } from './FaqList_style';
 
 const FaqList = () => {
+  const navigate = useNavigate();
   // 模拟数据
   const [faqData] = useState([
     {
@@ -68,7 +70,7 @@ const FaqList = () => {
 
   const handleUpload = () => {
     console.log('Upload FAQ');
-    // TODO: 导航到上传页面或打开上传对话框
+    navigate('/faq-upload');
   };
 
   return (
