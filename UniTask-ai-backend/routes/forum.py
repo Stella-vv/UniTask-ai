@@ -33,13 +33,23 @@ def create_question(forum_id):
         content=content,
         user_id=user_id,
         forum_id=forum.id,
-        assignment_id=forum.assignment_id  # ✅ 关键补充
+        assignment_id=forum.assignment_id
     )
 
     db.session.add(question)
     db.session.commit()
 
-    return jsonify({"message": "Question created successfully"}), 201
+    return jsonify({
+        "message": "Question created successfully",
+        "question": {
+            "id": question.id,
+            "content": question.content,
+            "user_id": question.user_id,
+            "created_at": question.created_at.isoformat()
+        }
+    }), 201
+
+
 # 获取论坛中所有问题
 @forum_bp.route("/<int:forum_id>/questions", methods=["GET"])
 def get_forum_questions(forum_id):
@@ -51,6 +61,10 @@ def get_forum_questions(forum_id):
         {
             "id": q.id,
             "content": q.content,
-            "user_id": q.user_id
+            "answer": q.answer,
+            "user_id": q.user_id,
+            "created_at": q.created_at.isoformat()
         } for q in forum.questions
     ]), 200
+
+

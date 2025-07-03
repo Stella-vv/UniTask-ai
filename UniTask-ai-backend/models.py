@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-
+from datetime import datetime
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -65,7 +65,9 @@ class Question(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
-    # answer = db.Column(db.Text, nullable=True)
+    answer = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # ✅ 当前时间
+
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     forum_id = db.Column(db.Integer, db.ForeignKey("forums.id"), nullable=False)
     assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), nullable=False)
