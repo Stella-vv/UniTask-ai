@@ -1,7 +1,7 @@
 // 注意： courses { id: 2, name: 'Web Front-End Programming' }
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';s
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
