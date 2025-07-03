@@ -28,14 +28,21 @@ class Course(db.Model):
     assignments = db.relationship("Assignment", backref="course", lazy=True)
     faqs = db.relationship("FAQ", backref="course", lazy=True)
 
-class Assignment(db.Model):  # ✅ 修改类名
-    __tablename__ = "assignments"  # ✅ 修改表名
+class Assignment(db.Model):
+    __tablename__ = "assignments"
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
+
+    name = db.Column(db.String(100), nullable=False)  # 原来的 title -> 改为 name
     description = db.Column(db.Text, nullable=True)
 
-    course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
+    due_date = db.Column(db.DateTime, nullable=True)  # 新增字段
+
+    course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)  # 所属课程
+
+    uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)  # 新增字段
+
+    questions = db.relationship("Question", backref="assignment", lazy=True)  
     # ✅ 新增一对一论坛关系
     forum = db.relationship("Forum", back_populates="assignment", uselist=False)
 
@@ -59,7 +66,7 @@ class Question(db.Model):
     forum_id = db.Column(db.Integer, db.ForeignKey("forums.id"), nullable=False)
 
     forum = db.relationship("Forum", back_populates="questions")  # ✅ 使用 back_populates 替代 backref
-    
+
 class Forum(db.Model):
     __tablename__ = "forums"
 
