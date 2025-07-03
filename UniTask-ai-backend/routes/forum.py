@@ -66,5 +66,3 @@ def get_forum_questions(forum_id):
             "created_at": q.created_at.isoformat()
         } for q in forum.questions
     ]), 200
-
-
