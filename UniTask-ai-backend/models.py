@@ -65,7 +65,7 @@ class Question(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
-
+    # answer = db.Column(db.Text, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     forum_id = db.Column(db.Integer, db.ForeignKey("forums.id"), nullable=False)
     assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), nullable=False)
