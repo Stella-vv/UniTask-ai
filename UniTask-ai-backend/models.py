@@ -30,17 +30,14 @@ class Assignment(db.Model):
     __tablename__ = "assignments"
 
     id = db.Column(db.Integer, primary_key=True)
-
-    name = db.Column(db.String(100), nullable=False)  # 原来的 title -> 改为 name
+    name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    due_date = db.Column(db.DateTime, nullable=True)
 
-    due_date = db.Column(db.DateTime, nullable=True)  # 新增字段
+    course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
+    uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)  # 所属课程
-
-    uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)  # 新增字段
-
-    questions = db.relationship("Question", backref="assignment", lazy=True)  # 保留反向引用
+    questions = db.relationship("Question", back_populates="assignment", lazy=True)
 
 class FAQ(db.Model):
     __tablename__ = "faqs"
@@ -61,4 +58,4 @@ class Question(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), nullable=True)
 
-    assignment = db.relationship("Assignment", backref="questions")  # ✅ 引用也改成 Assignment
+    assignment = db.relationship("Assignment", back_populates="questions")
