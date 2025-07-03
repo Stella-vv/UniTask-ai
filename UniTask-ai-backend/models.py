@@ -12,7 +12,7 @@ class User(db.Model):
     cohort = db.Column(db.String(50), nullable=True)  # e.g., "CSE 2024"
 
     faqs = db.relationship("FAQ", backref="uploader", lazy=True)
-    questions = db.relationship("Question", backref="author", lazy=True)
+    questions = db.relationship("Question", back_populates="author", lazy=True)
 
 class Course(db.Model):
     __tablename__ = "courses"
@@ -69,9 +69,12 @@ class Question(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     forum_id = db.Column(db.Integer, db.ForeignKey("forums.id"), nullable=False)
+    assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), nullable=False)
 
-    forum = db.relationship("Forum", back_populates="questions")  # ✅ 使用 back_populates 替代 backref
-    
+    author = db.relationship("User", back_populates="questions")    
+    forum = db.relationship("Forum", back_populates="questions")
+    assignment = db.relationship("Assignment", back_populates="questions")
+
 class Forum(db.Model):
     __tablename__ = "forums"
 

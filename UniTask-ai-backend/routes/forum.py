@@ -11,7 +11,7 @@ forum_bp = Blueprint("forum", __name__, url_prefix="/api/forum")
 def get_forum(assignment_id):
     forum = Forum.query.filter_by(assignment_id=assignment_id).first()
     if not forum:
-        return jsonify({"error": "Forum not found"}), 404
+        return jsonify({"error": "Forum not found"}), 400
     return jsonify({
         "id": forum.id,
         "title": forum.title,
@@ -27,7 +27,7 @@ def create_question(forum_id):
 
     forum = Forum.query.get(forum_id)
     if not forum:
-        return jsonify({"error": "Forum not found"}), 404
+        return jsonify({"error": "Forum not found"}), 400
 
     question = Question(content=content, user_id=user_id, forum_id=forum_id)
     db.session.add(question)
