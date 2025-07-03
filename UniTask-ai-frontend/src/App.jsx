@@ -9,7 +9,8 @@ import CourseDetail from './tutorworkspace/CourseDetail/CourseDetail';
 import AssignmentUpload from './tutorworkspace/AssignmentUpload/AssignmentUpload';
 import AssignmentDetail from './tutorworkspace/AssignmentDetail/AssignmentDetail'; 
 import AssignmentForumPage from './tutorworkspace/Forum/AssignmentForumPage'; 
-import AssignmentList from './tutorworkspace/AssignmentList/AssignmentList';
+import AssignmentList from './tutorworkspace/AssignmentList/AssignmentListPage';
+import QandAUploadPage from './tutorworkspace/QandA/QandAUploadPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="assignment-upload" element={<AssignmentUpload />} />
           <Route path="assignment-detail" element={<AssignmentDetail />} />
           <Route path="assignment-detail/:assignmentId" element={<AssignmentDetail />} />
+          <Route path="qnas" element={<QandAUploadPage />} />
           {/* You can add routes for other pages here later */}
           {/* For example, for highlighting to work on a "Courses" page: */}
           {/* <Route path="courses" element={<div>Courses Page</div>} /> */}

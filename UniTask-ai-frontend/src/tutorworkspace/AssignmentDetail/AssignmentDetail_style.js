@@ -8,13 +8,22 @@ export const assignmentDetailStyles = {
 
   topHeader: {
     bgcolor: 'primary.main',
+    // 保持高度，如果设计需要特定高度的话
     height: '100px',
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    // 修改点1：文字靠左对齐
+    justifyContent: 'flex-start', // 从 'center' 修改为 'flex-start'
     color: 'white',
+    // 修改点2：添加内边距，使文字不紧贴左侧边缘，与 AssignmentList 保持一致
+    p: 3,
+    // 修改点3：通过负外边距和宽度调整，消除与父容器的空隙
+    mt: -4, // 向上负边距，以抵消 MainLayout 的 pageContentContainer 的顶部 padding
+    ml: -4, // 向左负边距，以抵消 MainLayout 的 pageContentContainer 的左侧 padding
+    mr: -4, // 向右负边距，以抵消 MainLayout 的 pageContentContainer 的右侧 padding
+    width: 'calc(100% + 64px)', // 宽度增加，以抵消左右总共 64px 的 padding (32px + 32px)
   },
 
   headerTitle: {

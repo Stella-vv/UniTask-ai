@@ -3,10 +3,8 @@ venv/
 .venv/
 
 # 忽略 Python 缓存文件
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+**/__pycache__/
+*.py[cod]
 
 # 忽略 VSCode、PyCharm 等编辑器配置
 .vscode/

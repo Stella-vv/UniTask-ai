@@ -77,7 +77,7 @@ const AssignmentList = () => {
           borderTopLeftRadius: '16px', borderTopRightRadius: '16px',
         }}>
           <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', fontSize: '1.75rem' }}>
-            Assignment
+            Assignment List
           </Typography>
         </Box>
         <Box sx={{
@@ -110,7 +110,7 @@ const AssignmentList = () => {
           borderTopLeftRadius: '16px', borderTopRightRadius: '16px',
         }}>
           <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', fontSize: '1.75rem' }}>
-            Assignment
+            Assignment List
           </Typography>
         </Box>
         <Box sx={{
@@ -161,7 +161,7 @@ const AssignmentList = () => {
             fontSize: '1.75rem'
           }}
         >
-          Assignment
+          Assignment List
         </Typography>
       </Box>
 
