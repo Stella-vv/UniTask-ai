@@ -57,7 +57,7 @@ class Assignment(db.Model):
             "description": self.description,
             "due_date": self.due_date.isoformat() if self.due_date else None, # 将 datetime 对象转换为 ISO 格式字符串
             "course_id": self.course_id,
-            "uploaded_by": self.uploaded_by
+            "uploaded_by": self.user_id
         }
 
 class FAQ(db.Model):
