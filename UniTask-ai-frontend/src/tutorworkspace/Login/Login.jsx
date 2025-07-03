@@ -18,7 +18,7 @@ export default function Login() {
       // 保存 token / user，可根据需求放 localStorage 或 Context
       localStorage.setItem('token', data.token);
       localStorage.setItem('user',  JSON.stringify(data.user));
-      nav('/dashboard');                        // 登录成功跳转
+      nav('/');                        // 登录成功跳转
     } catch (e) {
       setErr(e.response?.data?.message || 'Login failed');
     }
