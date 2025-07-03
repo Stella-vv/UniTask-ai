@@ -34,5 +34,5 @@ def create_assignment():
 @assignment_bp.route("/<int:user_id>", methods=["GET"])
 def get_assignments(user_id):
     # 将 user_id 更改为 uploaded_by
-    assignments = Assignment.query.filter_by(uploaded_by=user_id).all() # <--- 修改此处
+    assignments = Assignment.query.filter_by(user_id=user_id).all()
     return jsonify([a.to_dict() for a in assignments])
