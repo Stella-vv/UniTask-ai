@@ -1,3 +1,5 @@
+#models.py
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -34,6 +36,8 @@ class Assignment(db.Model):  # ✅ 修改类名
     description = db.Column(db.Text, nullable=True)
 
     course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
+    # ✅ 新增一对一论坛关系
+    forum = db.relationship("Forum", back_populates="assignment", uselist=False)
 
 class FAQ(db.Model):
     __tablename__ = "faqs"
@@ -52,6 +56,21 @@ class Question(db.Model):
     content = db.Column(db.Text, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), nullable=True)
+    forum_id = db.Column(db.Integer, db.ForeignKey("forums.id"), nullable=False)
 
-    assignment = db.relationship("Assignment", backref="questions")  # ✅ 引用也改成 Assignment
+    forum = db.relationship("Forum", back_populates="questions")  # ✅ 使用 back_populates 替代 backref
+    
+class Forum(db.Model):
+    __tablename__ = "forums"
+
+    id = db.Column(db.Integer, primary_key=True)
+    assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), unique=True, nullable=False)
+
+    title = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    # ✅ 一对一反向 assignment
+    assignment = db.relationship("Assignment", back_populates="forum")
+
+    # ✅ 一对多问题列表
+    questions = db.relationship("Question", back_populates="forum", lazy=True)
