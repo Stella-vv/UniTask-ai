@@ -33,7 +33,7 @@ export const dashboardCardData = [
   {
     icon: <HelpOutlineIcon />,
     title: 'FAQs',
-    description: '6 FAQs',
+    description: '3 FAQs',
     path: '/faqs',
   },
 ];
