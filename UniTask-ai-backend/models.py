@@ -65,7 +65,7 @@ class Question(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
-    answer = db.Column(db.Text, nullable=True)
+    #answer = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # ✅ 当前时间
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
@@ -75,6 +75,7 @@ class Question(db.Model):
     author = db.relationship("User", back_populates="questions")    
     forum = db.relationship("Forum", back_populates="questions")
     assignment = db.relationship("Assignment", back_populates="questions")
+    replies = db.relationship("Reply", back_populates="question", lazy=True)
 
 class Forum(db.Model):
     __tablename__ = "forums"
@@ -90,3 +91,16 @@ class Forum(db.Model):
 
     # ✅ 一对多问题列表
     questions = db.relationship("Question", back_populates="forum", lazy=True)
+
+class Reply(db.Model):
+    __tablename__ = "replies"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    question_id = db.Column(db.Integer, db.ForeignKey("questions.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
+    author = db.relationship("User", backref="replies")
+    question = db.relationship("Question", back_populates="replies")

@@ -31,7 +31,7 @@ print("✅ 创建课程成功:", course)
 print("\n📌 创建作业（同时创建论坛）...")
 assignment_res = requests.post(f"{BASE}/assignments/", json={
     "name": "Assignment 1",
-    "description": "请用 Flask 实现后端功能",
+    "description": "Please use Flask to implement backend functions",
     "due_date": "2025-07-10 23:59:00",
     "course_id": course["id"],
     "user_id": user["id"]
@@ -48,7 +48,7 @@ print(f"\n✅ 论坛已自动创建：forum_id = {forum_id}，对应 assignment_
 # 5. 添加问题到论坛
 print("\n📌 向论坛添加问题...")
 question_res = requests.post(f"{BASE}/forum/{forum_id}/questions", json={
-    "content": "请问这个作业的截止时间可以延期吗？",
+    "content": "Can the deadline for this assignment be extended?",
     "user_id": user["id"]   # ← 加上这个
 })
 if question_res.status_code == 201:
