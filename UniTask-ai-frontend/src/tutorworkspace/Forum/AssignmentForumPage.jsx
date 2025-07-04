@@ -8,21 +8,19 @@ import {
 } from '@mui/material';
 import { forumPageStyles } from './AssignmentForumPage_style';
 
-const forumId = 1; // 🔁 这里写死了 forumId，可用 useParams 后续动态传入
+const forumId = 1;
 
 const AssignmentForumPage = () => {
   const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState('');
-  const [userId, setUserId] = useState(1); // 💡 临时写死 user_id，你也可以用 JWT 解析出真实的
+  const [replyStates, setReplyStates] = useState({});
+  const [userId, setUserId] = useState(1);
   const BASE = 'http://localhost:8008/api';
 
-  // 获取问题列表
   const fetchQuestions = () => {
     fetch(`${BASE}/forum/${forumId}/questions`)
       .then((res) => res.json())
-      .then((data) => {
-        setQuestions(data);
-      })
+      .then((data) => setQuestions(data))
       .catch((err) => {
         console.error('❌ 获取论坛问题失败:', err);
       });
@@ -32,14 +30,11 @@ const AssignmentForumPage = () => {
     fetchQuestions();
   }, []);
 
-  // 提交新问题
   const handleSubmit = async () => {
     if (!newQuestion.trim()) return;
     const res = await fetch(`${BASE}/forum/${forumId}/questions`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         content: newQuestion,
         user_id: userId,
@@ -52,6 +47,53 @@ const AssignmentForumPage = () => {
     } else {
       const err = await res.text();
       console.error('❌ 提交失败:', err);
+    }
+  };
+
+  const toggleReplyBox = (questionId) => {
+    setReplyStates((prev) => ({
+      ...prev,
+      [questionId]: {
+        ...prev[questionId],
+        show: !prev[questionId]?.show,
+        text: prev[questionId]?.text || '',
+      },
+    }));
+  };
+
+  const handleReplyTextChange = (questionId, text) => {
+    setReplyStates((prev) => ({
+      ...prev,
+      [questionId]: {
+        ...prev[questionId],
+        text,
+      },
+    }));
+  };
+
+  const handleReplySubmit = async (questionId) => {
+    const replyText = replyStates[questionId]?.text;
+    if (!replyText || !replyText.trim()) return;
+
+    const res = await fetch(`${BASE}/replies`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: replyText,
+        user_id: userId,
+        question_id: questionId,
+      }),
+    });
+
+    if (res.ok) {
+      setReplyStates((prev) => ({
+        ...prev,
+        [questionId]: { show: false, text: '' },
+      }));
+      fetchQuestions();
+    } else {
+      const err = await res.text();
+      console.error('❌ 回复失败:', err);
     }
   };
 
@@ -74,24 +116,57 @@ const AssignmentForumPage = () => {
               {new Date(q.created_at).toLocaleString()}
             </Typography>
           </Box>
-          <Typography sx={forumPageStyles.messageText}>
-            {q.content}
-          </Typography>
+          <Typography sx={forumPageStyles.messageText}>{q.content}</Typography>
 
-          {q.answer && (
+          {/* 回复列表 */}
+          {q.replies && q.replies.length > 0 && (
             <>
-              <Box sx={forumPageStyles.replyCount}>1 reply</Box>
-              <Box sx={forumPageStyles.postContainer}>
-                <Box sx={forumPageStyles.userInfo}>
-                  <Avatar sx={forumPageStyles.avatar}>A</Avatar>
-                  <Typography sx={forumPageStyles.userName}>Auto Answer</Typography>
-                  <Typography sx={forumPageStyles.timestamp}>
-                    {new Date(q.created_at).toLocaleString()}
-                  </Typography>
-                </Box>
-                <Typography sx={forumPageStyles.messageText}>{q.answer}</Typography>
+              <Box sx={forumPageStyles.replyCount}>
+                {q.replies.length} {q.replies.length === 1 ? 'reply' : 'replies'}
               </Box>
+              {q.replies.map((reply) => (
+                <Box key={reply.id} sx={forumPageStyles.postContainer}>
+                  <Box sx={forumPageStyles.userInfo}>
+                    <Avatar sx={forumPageStyles.avatar}>{reply.user_id ?? 'U'}</Avatar>
+                    <Typography sx={forumPageStyles.userName}>User {reply.user_id}</Typography>
+                    <Typography sx={forumPageStyles.timestamp}>
+                      {new Date(reply.created_at).toLocaleString()}
+                    </Typography>
+                  </Box>
+                  <Typography sx={forumPageStyles.messageText}>{reply.content}</Typography>
+                </Box>
+              ))}
             </>
+          )}
+
+          {/* 回复按钮与输入框 */}
+          <Button
+            onClick={() => toggleReplyBox(q.id)}
+            sx={{ mt: 1 }}
+          >
+            {replyStates[q.id]?.show ? 'Cancel' : 'Reply'}
+          </Button>
+
+          {replyStates[q.id]?.show && (
+            <Box sx={{ mt: 1 }}>
+              <TextField
+                fullWidth
+                multiline
+                minRows={3}
+                maxRows={8}
+                placeholder="Write your reply..."
+                value={replyStates[q.id]?.text || ''}
+                onChange={(e) => handleReplyTextChange(q.id, e.target.value)}
+                sx={{ mt: 1 }}
+              />
+              <Button
+                variant="contained"
+                onClick={() => handleReplySubmit(q.id)}
+                sx={{ mt: 1 }}
+              >
+                Submit Reply
+              </Button>
+            </Box>
           )}
         </Box>
       ))}
