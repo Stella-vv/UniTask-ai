@@ -9,7 +9,9 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # "student" or "tutor"
-    cohort = db.Column(db.String(50), nullable=True)  # e.g., "CSE 2024"
+    #cohort = db.Column(db.String(50), nullable=True)  # e.g., "CSE 2024"
+    school = db.Column(db.String(100), nullable=True)  # e.g., "CSE"
+    year = db.Column(db.Integer, nullable=True)        # e.g., 2025
 
     faqs = db.relationship("FAQ", backref="uploader", lazy=True)
     questions = db.relationship("Question", back_populates="author", lazy=True)
