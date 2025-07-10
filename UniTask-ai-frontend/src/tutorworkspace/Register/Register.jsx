@@ -1,23 +1,29 @@
-// src/pages/Register.jsx
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Alert, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api';          // 根据你的项目层级调整路径
+import api from '../../api'; // 根据你的项目层级调整路径
 
 export default function Register() {
   const nav = useNavigate();
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole]         = useState('student');   // 默认学生
+  const [school, setSchool]     = useState('CSE');
+  const [year, setYear]         = useState(new Date().getFullYear());
   const [err, setErr]           = useState('');
   const [msg, setMsg]           = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await api.post('/register', { email, password, role });
-      setMsg(data.message);           // "User registered!"
-      // 注册成功后 1 秒跳到登录
+      const { data } = await api.post('/register', {
+        email,
+        password,
+        role,
+        school,
+        year
+      });
+      setMsg(data.message); // "User registered!"
       setTimeout(() => nav('/login'), 1000);
     } catch (e) {
       setErr(e.response?.data?.message || 'Register failed');
@@ -71,6 +77,32 @@ export default function Register() {
       >
         <MenuItem value="student">Student</MenuItem>
         <MenuItem value="tutor">Tutor</MenuItem>
+      </TextField>
+
+      <TextField
+        select
+        fullWidth
+        label="School"
+        margin="normal"
+        value={school}
+        onChange={(e) => setSchool(e.target.value)}
+        required
+      >
+        <MenuItem value="CSE">CSE</MenuItem>
+      </TextField>
+
+      <TextField
+        select
+        fullWidth
+        label="Year"
+        margin="normal"
+        value={year}
+        onChange={(e) => setYear(e.target.value)}
+        required
+      >
+        {[2024, 2025, 2026, 2027].map((yr) => (
+          <MenuItem key={yr} value={yr}>{yr}</MenuItem>
+        ))}
       </TextField>
 
       <Button fullWidth type="submit" variant="contained" sx={{ mt: 2 }}>

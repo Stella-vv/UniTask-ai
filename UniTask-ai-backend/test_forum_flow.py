@@ -10,7 +10,8 @@ user_res = requests.post(f"{BASE}/register", json={
     "email": email,
     "password": "test123",
     "role": "tutor",
-    "cohort": "CSE 2025"
+    "school": "CSE",
+    "year": "2025"
 })
 user_data = user_res.json()
 user = user_data.get("user")

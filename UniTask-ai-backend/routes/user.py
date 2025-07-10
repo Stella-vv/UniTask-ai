@@ -17,7 +17,10 @@ def register():
         email=data["email"],
         password=data["password"],  # 🚫 明文存储（仅限测试）
         role=data["role"],
-        cohort=data.get("cohort")
+        #cohort=data.get("cohort")
+        school = data.get("school"),  # ← 新字段
+        year = data.get("year")      # ← 新字段
+
     )
     try:
         db.session.add(new_user)
@@ -32,7 +35,9 @@ def register():
             "id": new_user.id,
             "email": new_user.email,
             "role": new_user.role,
-            "cohort": new_user.cohort
+            #"cohort": new_user.cohort
+            "school": new_user.school,
+            "year": new_user.year
         }
     }), 201
 
@@ -56,6 +61,8 @@ def login():
             "id": user.id,
             "email": user.email,
             "role": user.role,
-            "cohort": user.cohort
+            #"cohort": user.cohort
+            "school": user.school,
+            "year": user.year
         }
     }), 200
