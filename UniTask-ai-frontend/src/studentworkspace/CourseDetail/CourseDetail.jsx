@@ -17,7 +17,7 @@ import { courseDetailStyles } from './CourseDetail_style';
 // Mock data - replace with actual data from props or API later
 const mockCourseData = {
   title: 'Web Front-End Programming',
-  courseId: '64532',
+  courseId: '645321',
   courseSummary: `This is a first course in wireless and mobile networking examining the fundamental theories as well as the latest advances in wireless data and mobile communication networks. Topics include fundamental concepts in wireless coding, modulation, and signal propagation, WiFi and wireless local area networks, cellular networks, Bluetooth, and Internet of Things networks. The course will also overview some of the emerging wireless networking concepts, such as wireless sensing, and droneassisted mobile networks. Hands-on experiments with mobile devices will be part of the learning exercise, which involves wireless packet capture, analysis, and programming.`,
   assessments: [
     { id: 1, name: 'Final Exam Assessment Format: Individual 40%' },

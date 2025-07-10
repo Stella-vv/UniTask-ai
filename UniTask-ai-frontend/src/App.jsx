@@ -2,8 +2,11 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import MainLayout from './components/MainLayout';
+import StudentMainLayout from './components/StudentMainLayout';
 import LoginPage from './tutorworkspace/Login/Login';
 import RegisterPage from './tutorworkspace/Register/Register';
+
+// Tutor workspace imports
 import Dashboard from './tutorworkspace/Dashboard/Dashboard'; 
 import CourseDetail from './tutorworkspace/CourseDetail/CourseDetail';
 import AssignmentUpload from './tutorworkspace/AssignmentUpload/AssignmentUpload';
@@ -13,11 +16,16 @@ import AssignmentList from './tutorworkspace/AssignmentList/AssignmentListPage';
 import QandAUploadPage from './tutorworkspace/QandA/QandAUploadPage';
 import FaqList from './tutorworkspace/FaqList/FaqList';
 import FaqUpload from './tutorworkspace/FaqUpload/FaqUpload';
+// Student workspace imports
+import StudentDashboard from './studentworkspace/Dashboard/Dashboard';
+import StudentCourseDetail from './studentworkspace/CourseDetail/CourseDetail';
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Tutor workspace routes */}
         <Route path="/" element={<MainLayout />}>
           {/* The index route now renders the DashboardPage */}
           <Route index element={<Dashboard />} />
@@ -36,6 +44,13 @@ function App() {
           {/* You can add routes for other pages here later */}
           {/* For example, for highlighting to work on a "Courses" page: */}
           {/* <Route path="courses" element={<div>Courses Page</div>} /> */}
+        </Route>
+
+         {/* Student workspace routes */}
+        <Route path="/student" element={<StudentMainLayout />}>
+          <Route index element={<StudentDashboard />} />
+          <Route path="course-detail" element={<StudentCourseDetail />} />
+          {/* Additional student routes will be added here */}
         </Route>
 
         <Route path="/login" element={<LoginPage />} />
