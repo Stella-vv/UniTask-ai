@@ -64,3 +64,21 @@ def get_assignments(user_id):
     # 将 user_id 更改为 uploaded_by
     assignments = Assignment.query.filter_by(user_id=user_id).all()
     return jsonify([a.to_dict() for a in assignments])
+
+
+@assignment_bp.route("/course/<int:course_id>", methods=["GET"])
+def get_assignments_by_course(course_id):
+    """
+    根据课程 ID 获取该课程下的所有作业
+    """
+    try:
+        # 在数据库中查询 course_id 匹配的所有作业记录
+        assignments = Assignment.query.filter_by(course_id=course_id).all()
+        
+        # 将查询到的作业对象列表转换为字典列表，并返回 JSON 响应
+        return jsonify([a.to_dict() for a in assignments])
+
+    except Exception as e:
+        # 如果发生错误，打印错误信息并返回一个服务器错误响应
+        print(f"❌ Error fetching assignments for course {course_id}: {e}")
+        return jsonify({"error": "An internal server error occurred"}), 500

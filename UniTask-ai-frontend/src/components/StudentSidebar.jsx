@@ -68,6 +68,7 @@ const Sidebar = () => {
               <ListItemButton 
                 component={NavLink}
                 to={item.path}
+                end={item.path === '/student'} 
                 sx={{
                   borderRadius: 12,
                   margin: '10px 16px',
