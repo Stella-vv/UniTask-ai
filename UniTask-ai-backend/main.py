@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from flask_cors import CORS
-
+from flask import send_from_directory
 # ===== 判断是否使用 Mock 模式 =====
 USE_MOCK = os.getenv("UNITASK_MOCK", "false").lower() == "true"
 
@@ -56,6 +56,7 @@ else:
 
 # ===== 根路由测试 =====
 @app.route("/")
+
 def index():
     return (
         "UniTask backend connected to PostgreSQL!"
@@ -67,6 +68,10 @@ def index():
 __all__ = ["app"]
 if not USE_MOCK:
     __all__.append("db")
+# ===== 提供上传文件访问 =====
+@app.route("/uploads/<filename>")
+def serve_uploaded_file(filename):
+    return send_from_directory("uploads", filename)
 
 # ===== 启动 Flask 应用 =====
 if __name__ == "__main__":

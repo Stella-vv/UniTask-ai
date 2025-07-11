@@ -1,19 +1,47 @@
 from flask import Blueprint, request, jsonify
 from models import db, Assignment, Forum
 from datetime import datetime
+from werkzeug.utils import secure_filename
+import os
 
 assignment_bp = Blueprint("assignment", __name__, url_prefix="/api/assignments")
 
+# 上传目录（你可以按需修改）
+UPLOAD_FOLDER = "uploads"
+ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt'}
+
+# 确保上传目录存在
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @assignment_bp.route("/", methods=["POST"])
 def create_assignment():
-    data = request.get_json()
-    print("📥 POST received:", data)
+    print("📥 POST received (multipart/form-data)")
 
-    name = data.get("name")
-    description = data.get("description")
-    due_date_str = data.get("due_date")
-    user_id = data.get("user_id")
-    course_id = data.get("course_id")
+    name = request.form.get("name")
+    description = request.form.get("description")
+    due_date_str = request.form.get("due_date")
+    user_id = request.form.get("user_id")
+    course_id = request.form.get("course_id")
+
+    rubric_file = request.files.get("rubric")
+    attachment_file = request.files.get("attachment")
+
+    rubric_path = None
+    attachment_path = None
+
+    # 处理文件保存
+    if rubric_file and allowed_file(rubric_file.filename):
+        filename = secure_filename(rubric_file.filename)
+        rubric_path = os.path.join(UPLOAD_FOLDER, filename)
+        rubric_file.save(rubric_path)
+
+    if attachment_file and allowed_file(attachment_file.filename):
+        filename = secure_filename(attachment_file.filename)
+        attachment_path = os.path.join(UPLOAD_FOLDER, filename)
+        attachment_file.save(attachment_path)
 
     if not name or not due_date_str or not user_id:
         return jsonify({"error": "Missing required fields"}), 400
@@ -24,18 +52,18 @@ def create_assignment():
         return jsonify({"error": "Invalid date format. Use YYYY-MM-DD HH:MM:SS"}), 400
 
     try:
-        # 创建 Assignment 对象
         new_assignment = Assignment(
             name=name,
             description=description,
             due_date=due_date,
+            course_id=course_id,
             user_id=user_id,
-            course_id=course_id
+            rubric=rubric_path,
+            attachment=attachment_path
         )
         db.session.add(new_assignment)
-        db.session.flush()  # ⚠️ 获取 assignment.id 不提交事务
+        db.session.flush()
 
-        # 自动创建绑定的 Forum
         new_forum = Forum(
             assignment_id=new_assignment.id,
             title=f"{name} - Discussion Forum"
@@ -58,27 +86,17 @@ def create_assignment():
         db.session.rollback()
         print("❌ Commit failed:", e)
         return jsonify({"error": str(e)}), 500
-    
+
 @assignment_bp.route("/<int:user_id>", methods=["GET"])
 def get_assignments(user_id):
-    # 将 user_id 更改为 uploaded_by
     assignments = Assignment.query.filter_by(user_id=user_id).all()
     return jsonify([a.to_dict() for a in assignments])
 
-
 @assignment_bp.route("/course/<int:course_id>", methods=["GET"])
 def get_assignments_by_course(course_id):
-    """
-    根据课程 ID 获取该课程下的所有作业
-    """
     try:
-        # 在数据库中查询 course_id 匹配的所有作业记录
         assignments = Assignment.query.filter_by(course_id=course_id).all()
-        
-        # 将查询到的作业对象列表转换为字典列表，并返回 JSON 响应
         return jsonify([a.to_dict() for a in assignments])
-
     except Exception as e:
-        # 如果发生错误，打印错误信息并返回一个服务器错误响应
         print(f"❌ Error fetching assignments for course {course_id}: {e}")
         return jsonify({"error": "An internal server error occurred"}), 500

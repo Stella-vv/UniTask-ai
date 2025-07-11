@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -9,21 +10,21 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # "student" or "tutor"
-    #cohort = db.Column(db.String(50), nullable=True)  # e.g., "CSE 2024"
-    school = db.Column(db.String(100), nullable=True)  # e.g., "CSE"
-    year = db.Column(db.Integer, nullable=True)        # e.g., 2025
+    school = db.Column(db.String(100), nullable=True)
+    year = db.Column(db.Integer, nullable=True)
 
     faqs = db.relationship("FAQ", backref="uploader", lazy=True)
     questions = db.relationship("Question", back_populates="author", lazy=True)
+    replies = db.relationship("Reply", backref="author", lazy=True)
 
 class Course(db.Model):
     __tablename__ = "courses"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
-    year = db.Column(db.Integer, nullable=True)  # e.g., 2025
+    year = db.Column(db.Integer, nullable=True)
     description = db.Column(db.Text, nullable=True)
-    semester = db.Column(db.String(10), nullable=True)  # e.g., "T2"
+    semester = db.Column(db.String(10), nullable=True)
 
     assignments = db.relationship("Assignment", backref="course", lazy=True)
     faqs = db.relationship("FAQ", backref="course", lazy=True)
@@ -35,22 +36,38 @@ class Assignment(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     due_date = db.Column(db.DateTime, nullable=True)
+    rubric = db.Column(db.String(255), nullable=True)  # 存储文件路径或 URL
+    attachment = db.Column(db.String(255), nullable=True)  # 存储文件路径或 URL
+
 
     course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     questions = db.relationship("Question", back_populates="assignment", lazy=True)
-
     forum = db.relationship("Forum", back_populates="assignment", uselist=False)
+
     def to_dict(self):
+        def format_file(path):
+            if not path:
+                return None
+            import os
+            return {
+                "fileName": os.path.basename(path),
+                "url": f"/uploads/{os.path.basename(path)}"
+            }
+
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "due_date": self.due_date.isoformat() if self.due_date else None, # 将 datetime 对象转换为 ISO 格式字符串
-            "course_id": self.course_id,
-            "user_id": self.user_id
+            "dueDate": self.due_date.strftime("%Y-%m-%d") if self.due_date else None,
+            "rubric": format_file(self.rubric),
+            "attachments": [format_file(self.attachment)] if self.attachment else [],
+            "courseName": self.course.name if self.course else None,
+            "createdAt": self.due_date.strftime("%Y-%m-%d") if self.due_date else None,
+            "updatedAt": self.due_date.strftime("%Y-%m-%d") if self.due_date else None
         }
+
 
 class FAQ(db.Model):
     __tablename__ = "faqs"
@@ -67,14 +84,13 @@ class Question(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
-    #answer = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # ✅ 当前时间
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     forum_id = db.Column(db.Integer, db.ForeignKey("forums.id"), nullable=False)
     assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), nullable=False)
 
-    author = db.relationship("User", back_populates="questions")    
+    author = db.relationship("User", back_populates="questions")
     forum = db.relationship("Forum", back_populates="questions")
     assignment = db.relationship("Assignment", back_populates="questions")
     replies = db.relationship("Reply", back_populates="question", lazy=True)
@@ -88,10 +104,7 @@ class Forum(db.Model):
     title = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-    # ✅ 一对一反向 assignment
     assignment = db.relationship("Assignment", back_populates="forum")
-
-    # ✅ 一对多问题列表
     questions = db.relationship("Question", back_populates="forum", lazy=True)
 
 class Reply(db.Model):
@@ -104,5 +117,4 @@ class Reply(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey("questions.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    author = db.relationship("User", backref="replies")
     question = db.relationship("Question", back_populates="replies")
