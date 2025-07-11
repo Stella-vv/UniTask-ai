@@ -208,59 +208,57 @@ const AssignmentUpload = () => {
   };
 
   // 提交表单
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      return;
-    }
+const handleSubmit = async () => {
+  if (!validateForm()) {
+    return;
+  }
 
-    // 检查用户是否登录
-    const userId = getCurrentUserId();
-    if (!userId) {
-      alert('Please login first');
-      navigate('/login');
-      return;
-    }
+  // 检查用户是否登录
+  const userId = getCurrentUserId();
+  if (!userId) {
+    alert('Please login first');
+    navigate('/login');
+    return;
+  }
 
-    setIsLoading(true);
-    
-    try {
-      // 准备提交数据
-      // const submitData = new FormData();
-      // submitData.append('courseName', formData.courseName);
-      // submitData.append('title', formData.title);
-      // submitData.append('description', formData.description);
-      // submitData.append('dueDate', formData.dueDate);
-      const submitData = {
-        name: formData.title,
-        description: formData.description,
-        due_date: formatDateForBackend(formData.dueDate),
-        course_id: formData.courseId,
-        user_id: userId
-      };
-      
-      // TODO: 替换为实际的API调用
-      console.log('Submitting assignment data:', submitData);
+  setIsLoading(true);
 
-      // 调用后端API
-      const response = await api.post('/assignments/', submitData);
+  try {
+    // ✅ 准备 multipart/form-data 数据
+    const submitData = new FormData();
+    submitData.append('name', formData.title);
+    submitData.append('description', formData.description);
+    submitData.append('due_date', formatDateForBackend(formData.dueDate));
+    submitData.append('course_id', formData.courseId);
+    submitData.append('user_id', userId);
+    if (formData.rubrics) submitData.append('rubric', formData.rubrics);
+    if (formData.attachment) submitData.append('attachment', formData.attachment);
 
-      console.log('Assignment created successfully:', response.data);
-      // 成功后的处理（如跳转页面、显示成功消息等）
-      alert('Assignment uploaded successfully!');
-      navigate('/assignment'); // 返回到AssignmentList页面
-      
-    } catch (error) {
-      console.error('Upload failed:', error);
+    console.log('📤 Submitting assignment data (FormData)...');
 
-      // 显示详细错误信息
-      const errorMessage = error.response?.data?.error || 
-                          error.response?.data?.message || 
-                          'Upload failed. Please try again.';
-      alert(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    // ✅ 发送 multipart/form-data 请求
+    const response = await api.post('/assignments/', submitData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    console.log('✅ Assignment created successfully:', response.data);
+    alert('Assignment uploaded successfully!');
+    navigate('/assignment'); // 返回到AssignmentList页面
+
+  } catch (error) {
+    console.error('❌ Upload failed:', error);
+
+    const errorMessage = error.response?.data?.error ||
+                         error.response?.data?.message ||
+                         'Upload failed. Please try again.';
+    alert(errorMessage);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   // 取消操作
   const handleCancel = () => {

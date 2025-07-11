@@ -28,17 +28,24 @@ course_res = requests.post(f"{BASE}/courses/", json={
 course = course_res.json()
 print("✅ 创建课程成功:", course)
 
-# 3. 创建作业 + 自动创建论坛
+# 3. 创建作业 + 自动创建论坛（用 multipart/form-data）
 print("\n📌 创建作业（同时创建论坛）...")
-assignment_res = requests.post(f"{BASE}/assignments/", json={
-    "name": "Assignment 1",
-    "description": "Please use Flask to implement backend functions",
-    "due_date": "2025-07-10 23:59:00",
-    "course_id": course["id"],
-    "user_id": user["id"]
-})
+
+with open("uploads/dummy_rubric.pdf", "rb") as rubric_file, open("uploads/dummy_attach.zip", "rb") as attachment_file:
+    assignment_res = requests.post(f"{BASE}/assignments/", files={
+        "rubric": rubric_file,
+        "attachment": attachment_file
+    }, data={
+        "name": "Assignment 1",
+        "description": "Please use Flask to implement backend functions",
+        "due_date": "2025-07-10 23:59:00",
+        "course_id": course["id"],
+        "user_id": user["id"]
+    })
+
 assignment_data = assignment_res.json()
 print("✅ 作业创建成功:", assignment_data)
+
 
 # 4. 获取 forum 信息
 assignment_id = assignment_data["assignment"]["id"]
