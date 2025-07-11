@@ -60,10 +60,8 @@ function App() {
             <Route index element={<StudentDashboard />} />
             <Route path="course-detail" element={<StudentCourseDetail />} />
             <Route path="assignment" element={<StudentAssignmentList />} />
-            <Route path="assignments/:assignmentId/forum" element={<StudentAssignmentForumPage />} />
-            <Route path="assignment-detail" element={<AssignmentDetail />} />
-            <Route path="assignment-detail/:assignmentId" element={<AssignmentDetail />} />
             <Route path="assignment-detail/:assignmentId" element={<StudentAssignmentDetail />} />
+            <Route path="assignments/:assignmentId/forum" element={<StudentAssignmentForumPage />} />
             {/* Future student pages can be added here */}
           </Route>
         </Route>

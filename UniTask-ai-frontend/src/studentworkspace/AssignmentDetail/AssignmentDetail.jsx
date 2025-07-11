@@ -46,7 +46,7 @@ const StudentAssignmentDetail = () => {
 
   const handleGoToForum = () => {
     // Corrected to navigate to a potential student forum route
-    navigate(`/student/assignments/${assignmentData.id}/forum`);
+    navigate(`/student/assignments/${assignmentId}/forum`);
   };
 
   // This function is kept for displaying file icons
@@ -128,7 +128,7 @@ const StudentAssignmentDetail = () => {
             onClick={handleGoToForum}
             sx={assignmentDetailStyles.forumButton}
           >
-            Go to Forum
+            Forum
           </Button>
         </Box>
       </Box>
