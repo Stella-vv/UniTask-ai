@@ -1,9 +1,9 @@
-// src/pages/Login.jsx
+// src/PublicPage/Login/Login.jsx (Modified)
+
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-//import axios from '../api';        // 你在 src/api/index.js 里 export 默认 Axios 实例
-import api from "../../api";     //  ← 多上一层目录
+import api from "../../api"; // This relative path is correct based on your structure.
 
 export default function Login() {
   const nav = useNavigate();
@@ -15,12 +15,28 @@ export default function Login() {
     e.preventDefault();
     try {
       const { data } = await api.post('/login', { email, password });
-      // 保存 token / user，可根据需求放 localStorage 或 Context
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user',  JSON.stringify(data.user));
-      nav('/');                        // 登录成功跳转
+
+      // Ensure the backend returns a token and a user object with a role
+      if (data.token && data.user && data.user.role) {
+        // 1. Store authentication info
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user',  JSON.stringify(data.user));
+        // Store the role separately for quick access by the protected route
+        localStorage.setItem('role', data.user.role);
+
+        // 2. Redirect based on the role
+        if (data.user.role === 'student') {
+          nav('/student'); // Redirect students to /student
+        } else if (data.user.role === 'tutor') {
+          nav('/'); // Redirect tutors to the root (Tutor Dashboard)
+        } else {
+          setErr('Unrecognized user role.');
+        }
+      } else {
+        setErr('Login failed: Invalid data received from server.');
+      }
     } catch (e) {
-      setErr(e.response?.data?.message || 'Login failed');
+      setErr(e.response?.data?.message || 'Login failed. Please check your credentials.');
     }
   }
 
