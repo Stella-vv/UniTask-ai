@@ -25,6 +25,10 @@ import FaqUpload from './tutorworkspace/FaqUpload/FaqUpload';
 
 import StudentDashboard from './studentworkspace/Dashboard/Dashboard';
 import StudentCourseDetail from './studentworkspace/CourseDetail/CourseDetail';
+import StudentAssignmentList from './studentworkspace/AssignmentList/AssignmentListPage';
+import StudentAssignmentForumPage from './studentworkspace/Forum/AssignmentForumPage';
+import StudentAssignmentDetail from './studentworkspace/AssignmentDetail/AssignmentDetail'; 
+
 
 function App() {
   return (
@@ -55,6 +59,11 @@ function App() {
           <Route path="/student" element={<StudentMainLayout />}>
             <Route index element={<StudentDashboard />} />
             <Route path="course-detail" element={<StudentCourseDetail />} />
+            <Route path="assignment" element={<StudentAssignmentList />} />
+            <Route path="assignments/:assignmentId/forum" element={<StudentAssignmentForumPage />} />
+            <Route path="assignment-detail" element={<AssignmentDetail />} />
+            <Route path="assignment-detail/:assignmentId" element={<AssignmentDetail />} />
+            <Route path="assignment-detail/:assignmentId" element={<StudentAssignmentDetail />} />
             {/* Future student pages can be added here */}
           </Route>
         </Route>
