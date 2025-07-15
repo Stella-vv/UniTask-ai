@@ -26,6 +26,7 @@ if not USE_MOCK:
     from routes.forum import forum_bp
     from routes.course import course_bp
     from routes.reply import reply_bp  # ← 添加这行
+    from routes.faqs import faq_bp
 
 
     # 配置数据库
@@ -41,6 +42,7 @@ if not USE_MOCK:
     app.register_blueprint(forum_bp)
     app.register_blueprint(course_bp) 
     app.register_blueprint(reply_bp)
+    app.register_blueprint(faq_bp)
     
 
     # 推送上下文，供外部建表脚本使用
