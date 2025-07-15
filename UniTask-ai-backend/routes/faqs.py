@@ -2,9 +2,8 @@
 
 from flask import Blueprint, request, jsonify
 from models import db, FAQ
-from datetime import datetime
 
-faq_bp = Blueprint("faq", __name__, url_prefix="/api/faq")
+faq_bp = Blueprint("faq", __name__, url_prefix="/api/faqs")
 
 # 创建 FAQ
 @faq_bp.route("/", methods=["POST"])
@@ -12,16 +11,16 @@ def create_faq():
     data = request.get_json()
     question = data.get("question")
     answer = data.get("answer")
-    user_id = data.get("user_id")
+    uploaded_by = data.get("uploaded_by")
     course_id = data.get("course_id")
 
-    if not all([question, answer, user_id, course_id]):
+    if not all([question, answer, uploaded_by, course_id]):
         return jsonify({"error": "Missing required fields"}), 400
 
     faq = FAQ(
         question=question,
         answer=answer,
-        user_id=user_id,
+        uploaded_by=uploaded_by,
         course_id=course_id
     )
 
@@ -34,25 +33,37 @@ def create_faq():
             "id": faq.id,
             "question": faq.question,
             "answer": faq.answer,
-            "user_id": faq.user_id,
-            "course_id": faq.course_id,
-            # "created_at": faq.created_at.isoformat()
+            "uploaded_by": faq.uploaded_by,
+            "course_id": faq.course_id
         }
     }), 201
 
-# 获取某课程的 FAQ 列表
+# 获取课程 FAQ 列表
 @faq_bp.route("/course/<int:course_id>", methods=["GET"])
 def get_course_faqs(course_id):
-    faqs = FAQ.query.filter_by(course_id=course_id).all()
+    faqs = FAQ.query.filter_by(course_id=course_id).order_by(FAQ.id.desc()).all()
     return jsonify([
         {
             "id": f.id,
             "question": f.question,
             "answer": f.answer,
-            "user_id": f.user_id,
-            # "created_at": f.created_at.isoformat()
+            "uploaded_by": f.uploaded_by
         } for f in faqs
     ]), 200
+
+# 获取单个 FAQ
+@faq_bp.route("/<int:faq_id>", methods=["GET"])
+def get_faq(faq_id):
+    faq = FAQ.query.get(faq_id)
+    if not faq:
+        return jsonify({"error": "FAQ not found"}), 404
+    return jsonify({
+        "id": faq.id,
+        "question": faq.question,
+        "answer": faq.answer,
+        "uploaded_by": faq.uploaded_by,
+        "course_id": faq.course_id
+    }), 200
 
 # 删除 FAQ
 @faq_bp.route("/<int:faq_id>", methods=["DELETE"])
