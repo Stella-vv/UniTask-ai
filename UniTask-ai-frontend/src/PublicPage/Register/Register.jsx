@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Alert, MenuItem } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Button, TextField, Typography, Alert, MenuItem, Link as MuiLink } from '@mui/material';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import api from '../../api'; // 根据你的项目层级调整路径
 
 export default function Register() {
@@ -108,6 +108,17 @@ export default function Register() {
       <Button fullWidth type="submit" variant="contained" sx={{ mt: 2 }}>
         Register
       </Button>
+
+      <Typography
+        variant="body2"
+        align="center"
+        sx={{ mt: 2 }}
+      >
+        Already have an account?{' '}
+        <MuiLink component={RouterLink} to="/login" underline="hover">
+          Log in
+        </MuiLink>
+      </Typography>
     </Box>
   );
 }
