@@ -1,8 +1,8 @@
 // src/PublicPage/Login/Login.jsx (Modified)
 
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Alert } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Button, TextField, Typography, Alert, Link as MuiLink } from '@mui/material';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import api from "../../api"; // This relative path is correct based on your structure.
 
 export default function Login() {
@@ -84,6 +84,17 @@ export default function Login() {
       >
         Login
       </Button>
+
+      <Typography
+        variant="body2"
+        align="center"
+        sx={{ mt: 2 }}
+      >
+        Don’t have an account?{' '}
+        <MuiLink component={RouterLink} to="/register" underline="hover">
+          Register
+        </MuiLink>
+      </Typography>
     </Box>
   );
 }
