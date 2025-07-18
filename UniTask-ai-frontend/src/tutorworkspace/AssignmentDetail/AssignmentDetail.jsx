@@ -8,6 +8,8 @@ import {
   ListItemText,
   Chip,
   Divider,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -18,6 +20,7 @@ import {
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { assignmentDetailStyles } from './AssignmentDetail_style';
+import api from '../../api';
 
 const AssignmentDetail = () => {
   // 从路由获取作业ID
@@ -29,60 +32,62 @@ const AssignmentDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 模拟数据 - 后续从API获取
-  const mockAssignmentData = {
-    id: 12345,
-    name: 'Assignment 1',
-    dueDate: '11/06/2025',
-    description: 'Build a responsive web page using HTML, CSS, and JavaScript that displays a list of student profiles. The page must include a search bar, responsive layout for desktop and mobile, and use clean, semantic HTML. Submit your code and a brief user guide explaining your design choices.',
-    rubric: {
-      fileName: 'Assignment1_rubric.pdf',
-      url: '/files/assignment1_rubric.pdf'
-    },
-    attachments: [
-      {
-        id: 1,
-        fileName: 'Assignment1.pdf',
-        url: '/files/assignment1.pdf',
-        type: 'pdf'
-      },
-      {
-        id: 2,
-        fileName: 'Report_template.doc',
-        url: '/files/report_template.doc',
-        type: 'doc'
-      },
-      {
-        id: 3,
-        fileName: 'Example.html',
-        url: '/files/example.html',
-        type: 'html'
-      }
-    ],
-    courseName: 'Web Front-End Programming',
-    createdAt: '2025-01-15',
-    updatedAt: '2025-01-20'
-  };
-
   // 获取作业详情数据
   useEffect(() => {
     const fetchAssignmentDetail = async () => {
       try {
         setLoading(true);
+        setError(null);
         
-        // TODO: 替换为实际的API调用
-        // const response = await fetch(`/api/assignments/${assignmentId}`);
-        // const data = await response.json();
-        
-        // 模拟API调用延迟
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // 模拟数据
-        setAssignmentData(mockAssignmentData);
+        // 从localStorage获取用户信息
+        const userString = localStorage.getItem('user');
+        if (!userString) {
+          setError('User not logged in. Please log in again.');
+          setLoading(false);
+          navigate('/login');
+          return;
+        }
+
+        const user = JSON.parse(userString);
+        const userId = user.id;
+
+        // 如果没有提供assignmentId，则显示错误
+        if (!assignmentId) {
+          setError('Assignment ID not provided');
+          setLoading(false);
+          return;
+        }
+
+        // 直接获取指定作业的详情
+        const response = await api.get(`/assignments/detail/${assignmentId}`);
+        const assignment = response.data;
+
+
+        // 格式化作业数据以适配现有的UI组件
+        const formattedAssignment = {
+          id: assignment.id,
+          name: assignment.name,
+          dueDate: assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString('en-GB') : 'No due date',
+          description: assignment.description || 'No description provided',
+          rubric: assignment.rubric || null,
+          attachments: assignment.attachments || [],
+          courseName: assignment.courseName || 'Unknown Course',
+          createdAt: assignment.createdAt,
+          updatedAt: assignment.updatedAt
+        };
+
+        setAssignmentData(formattedAssignment);
         
       } catch (err) {
         console.error('Failed to fetch assignment details:', err);
-        setError('Failed to fetch assignment details');
+        if (err.response?.status === 401) {
+          setError('Session expired. Please log in again.');
+          navigate('/login');
+        } else if (err.response?.status === 404) {
+          setError('Assignment not found');
+        } else {
+          setError('Failed to fetch assignment details. Please check your connection and try again.');
+        }
       } finally {
         setLoading(false);
       }
@@ -92,6 +97,8 @@ const AssignmentDetail = () => {
       fetchAssignmentDetail();
     }
   }, [assignmentId]);
+
+
 
   // 修改作业
   const handleModify = () => {
@@ -245,17 +252,19 @@ const AssignmentDetail = () => {
         </Box>
 
         {/* 评分标准 */}
-        <Box sx={assignmentDetailStyles.rubricSection}>
-          <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
-            Rubric :
-          </Typography>
-          <Chip
-            label={assignmentData.rubric.fileName}
-            onClick={() => handleDownloadFile(assignmentData.rubric)}
-            sx={assignmentDetailStyles.fileChip}
-            clickable
-          />
-        </Box>
+        {assignmentData.rubric && assignmentData.rubric.fileName && (
+          <Box sx={assignmentDetailStyles.rubricSection}>
+            <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
+              Rubric:
+            </Typography>
+            <Chip
+              label={assignmentData.rubric.fileName}
+              onClick={() => handleDownloadFile(assignmentData.rubric)}
+              sx={assignmentDetailStyles.fileChip}
+              clickable
+            />
+          </Box>
+        )}
 
         {/* 附件列表 */}
         <Box sx={assignmentDetailStyles.attachmentSection}>
@@ -263,7 +272,7 @@ const AssignmentDetail = () => {
             Attachment :
           </Typography>
           <List sx={assignmentDetailStyles.attachmentList}>
-            {assignmentData.attachments.map((file, index) => (
+            {assignmentData.attachments.filter(file => file && file.fileName).map((file, index) => (
               <React.Fragment key={file.id}>
                 <ListItem
                   sx={assignmentDetailStyles.attachmentItem}

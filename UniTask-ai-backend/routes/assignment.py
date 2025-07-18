@@ -92,6 +92,19 @@ def get_assignments(user_id):
     assignments = Assignment.query.filter_by(user_id=user_id).all()
     return jsonify([a.to_dict() for a in assignments])
 
+@assignment_bp.route("/detail/<int:assignment_id>", methods=["GET"])
+def get_assignment_detail(assignment_id):
+    """获取单个作业的详细信息"""
+    try:
+        assignment = Assignment.query.get(assignment_id)
+        if not assignment:
+            return jsonify({"error": "Assignment not found"}), 404
+        
+        return jsonify(assignment.to_dict())
+    except Exception as e:
+        print(f"❌ Error fetching assignment {assignment_id}: {e}")
+        return jsonify({"error": "An internal server error occurred"}), 500
+
 @assignment_bp.route("/course/<int:course_id>", methods=["GET"])
 def get_assignments_by_course(course_id):
     try:
