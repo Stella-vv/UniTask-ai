@@ -162,11 +162,11 @@ const StudentAssignmentList = () => {
                   onClick={() => handleViewAssignmentDetail(assignment.id)}
                   sx={{ '&:hover': { bgcolor: 'action.hover' } }}
                 >
-                  <ListItemText
-                    primary={assignment.name}
-                    secondary={`Due Date: ${new Date(assignment.due_date).toLocaleDateString()}`}
-                  />
-                </ListItem>
+                    <ListItemText
+                      primary={assignment.name}
+                      secondary={assignment.dueDate ? `Due Date: ${new Date(assignment.dueDate).toLocaleDateString()}` : 'No due date'}
+                    />
+                  </ListItem>
                 {index < assignments.length - 1 && <Divider component="li" />}
               </React.Fragment>
             ))}

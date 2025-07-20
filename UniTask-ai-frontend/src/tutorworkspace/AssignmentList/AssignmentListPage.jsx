@@ -193,7 +193,7 @@ const AssignmentList = () => {
                 >
                   <ListItemText
                     primary={assignment.name}
-                    secondary={`Due Date: ${new Date(assignment.due_date).toLocaleDateString()}`}
+                    secondary={assignment.dueDate ? `Due Date: ${new Date(assignment.dueDate).toLocaleDateString()}` : 'No due date'}
                   />
                 </ListItem>
                 {index < assignments.length - 1 && <Divider component="li" />}
