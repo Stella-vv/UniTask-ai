@@ -19,9 +19,8 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { courseDetailStyles } from './CourseDetail_style';
 import api from '../../api';
 
-// For demonstration, we'll fetch the course with ID 2 ("COMP9900 - Capstone Project")
 // In a real app, this ID might come from user selection or another part of the state.
-const COURSE_ID_TO_DISPLAY = 2;
+const COURSE_ID_TO_DISPLAY = 1;
 
 const CourseDetail = () => {
   const navigate = useNavigate();
