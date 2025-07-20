@@ -17,8 +17,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { courseDetailStyles } from './CourseDetail_style';
 import api from '../../api';
 
-// We'll fetch course with ID 2 for consistency in demonstration
-const COURSE_ID_TO_DISPLAY = 2;
+// We'll fetch course with ID 1 for consistency in demonstration
+const COURSE_ID_TO_DISPLAY = 1;
 
 const StudentCourseDetail = () => {
   const [course, setCourse] = useState(null);
