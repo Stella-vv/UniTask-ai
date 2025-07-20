@@ -27,10 +27,8 @@ if not USE_MOCK:
     from routes.course import course_bp
     from routes.reply import reply_bp  # ← 添加这行
     from routes.faqs import faq_bp
+    from routes.qa import qa_bp
     from routes.ai import ai_bp
-
-
-
 
     # 配置数据库
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
@@ -46,6 +44,7 @@ if not USE_MOCK:
     app.register_blueprint(course_bp) 
     app.register_blueprint(reply_bp)
     app.register_blueprint(faq_bp)
+    app.register_blueprint(qa_bp)
     app.register_blueprint(ai_bp)
 
     # 推送上下文，供外部建表脚本使用

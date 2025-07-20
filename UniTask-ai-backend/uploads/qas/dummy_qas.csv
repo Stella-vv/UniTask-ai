@@ -1,0 +1,4 @@
+question,answer,date,course_name
+What is a binary search?,Binary search is an efficient algorithm for finding an item from a sorted list of items.,2024-01-10,COMP1511
+Explain recursion.,Recursion is a process in which a function calls itself directly or indirectly.,2024-03-05,COMP2521
+Define time complexity.,Time complexity is a computational complexity that describes the amount of time it takes to run an algorithm.,2024-05-20,COMP3121
