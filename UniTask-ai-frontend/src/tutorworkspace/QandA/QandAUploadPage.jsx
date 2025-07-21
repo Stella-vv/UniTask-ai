@@ -12,6 +12,7 @@ import {
   Alert,
   CircularProgress,
   IconButton,
+  TextField,
 } from '@mui/material';
 import {
   Upload as UploadIcon,
@@ -20,6 +21,7 @@ import {
   CloudUpload as CloudUploadPlaceholderIcon,
 } from '@mui/icons-material';
 import { qandaUploadPageStyles } from './QandAUploadPage_style';
+import api from '../../api';
 
 const QandAUploadPage = () => {
   const navigate = useNavigate();
@@ -27,6 +29,7 @@ const QandAUploadPage = () => {
     courseName: '',
     courseId: '',
     attachment: null,
+    description: '',
   });
 
   const [courses, setCourses] = useState([]);
@@ -34,30 +37,46 @@ const QandAUploadPage = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // 模拟课程数据
+  // 获取课程列表
   useEffect(() => {
+    // 暂时使用硬编码的课程数据，因为后端还没有课程列表API
     const initializeCourses = () => {
       setCoursesLoading(true);
+      
       // 使用你在数据库中创建的课程数据
-      const mockCourses = [
-        { id: 1, name: 'COMP9900 - Capstone Project' },
-        { id: 2, name: 'Web Front-End Programming' }, // 添加图片中的课程名称
+      const courses = [
+        { id: 1, name: 'COMP9900 - Capstone Project' }
       ];
-      setCourses(mockCourses);
-
-      // 自动选择第一门课程，如果存在的话
-      if (mockCourses.length > 0) {
-        setFormData(prev => ({
-          ...prev,
-          courseName: mockCourses[0].name,
-          courseId: mockCourses[0].id
-        }));
-      }
-
+      
+      setCourses(courses);
+      
+      // 自动选择第一门课程
+      setFormData(prev => ({
+        ...prev,
+        courseName: courses[0].name,
+        courseId: courses[0].id
+      }));
+      
       setCoursesLoading(false);
     };
+
     initializeCourses();
   }, []);
+
+  // 获取当前用户ID
+  const getCurrentUserId = () => {
+    try {
+      const userString = localStorage.getItem('user');
+      if (userString) {
+        const user = JSON.parse(userString);
+        console.log('Current user:', user);
+        return user.id;
+      }
+    } catch (error) {
+      console.error('Failed to get user ID:', error);
+    }
+    return null;
+  };
 
   const handleCourseChange = (event) => {
     const selectedCourseName = event.target.value;
@@ -77,13 +96,51 @@ const QandAUploadPage = () => {
     }
   };
 
+  const handleDescriptionChange = (event) => {
+    setFormData(prev => ({
+      ...prev,
+      description: event.target.value
+    }));
+  };
+
   const handleAttachmentUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+      // 检查文件类型（可根据需要调整）
+      const allowedTypes = [
+        'application/pdf',
+        'text/csv',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/xml',
+        'application/xml',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ];
+      
+      if (!allowedTypes.includes(file.type)) {
+        setErrors(prev => ({
+          ...prev,
+          attachment: 'Please upload a valid file (PDF, CSV, Excel, XML, Word)'
+        }));
+        return;
+      }
+
+      // 检查文件大小（例如限制为 10MB）
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        setErrors(prev => ({
+          ...prev,
+          attachment: 'File size must be less than 10MB'
+        }));
+        return;
+      }
+
       setFormData(prev => ({
         ...prev,
         attachment: file
       }));
+      
       if (errors.attachment) {
         setErrors(prev => ({
           ...prev,
@@ -93,7 +150,8 @@ const QandAUploadPage = () => {
     }
   };
 
-  const handleRemoveAttachment = () => {
+  const handleRemoveAttachment = (event) => {
+    event.stopPropagation(); // 防止触发文件选择
     setFormData(prev => ({
       ...prev,
       attachment: null
@@ -117,23 +175,61 @@ const QandAUploadPage = () => {
       return;
     }
 
-    setIsLoading(true);
-    // 模拟提交过程
-    console.log('Submitting Q&A:', formData);
-    try {
-      // 实际情况下这里会调用后端 API，例如：
-      // const apiData = new FormData();
-      // apiData.append('course_id', formData.courseId);
-      // apiData.append('attachment', formData.attachment);
-      // const response = await api.post('/qnas/upload', apiData);
-      // console.log('Q&A uploaded successfully:', response.data);
+    // 检查用户是否登录
+    const userId = getCurrentUserId();
+    if (!userId) {
+      alert('Please login first');
+      navigate('/login');
+      return;
+    }
 
-      await new Promise(resolve => setTimeout(resolve, 1500)); // 模拟网络延迟
+    setIsLoading(true);
+
+    try {
+      // 准备 multipart/form-data 数据
+      const submitData = new FormData();
+      submitData.append('course_id', formData.courseId.toString());
+      submitData.append('user_id', userId.toString());
+      submitData.append('file', formData.attachment);
+      if (formData.description.trim()) {
+        submitData.append('description', formData.description.trim());
+      }
+
+      console.log('📤 Submitting Q&A data (FormData)...');
+      console.log('Course ID:', formData.courseId);
+      console.log('User ID:', userId);
+      console.log('File:', formData.attachment.name);
+      console.log('Description:', formData.description);
+
+      // 发送 multipart/form-data 请求到后端 qa.py API
+      const response = await api.post('/qa/upload', submitData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      console.log('✅ Q&A uploaded successfully:', response.data);
       alert('Q&A uploaded successfully!');
-      navigate('/qnas'); // 假设 /qnas 是 Q&A 列表页
+      
+      // 重置表单
+      setFormData(prev => ({
+        ...prev,
+        attachment: null,
+        description: ''
+      }));
+      
+      // 导航到 Q&A 列表页面或其他相关页面
+      navigate('/qnas');
+      
     } catch (error) {
-      console.error('Q&A upload failed:', error);
-      alert('Upload failed. Please try again.');
+      console.error('❌ Q&A upload failed:', error);
+
+      const errorMessage = error.response?.data?.error ||
+                         error.response?.data?.message ||
+                         error.message ||
+                         'Upload failed. Please try again.';
+      
+      alert(`Upload failed: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -175,6 +271,12 @@ const QandAUploadPage = () => {
 
       {/* 表单内容区域 */}
       <Box sx={qandaUploadPageStyles.formContainer}>
+        {/* 显示课程加载错误 */}
+        {errors.courseLoad && (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            {errors.courseLoad}
+          </Alert>
+        )}
         {/* 课程名称 */}
         <Box sx={qandaUploadPageStyles.fieldContainer}>
           <Typography variant="h6" sx={qandaUploadPageStyles.fieldLabel}>
@@ -204,19 +306,51 @@ const QandAUploadPage = () => {
           </FormControl>
         </Box>
 
+        {/* 描述字段 */}
+        <Box sx={qandaUploadPageStyles.fieldContainer}>
+          <Typography variant="h6" sx={qandaUploadPageStyles.fieldLabel}>
+            Description :
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={3}
+            value={formData.description}
+            onChange={handleDescriptionChange}
+            placeholder="Enter a description for this Q&A file (optional)"
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                bgcolor: 'white',
+                borderRadius: '8px',
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+              },
+            }}
+          />
+        </Box>
+
         {/* 附件上传 */}
         <Box sx={qandaUploadPageStyles.fieldContainer}>
           <Typography variant="h6" sx={qandaUploadPageStyles.fieldLabel}>
             Attachment : <span style={{ color: '#f44336' }}>*</span>
           </Typography>
           <Box
-            sx={qandaUploadPageStyles.fileUploadArea}
+            sx={{
+              ...qandaUploadPageStyles.fileUploadArea,
+              cursor: formData.attachment ? 'default' : 'pointer'
+            }}
             component="label" // 使整个 Box 可点击
           >
             <input
               type="file"
               hidden
               onChange={handleAttachmentUpload}
+              accept=".pdf,.csv,.xlsx,.xls,.xml,.doc,.docx"
+              disabled={isLoading}
             />
             {formData.attachment ? (
               <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
@@ -224,7 +358,15 @@ const QandAUploadPage = () => {
                 <Typography sx={qandaUploadPageStyles.uploadedFileName}>
                   {formData.attachment.name}
                 </Typography>
-                <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleRemoveAttachment(); }} sx={{ mt: 1 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ mb: 1 }}>
+                  {(formData.attachment.size / 1024 / 1024).toFixed(2)} MB
+                </Typography>
+                <IconButton 
+                  size="small" 
+                  onClick={handleRemoveAttachment} 
+                  sx={{ mt: 1 }}
+                  disabled={isLoading}
+                >
                   <CloseIcon fontSize="small" />
                 </IconButton>
               </Box>
@@ -232,13 +374,16 @@ const QandAUploadPage = () => {
               <>
                 <CloudUploadPlaceholderIcon sx={qandaUploadPageStyles.uploadPlaceholderIcon} />
                 <Typography sx={qandaUploadPageStyles.uploadPlaceholderText}>
-                  Upload
+                  Upload Q&A File
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                  Supported formats: PDF, CSV, Excel, XML, Word
                 </Typography>
               </>
             )}
           </Box>
           {errors.attachment && (
-            <Typography variant="caption" color="error">
+            <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
               {errors.attachment}
             </Typography>
           )}
