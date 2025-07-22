@@ -16,36 +16,13 @@ const AssignmentList = () => {
         setLoading(true);
         setError(null); // Clear previous errors
 
-        // Get user data from localStorage
-        const userString = localStorage.getItem('user');
-        let userId = null;
-        if (userString) {
-          try {
-            const user = JSON.parse(userString);
-            userId = user.id; // Get the user's ID
-          } catch (parseError) {
-            console.error("Failed to parse user data from localStorage:", parseError);
-            setError('Failed to get user information. Please log in again.');
-            setLoading(false);
-            return;
-          }
-        }
-
-        if (!userId) {
-          setError('User not logged in or user ID not found.');
-          setLoading(false);
-          // Optionally, navigate to the login page if userId is missing
-          // navigate('/login');
-          return;
-        }
-
-        // Call the backend API to get the assignment list using the actual userId
-        const response = await api.get(`/assignments/${userId}`);
+        // Call the backend API to get all assignments
+        const response = await api.get('/assignments');
         setAssignments(response.data);
       } catch (err) {
         console.error('Failed to fetch assignments:', err);
         // Provide a more specific error message if the API call fails
-        setError('Failed to load assignments. Please ensure the backend is running and CORS is configured correctly, and you are logged in.');
+        setError('Failed to load assignments. Please ensure the backend is running and the endpoint is correct.');
       } finally {
         setLoading(false);
       }

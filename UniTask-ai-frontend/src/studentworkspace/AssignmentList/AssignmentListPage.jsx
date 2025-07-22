@@ -158,15 +158,16 @@ const StudentAssignmentList = () => {
             {assignments.map((assignment, index) => (
               <React.Fragment key={assignment.id}>
                 <ListItem
-                  button
-                  onClick={() => handleViewAssignmentDetail(assignment.id)}
-                  sx={{ '&:hover': { bgcolor: 'action.hover' } }}
+                  disablePadding 
+                  key={assignment.id}
                 >
+                  <ListItemButton onClick={() => handleViewAssignmentDetail(assignment.id)}>
                     <ListItemText
                       primary={assignment.name}
                       secondary={assignment.dueDate ? `Due Date: ${new Date(assignment.dueDate).toLocaleDateString()}` : 'No due date'}
                     />
-                  </ListItem>
+                  </ListItemButton>
+                </ListItem>
                 {index < assignments.length - 1 && <Divider component="li" />}
               </React.Fragment>
             ))}
