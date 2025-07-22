@@ -48,7 +48,7 @@ const CourseDetail = () => {
 
   const handleModify = () => {
     if (course && course.id) {
-      navigate(`/course-modify/${course.id}`);
+      navigate(`/tutor/course-modify/${course.id}`);
     } else {
       alert('Cannot modify course: Course ID is missing.');
     }
@@ -171,13 +171,13 @@ const CourseDetail = () => {
 
         <Box sx={courseDetailStyles.navigationButtons}>
           <Button
-            component={RouterLink} to="/assignment" variant="contained"
+            component={RouterLink} to="/tutor/assignment" variant="contained"
             startIcon={<AssignmentIcon />} sx={courseDetailStyles.navButton}
           >
             Assignment
           </Button>
           <Button
-            component={RouterLink} to="/qnas" variant="contained"
+            component={RouterLink} to="/tutor/qnas" variant="contained"
             startIcon={<LiveHelpIcon />} sx={courseDetailStyles.navButton}
           >
             Q&As

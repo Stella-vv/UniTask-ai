@@ -8,32 +8,26 @@ export const dashboardCardData = [
   {
     icon: <MenuBookIcon />,
     title: 'Course',
-    description: 'You have 1 courses',
+    description: 'You have x courses',
     // path: '/course',
-    path: '/course-detail', // 修改为指向课程详情页面
+    path: '/tutor/course-detail', // 修改为指向课程详情页面
   },
   {
     icon: <AssignmentIcon />,
     title: 'Assignment',
     description: '5 submissions to review',
-    path: '/assignment',
+    path: '/tutor/assignment',
   },
-  // {
-  //   icon: <ForumIcon />,
-  //   title: 'Forum',
-  //   description: '2 unanswered questions',
-  //   path: '/forum',
-  // },
   {
     icon: <LiveHelpIcon />,
     title: 'Q&As',
-    description: '5 Q&As',
-    path: '/qnas',
+    description: 'x Q&As',
+    path: '/tutor/qnas',
   },
   {
     icon: <HelpOutlineIcon />,
     title: 'FAQs',
-    description: '3 FAQs',
-    path: '/faqs',
+    description: 'x FAQs',
+    path: '/tutor/faqs',
   },
 ];

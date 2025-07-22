@@ -74,7 +74,7 @@ const FaqList = () => {
     setSelectedCourseName(name);
   };
 
-  const goUpload = () => navigate('/faqs/upload'); // or '/faq-upload'
+  const goUpload = () => navigate('/tutor/faqs/upload'); // or '/faq-upload'
 
   // 课程加载中
   if (coursesLoading) {

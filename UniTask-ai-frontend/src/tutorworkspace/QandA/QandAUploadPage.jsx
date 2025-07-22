@@ -219,7 +219,7 @@ const QandAUploadPage = () => {
       }));
       
       // 导航到 Q&A 列表页面或其他相关页面
-      navigate('/qnas');
+      navigate('/tutor/qnas');
       
     } catch (error) {
       console.error('❌ Q&A upload failed:', error);
@@ -237,7 +237,7 @@ const QandAUploadPage = () => {
 
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
-      navigate('/qnas'); // 返回到 Q&A 列表页或上一页
+      navigate('/tutor/qnas'); // 返回到 Q&A 列表页或上一页
     }
   };
 
