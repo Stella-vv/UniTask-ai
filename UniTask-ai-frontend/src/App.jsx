@@ -38,12 +38,18 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* --- Public Routes --- */}
+        {/* Login is now the default/initial page */}
+        <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+        {/* --- Tutor Routes --- */}
+        <Route path="/dashboard" element={<MainLayout />}>
+          <Route index element={<Dashboard />} />
+        </Route>
         
-        {/* --- Tutor-only Protected Routes --- */}
         <Route element={<ProtectedRoute allowedRoles={['tutor']} />}>
-          <Route path="/" element={<MainLayout />}>
+          <Route path="/tutor" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="course-detail" element={<CourseDetail />} />
             <Route path="course-modify/:courseId" element={<CourseModifyPage />} />

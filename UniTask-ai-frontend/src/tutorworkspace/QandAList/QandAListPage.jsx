@@ -259,7 +259,7 @@ const QandAListPage = () => {
 
   // 导航到上传页面
   const handleUploadClick = () => {
-    navigate('/qnas/upload'); // 根据您的路由配置调整路径
+    navigate('/tutor/qnas/upload'); // 根据您的路由配置调整路径
   };
 
   // 下载文件

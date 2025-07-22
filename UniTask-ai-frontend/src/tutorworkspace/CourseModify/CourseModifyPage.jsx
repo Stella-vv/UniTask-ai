@@ -65,7 +65,7 @@ const CourseModifyPage = () => {
       // This is a placeholder for your actual API endpoint to update data
       await api.put(`/courses/${courseId}`, formData); 
       alert('Course updated successfully!');
-      navigate(`/course-detail`); // Navigate back to the detail page
+      navigate(`/tutor/course-detail`); // Navigate back to the detail page
     } catch (err) {
       console.error('Failed to update course:', err);
       setError('Failed to update course. Please try again.');
@@ -76,7 +76,7 @@ const CourseModifyPage = () => {
 
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
-      navigate(`/course-detail`);
+      navigate(`/tutor/course-detail`);
     }
   };
 

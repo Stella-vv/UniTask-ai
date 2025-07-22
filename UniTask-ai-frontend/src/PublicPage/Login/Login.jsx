@@ -28,7 +28,7 @@ export default function Login() {
         if (data.user.role === 'student') {
           nav('/student'); // Redirect students to /student
         } else if (data.user.role === 'tutor') {
-          nav('/'); // Redirect tutors to the root (Tutor Dashboard)
+          nav('/dashboard'); // Redirect tutors to the root (Tutor Dashboard)
         } else {
           setErr('Unrecognized user role.');
         }

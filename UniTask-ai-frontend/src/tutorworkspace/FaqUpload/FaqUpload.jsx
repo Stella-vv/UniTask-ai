@@ -116,7 +116,7 @@ const FaqUpload = () => {
         answer: '',
       }));
 
-      navigate('/faqs');
+      navigate('/tutor/faqs');
     } catch (e) {
       console.error('FAQ upload failed:', e);
       const msg =
@@ -132,7 +132,7 @@ const FaqUpload = () => {
 
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
-      navigate('/faqs');
+      navigate('/tutor/faqs');
     }
   };
 

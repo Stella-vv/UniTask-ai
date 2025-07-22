@@ -40,12 +40,12 @@ const Logo = () => (
 
 const Sidebar = () => {
   const navItems = [
-    { text: 'Home', icon: <HomeIcon />, path: '/' },
-    { text: 'Course', icon: <SchoolIcon />, path: '/course-detail' },
-    { text: 'Assignment', icon: <AssignmentIcon />, path: '/assignment' },
-    { text: 'Q&As', icon: <LiveHelpIcon />, path: '/qnas' },
+    { text: 'Home', icon: <HomeIcon />, path: '/dashboard' },
+    { text: 'Course', icon: <SchoolIcon />, path: '/tutor/course-detail' },
+    { text: 'Assignment', icon: <AssignmentIcon />, path: '/tutor/assignment' },
+    { text: 'Q&As', icon: <LiveHelpIcon />, path: '/tutor/qnas' },
     // 移除了 Forum 导航项
-    { text: 'FAQs', icon: <HelpOutlineIcon />, path: '/faqs' },
+    { text: 'FAQs', icon: <HelpOutlineIcon />, path: '/tutor/faqs' },
   ];
 
   return (

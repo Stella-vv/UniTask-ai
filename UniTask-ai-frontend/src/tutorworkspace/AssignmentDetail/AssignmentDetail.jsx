@@ -133,7 +133,7 @@ const AssignmentDetail = () => {
   const handleGoToForum = () => {
     const targetAssignmentId = assignmentId || assignmentData?.id || '12345'; // 使用路由参数、数据ID或默认值
     console.log('Navigate to forum, assignment ID:', targetAssignmentId);
-    navigate(`/assignments/${targetAssignmentId}/forum`);
+    navigate(`/tutor/assignments/${targetAssignmentId}/forum`);
   };
 
   // 下载文件
