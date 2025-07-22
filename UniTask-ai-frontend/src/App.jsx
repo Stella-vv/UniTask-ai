@@ -32,6 +32,7 @@ import StudentAssignmentForumPage from './studentworkspace/Forum/AssignmentForum
 import StudentAssignmentDetail from './studentworkspace/AssignmentDetail/AssignmentDetail'; 
 
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -54,7 +55,7 @@ function App() {
             <Route path="qnas" element={<QandAListPage />} />
             <Route path="qnas/upload" element={<QandAUploadPage />} />
             <Route path="faqs" element={<FaqList />} />
-            <Route path="faq-upload" element={<FaqUpload />} />
+            <Route path="faqs/upload" element={<FaqUpload />} />
           </Route>
         </Route>
 
@@ -66,6 +67,9 @@ function App() {
             <Route path="assignment" element={<StudentAssignmentList />} />
             <Route path="assignment-detail/:assignmentId" element={<StudentAssignmentDetail />} />
             <Route path="assignments/:assignmentId/forum" element={<StudentAssignmentForumPage />} />
+
+
+
             {/* Future student pages can be added here */}
           </Route>
         </Route>

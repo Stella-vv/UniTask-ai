@@ -1,162 +1,200 @@
-import React, { useState } from 'react';
+// src/tutorworkspace/FaqList/FaqList.jsx
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
   Button,
+  Alert,
+  CircularProgress,
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
 } from '@mui/material';
-import {
-  ExpandMore as ExpandMoreIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Upload as UploadIcon,
-  HelpOutline as HelpOutlineIcon,
-} from '@mui/icons-material';
-import { faqListStyles } from './FaqList_style';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import UploadIcon from '@mui/icons-material/Upload';
+import api from '../../api'; // 根据你的路径调整
+import { faqListStyles as styles } from './FaqList_style';
 
 const FaqList = () => {
   const navigate = useNavigate();
-  // 模拟数据
-  const [faqData] = useState([
-    {
-      id: 1,
-      courseName: 'Web Front-End Programming',
-      faqs: [
-        {
-          id: 101,
-          question: 'What is the late submission policy for frontend assignments?',
-          answer: 'Late submissions will incur a 10% penalty per day. Submissions more than 7 days late will not be accepted unless there are exceptional circumstances with proper documentation.'
-        },
-        {
-          id: 102,
-          question: 'What should I do if I experience technical issues (e.g., internet outage, computer crash) during an assignment?',
-          answer: 'Contact the course coordinator immediately with documentation of the technical issue. We may provide extensions or alternative arrangements depending on the circumstances and timing.'
-        },
-        {
-          id: 103,
-          question: 'Can I use external CSS frameworks like Bootstrap in my assignments?',
-          answer: 'Unless specifically prohibited in the assignment requirements, you may use external frameworks. However, ensure you understand the underlying CSS concepts as exams will test fundamental knowledge.'
-        }
-      ]
-    },
-  ]);
 
-  const [expandedCourse, setExpandedCourse] = useState('Web Front-End Programming');
+  const [courses, setCourses] = useState([]);
+  const [selectedCourseId, setSelectedCourseId] = useState('');
+  const [selectedCourseName, setSelectedCourseName] = useState('');
+  const [faqList, setFaqList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const handleCourseExpand = (courseName) => {
-    setExpandedCourse(expandedCourse === courseName ? '' : courseName);
-  };
+  // 初始化课程（写死 1 门）
+  useEffect(() => {
+    setCoursesLoading(true);
+    const list = [{ id: 1, name: 'COMP9900 - Capstone Project' }];
+    setCourses(list);
+    if (list.length) {
+      setSelectedCourseId(list[0].id);
+      setSelectedCourseName(list[0].name);
+    }
+    setCoursesLoading(false);
+  }, []);
 
-  const handleEditFaq = (faqId) => {
-    console.log('Edit FAQ:', faqId);
-    // TODO: 实现编辑功能
-  };
+  useEffect(() => {
+    if (!selectedCourseId) return;
+    fetchFaqs(selectedCourseId);
+  }, [selectedCourseId]);
 
-  const handleDeleteFaq = (faqId) => {
-    console.log('Delete FAQ:', faqId);
-    // TODO: 实现删除功能
-    if (window.confirm('Are you sure you want to delete this FAQ?')) {
-      // 删除逻辑
+  const fetchFaqs = async (courseId) => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await api.get(`/faqs/course/${courseId}`);
+      setFaqList(res.data || []);
+    } catch (e) {
+      console.error('Failed to fetch FAQs:', e);
+      const msg =
+        e.response?.data?.error ||
+        e.response?.data?.message ||
+        'Failed to load FAQs';
+      setError(msg);
+      setFaqList([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleUpload = () => {
-    console.log('Upload FAQ');
-    navigate('/faq-upload');
+  const handleCourseChange = (e) => {
+    const id = e.target.value;
+    const name = courses.find((c) => c.id === id)?.name || '';
+    setSelectedCourseId(id);
+    setSelectedCourseName(name);
   };
 
+  const goUpload = () => navigate('/faqs/upload'); // or '/faq-upload'
+
+  // 课程加载中
+  if (coursesLoading) {
+    return (
+      <Box sx={styles.container}>
+        <Box sx={styles.topHeader}>
+          <Typography variant="h4" sx={styles.headerTitle}>
+            FAQs
+          </Typography>
+        </Box>
+        <Box sx={styles.contentArea}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200 }}>
+            <CircularProgress />
+            <Typography sx={{ ml: 2 }}>Loading courses...</Typography>
+          </Box>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={faqListStyles.container}>
-      {/* 顶部蓝色区域 */}
-      <Box sx={faqListStyles.topHeader}>
-        <HelpOutlineIcon sx={faqListStyles.headerIcon} />
-        <Typography variant="h4" sx={faqListStyles.headerTitle}>
+    <Box sx={styles.container}>
+      <Box sx={styles.topHeader}>
+        <Typography variant="h4" sx={styles.headerTitle}>
           FAQs
         </Typography>
       </Box>
 
-      {/* 内容区域 */}
-      <Box sx={faqListStyles.contentArea}>
-        {/* FAQ 列表 */}
-        <Box sx={faqListStyles.faqContainer}>
-          {faqData.map((course) => (
-            <Accordion
-              key={course.id}
-              expanded={expandedCourse === course.courseName}
-              onChange={() => handleCourseExpand(course.courseName)}
-              sx={faqListStyles.courseAccordion}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon sx={faqListStyles.expandIcon} />}
-                sx={faqListStyles.courseAccordionSummary}
-              >
-                <Typography variant="h6" sx={faqListStyles.courseName}>
-                  • {course.courseName}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails sx={faqListStyles.courseAccordionDetails}>
-                <List sx={faqListStyles.faqList}>
-                  {course.faqs.map((faq, index) => (
-                    <React.Fragment key={faq.id}>
-                      <ListItem sx={faqListStyles.faqItem}>
-                        <Box sx={faqListStyles.faqContent}>
-                          <ListItemText
-                            primary={faq.question}
-                            secondary={faq.answer}
-                            primaryTypographyProps={{
-                              sx: faqListStyles.questionText
-                            }}
-                            secondaryTypographyProps={{
-                              sx: faqListStyles.answerText
-                            }}
-                          />
-                          <Box sx={faqListStyles.faqActions}>
-                            <IconButton
-                              onClick={() => handleEditFaq(faq.id)}
-                              sx={faqListStyles.actionButton}
-                              size="small"
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton
-                              onClick={() => handleDeleteFaq(faq.id)}
-                              sx={faqListStyles.actionButton}
-                              size="small"
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      </ListItem>
-                      {index < course.faqs.length - 1 && (
-                        <Divider sx={faqListStyles.faqDivider} />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </Box>
+      <Box sx={styles.contentArea}>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
-        {/* 上传按钮 */}
-        <Box sx={faqListStyles.uploadButtonContainer}>
+        {/* 控制区 */}
+        <Box sx={styles.controlSection}>
+          <FormControl>
+            <InputLabel>Select Course</InputLabel>
+            <Select
+              value={selectedCourseId}
+              onChange={handleCourseChange}
+              label="Select Course"
+              sx={styles.courseSelector}
+              disabled={courses.length === 0}
+            >
+              {courses.map((c) => (
+                <MenuItem key={c.id} value={c.id}>
+                  {c.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           <Button
             variant="contained"
-            onClick={handleUpload}
-            sx={faqListStyles.uploadButton}
+            startIcon={<UploadIcon />}
+            sx={{
+              bgcolor: 'primary.main',
+              color: 'white',
+              fontWeight: 600,
+              px: 3,
+              py: 1.5,
+              borderRadius: '25px',
+              fontSize: '1rem',
+              textTransform: 'none',
+              '&:hover': { bgcolor: 'primary.dark' },
+            }}
+            onClick={goUpload}
           >
-            Upload
+            Upload FAQ
           </Button>
         </Box>
+
+        {/* 列表 */}
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 4 }}>
+            <CircularProgress size={24} />
+            <Typography sx={{ ml: 2 }}>Loading FAQs...</Typography>
+          </Box>
+        ) : faqList.length === 0 ? (
+          <Box sx={styles.emptyState}>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              No FAQs found
+            </Typography>
+            <Typography variant="body2">
+              {selectedCourseName
+                ? `No FAQ has been added for ${selectedCourseName} yet.`
+                : 'Select a course to view FAQs.'}
+            </Typography>
+            <Button
+              variant="outlined"
+              startIcon={<UploadIcon />}
+              sx={{ mt: 2 }}
+              onClick={goUpload}
+            >
+              Upload First FAQ
+            </Button>
+          </Box>
+        ) : (
+          faqList.map((faq) => (
+            <Accordion
+              key={faq.id}
+              disableGutters
+              sx={styles.accordion}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{ '& .faq-title': styles.questionText }}
+              >
+                <Typography className="faq-title">{faq.question}</Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={styles.accordionDetails}>
+                <Typography variant="body2" sx={styles.answerText}>
+                  {faq.answer}
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          ))
+        )}
       </Box>
     </Box>
   );
