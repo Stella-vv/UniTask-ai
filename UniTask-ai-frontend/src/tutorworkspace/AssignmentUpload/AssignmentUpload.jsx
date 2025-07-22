@@ -237,7 +237,7 @@ const handleSubmit = async () => {
     console.log('📤 Submitting assignment data (FormData)...');
 
     // ✅ 发送 multipart/form-data 请求
-    const response = await api.post('/assignments/', submitData, {
+    const response = await api.post('/assignments', submitData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
