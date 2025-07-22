@@ -12,6 +12,7 @@ class User(db.Model):
     role = db.Column(db.String(20), nullable=False)  # "student" or "tutor"
     school = db.Column(db.String(100), nullable=True)
     year = db.Column(db.Integer, nullable=True)
+    
 
     faqs = db.relationship("FAQ", backref="uploader", lazy=True)
     questions = db.relationship("Question", back_populates="author", lazy=True)

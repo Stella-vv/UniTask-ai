@@ -32,7 +32,7 @@ print("✅ 创建课程成功:", course)
 print("\n📌 创建作业（同时创建论坛）...")
 
 with open("uploads/dummy_rubric.pdf", "rb") as rubric_file, open("uploads/dummy_attach.zip", "rb") as attachment_file:
-    assignment_res = requests.post(f"{BASE}/assignments/", files={
+    assignment_res = requests.post(f"{BASE}/assignments", files={
         "rubric": rubric_file,
         "attachment": attachment_file
     }, data={
@@ -42,7 +42,16 @@ with open("uploads/dummy_rubric.pdf", "rb") as rubric_file, open("uploads/dummy_
         "course_id": course["id"],
         "user_id": user["id"]
     })
+print("📥 Status Code:", assignment_res.status_code)
+print("📥 Response Headers:", assignment_res.headers)
+print("📥 Response Text:", assignment_res.text)
 
+try:
+    assignment_data = assignment_res.json()
+    print("✅ 作业创建成功:", assignment_data)
+except Exception as e:
+    print("❌ 无法解析 JSON 响应:", e)
+    exit(1)
 assignment_data = assignment_res.json()
 print("✅ 作业创建成功:", assignment_data)
 
