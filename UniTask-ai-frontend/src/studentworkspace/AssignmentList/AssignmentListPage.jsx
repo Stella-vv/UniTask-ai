@@ -1,7 +1,7 @@
 // src/tutorworkspace/AssignmentList/AssignmentList.jsx (Modified to fetch by course_id=1)
 
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, CircularProgress, Alert, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, Alert, List, ListItem, ListItemText, Divider, ListItemButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api'; // Import your API instance
 
@@ -21,8 +21,7 @@ const StudentAssignmentList = () => {
         // THIS IS THE KEY CHANGE:
         // The API call is now hardcoded to fetch assignments for course_id = 1.
         // Please ensure your backend has a route like GET /api/assignments/course/1
-        const response = await api.get('/assignments/course/1');
-        
+        const response = await api.get('/assignments');       
         setAssignments(response.data);
 
       } catch (err) {

@@ -18,12 +18,6 @@ export const dashboardCardData = [
     path: '/student/assignment',
   },
   {
-    icon: <LiveHelpIcon />,
-    title: 'Q&As',
-    description: '5 Q&As',
-    path: '/student/qnas',
-  },
-  {
     icon: <HelpOutlineIcon />,
     title: 'FAQs',
     description: '3 FAQs',

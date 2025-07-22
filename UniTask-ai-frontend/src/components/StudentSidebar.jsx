@@ -43,7 +43,7 @@ const Sidebar = () => {
     { text: 'Home', icon: <HomeIcon />, path: '/student' },
     { text: 'Course', icon: <SchoolIcon />, path: '/student/course-detail' },
     { text: 'Assignment', icon: <AssignmentIcon />, path: '/student/assignment' },
-    { text: 'Help', icon: <HelpOutlineIcon />, path: '/student/Help' },
+    { text: 'FAQs', icon: <LiveHelpIcon />, path: '/student/faqs' },
   ];
 
   return (
