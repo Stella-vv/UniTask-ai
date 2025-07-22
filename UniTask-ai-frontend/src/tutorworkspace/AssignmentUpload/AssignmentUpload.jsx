@@ -156,16 +156,11 @@ const AssignmentUpload = () => {
 
   // 日期格式转换函数
   const formatDateForBackend = (dateString) => {
-    // if (!dateString) return '';
-    
-    // // 前端日期格式：YYYY-MM-DD
-    // // 后端期望格式：YYYY-MM-DD HH:MM:SS
-    // return `${dateString} 23:59:59`;
     if (!dateString) return '';
-  // 拼接时间并格式化
-    const formatted = `${dateString.trim()} 23:59:59`;
-    console.log('📅 Formatted due date for backend:', formatted);
-    return formatted;
+    
+    // 前端日期格式：YYYY-MM-DD
+    // 后端期望格式：YYYY-MM-DD HH:MM:SS
+    return `${dateString} 23:59:59`;
   };
 
   // 表单验证
@@ -242,12 +237,12 @@ const handleSubmit = async () => {
     console.log('📤 Submitting assignment data (FormData)...');
 
     // ✅ 发送 multipart/form-data 请求
-    // const response = await api.post('/assignments/', submitData, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   }
-    // });
-    const response = await api.post('/assignments/', submitData);
+    const response = await api.post('/assignments/', submitData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    // const response = await api.post('/assignments/', submitData);
 
     console.log('✅ Assignment created successfully:', response.data);
     alert('Assignment uploaded successfully!');
