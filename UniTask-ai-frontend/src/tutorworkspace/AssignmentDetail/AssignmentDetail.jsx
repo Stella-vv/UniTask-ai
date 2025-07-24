@@ -253,13 +253,14 @@ const AssignmentDetail = () => {
         </Box>
 
         {/* 评分标准 */}
-        {assignmentData.rubric && assignmentData.rubric.fileName && (
+        {assignmentData.rubric && assignmentData.rubric.filename && (
           <Box sx={assignmentDetailStyles.rubricSection}>
             <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
               Rubric:
             </Typography>
             <Chip
-              label={assignmentData.rubric.fileName}
+              /* FIX: Use the correct property 'filename' for the label */
+              label={assignmentData.rubric.filename}
               onClick={() => handleDownloadFile(assignmentData.rubric)}
               sx={assignmentDetailStyles.fileChip}
               clickable
