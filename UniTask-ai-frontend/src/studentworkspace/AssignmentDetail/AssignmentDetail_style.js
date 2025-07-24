@@ -1,5 +1,3 @@
-// test/studentworkspace/AssignmentDetail/AssignmentDetail_style.js (Final Corrected Version)
-
 export const assignmentDetailStyles = {
   container: {
     height: '100%',
@@ -10,7 +8,7 @@ export const assignmentDetailStyles = {
 
   topHeader: {
     bgcolor: 'primary.main',
-    height: '100px',
+    height: '80px', // Set to 80px to match other pages
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
     display: 'flex',
@@ -35,14 +33,14 @@ export const assignmentDetailStyles = {
     borderBottomLeftRadius: '16px',
     borderBottomRightRadius: '16px',
     p: 4,
-    flex: 1, // 关键：让此区域占据所有剩余空间
+    flex: 1, // Key: allow this area to fill remaining space
     display: 'flex',
     flexDirection: 'column',
   },
 
   // This wrapper will contain all the scrollable content
   mainContentWrapper: {
-    flex: 1, // 关键：让这个内部wrapper占据空间，而不是整个contentArea
+    flex: 1, // Key: make this inner wrapper take up space so it can scroll
     overflowY: 'auto',
   },
 
@@ -50,7 +48,7 @@ export const assignmentDetailStyles = {
     color: 'text.courseText',
     fontWeight: 600,
     fontSize: '2rem',
-    mb: 3, // 增加标题和下方内容的间距
+    mb: 3, // Add spacing between title and content below
   },
 
   infoSection: {
@@ -119,13 +117,16 @@ export const assignmentDetailStyles = {
     alignItems: 'center',
   },
 
-  forumButtonContainer: {
+  // MODIFICATION: Renamed container and added gap for multiple buttons
+  bottomButtonContainer: {
     display: 'flex',
     justifyContent: 'center',
-    pt: 3, // 只保留顶部内边距
+    gap: 4, // Adds space between the buttons
+    pt: 3,
   },
 
-  forumButton: {
+  // MODIFICATION: Made a reusable style for the action buttons
+  actionButton: {
     bgcolor: 'primary.main',
     color: 'white',
     fontWeight: 600,

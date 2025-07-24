@@ -118,6 +118,7 @@ const StudentAssignmentList = () => {
         mr: -4,
         width: 'calc(100% + 64px)',
         p: 3,
+        height: '80px',
         display: 'flex',
         alignItems: 'center',
         boxSizing: 'border-box',

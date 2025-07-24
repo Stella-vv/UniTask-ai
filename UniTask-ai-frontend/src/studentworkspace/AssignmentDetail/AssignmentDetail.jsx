@@ -12,13 +12,13 @@ import {
   Alert,
   ListItemButton,
 } from '@mui/material';
-import { Forum as ForumIcon, Description as DescriptionIcon, AttachFile as AttachFileIcon } from '@mui/icons-material';
+// MODIFICATION: Import HelpOutlineIcon for the new button
+import { Forum as ForumIcon, Description as DescriptionIcon, AttachFile as AttachFileIcon, HelpOutline as HelpIcon } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { assignmentDetailStyles } from './AssignmentDetail_style.js'; 
 
 const StudentAssignmentDetail = () => {
-  // ... (所有现有函数，如 useState, useEffect, handleDownloadFile 等，保持不变)
   const { assignmentId } = useParams();
   const navigate = useNavigate();
   const [assignmentData, setAssignmentData] = useState(null);
@@ -78,6 +78,11 @@ const StudentAssignmentDetail = () => {
     navigate(`/student/assignments/${assignmentId}/forum`);
   };
 
+  // MODIFICATION: Added handler to navigate to the chat/help page
+  const handleGoToChat = () => {
+    navigate('/student/help');
+  };
+
   if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
   if (error) return <Alert severity="error">{error}</Alert>;
   if (!assignmentData) return <Typography>No assignment data found.</Typography>;
@@ -126,10 +131,16 @@ const StudentAssignmentDetail = () => {
           )}
         </Box>
 
-        {/* The Forum button is now a sibling to the main content wrapper */}
-        <Box sx={assignmentDetailStyles.forumButtonContainer}>
-          <Button variant="contained" startIcon={<ForumIcon />} onClick={handleGoToForum} sx={assignmentDetailStyles.forumButton}>Forum</Button>
+        {/* MODIFICATION: The Forum and new Chat button are placed here, side-by-side */}
+        <Box sx={assignmentDetailStyles.bottomButtonContainer}>
+          <Button variant="contained" startIcon={<ForumIcon />} onClick={handleGoToForum} sx={assignmentDetailStyles.actionButton}>
+            Forum
+          </Button>
+          <Button variant="contained" startIcon={<HelpIcon />} onClick={handleGoToChat} sx={assignmentDetailStyles.actionButton}>
+            Help
+          </Button>
         </Box>
+        
       </Box>
     </Box>
   );

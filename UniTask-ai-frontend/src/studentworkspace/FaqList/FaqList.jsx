@@ -14,27 +14,24 @@ import {
   Alert,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { faqListStyles as styles } from '../../tutorworkspace/FaqList/FaqList_style'; // 复用导师端样式
+import { faqListStyles as styles } from '../../tutorworkspace/FaqList/FaqList_style'; // Reusing tutor styles
 
 const BASE_URL = 'http://localhost:8008';
 
 const StudentFaqList = () => {
-  const [faqData, setFaqData] = useState([]);          // [{ id, question, answer }, ...]
-  const [expandedFaqId, setExpandedFaqId] = useState(null); // 展开的是哪条 FAQ
-  const [courses, setCourses] = useState([{ id: 1, name: 'COMP9900 - Capstone Project' }]); // 先写死
+  const [faqData, setFaqData] = useState([]);
+  const [expandedFaqId, setExpandedFaqId] = useState(null);
+  const [courses, setCourses] = useState([{ id: 1, name: 'COMP9900 - Capstone Project' }]);
   const [selectedCourseId, setSelectedCourseId] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 获取当前课程 FAQ
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
         setLoading(true);
         setError('');
         const res = await axios.get(`${BASE_URL}/api/faqs/course/${selectedCourseId}`);
-        // res.data 是数组
         setFaqData(res.data || []);
       } catch (err) {
         console.error('Failed to fetch FAQ data:', err);
@@ -49,21 +46,18 @@ const StudentFaqList = () => {
 
   const handleCourseChange = (e) => {
     setSelectedCourseId(e.target.value);
-    setExpandedFaqId(null); // 切课程时收起所有
+    setExpandedFaqId(null);
   };
 
   const handleAccordionChange = (id) => {
     setExpandedFaqId(expandedFaqId === id ? null : id);
   };
 
-  // 课程加载（如果之后去请求课程列表）
-  // 不再单独 coursesLoading ，直接用 courses 长度判断
-
   return (
     <Box sx={styles.container}>
-      {/* 顶部蓝条 */}
+      {/* Blue top bar */}
       <Box sx={styles.topHeader}>
-        <HelpOutlineIcon sx={styles.headerIcon} />
+        {/* The HelpOutlineIcon has been removed from here */}
         <Typography variant="h4" sx={styles.headerTitle}>
           FAQs
         </Typography>
@@ -76,7 +70,7 @@ const StudentFaqList = () => {
           </Alert>
         )}
 
-        {/* 课程选择 +（没有上传按钮） */}
+        {/* Course selection */}
         <Box sx={styles.controlSection}>
           <FormControl>
             <InputLabel>Select Course</InputLabel>
@@ -96,7 +90,7 @@ const StudentFaqList = () => {
           </FormControl>
         </Box>
 
-        {/* FAQ 列表 */}
+        {/* FAQ List */}
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 4 }}>
             <CircularProgress size={24} />

@@ -1,38 +1,40 @@
-import os, json
+import os
+import json
 from fuzzywuzzy import process
 
-# 获取当前文件所在目录
+# Get the directory where the current file is located
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FAQ_FILE = os.path.join(BASE_DIR, "data", "faqs.json")
 
-# 如果找不到文件，自动创建一个空的 JSON 文件
+# If the file is not found, automatically create an empty JSON file
 if not os.path.exists(FAQ_FILE):
     os.makedirs(os.path.dirname(FAQ_FILE), exist_ok=True)
     with open(FAQ_FILE, "w", encoding="utf-8") as f:
         json.dump([], f, ensure_ascii=False, indent=2)
 
-# 加载 FAQ 数据
+# Load FAQ data
 with open(FAQ_FILE, "r", encoding="utf-8") as f:
     FAQS = json.load(f)
 
 def find_answer(user_input, threshold=50):
     """
-    模糊匹配用户输入，返回答案，并在控制台打印匹配详情
+    Finds the best answer for a user's input using fuzzy matching
+    and prints matching details to the console.
     """
     if not FAQS:
-        print("[INFO] FAQ 数据为空，返回默认提示")
-        return "抱歉，目前没有FAQ数据，请联系导师。"
+        print("[INFO] FAQ data is empty, returning default message")
+        return "Sorry, there is no FAQ data at the moment. Please contact your tutor."
 
     questions = [faq["question"] for faq in FAQS]
     best_match, score = process.extractOne(user_input, questions)
 
-    # 打印日志，方便调试
-    print(f"[DEBUG] 用户输入: {user_input}")
-    print(f"[DEBUG] 匹配结果: {best_match} (分数: {score})")
+    # Print logs for debugging
+    print(f"[DEBUG] User input: {user_input}")
+    print(f"[DEBUG] Best match: {best_match} (Score: {score})")
 
     if score >= threshold:
         for faq in FAQS:
             if faq["question"] == best_match:
                 return faq["answer"]
 
-    return "抱歉，我暂时无法回答这个问题，请联系导师。"
+    return "Sorry, I can't answer this question at the moment. Please contact your tutor."
