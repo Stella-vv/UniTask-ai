@@ -128,3 +128,115 @@ def get_assignments_by_course(course_id):
     except Exception as e:
         print(f"❌ Error fetching assignments for course {course_id}: {e}")
         return jsonify({"error": "An internal server error occurred"}), 500
+
+
+@assignment_bp.route("/<int:assignment_id>", methods=["PUT"])
+def update_assignment(assignment_id):
+    """Handles updating an existing assignment."""
+    
+    print(f"📥 PUT received for assignment {assignment_id}")
+    
+    try:
+        # Find the existing assignment in the database
+        assignment = Assignment.query.get(assignment_id)
+        if not assignment:
+            return jsonify({"error": "Assignment not found"}), 404
+
+        # Update text fields from form data
+        assignment.name = request.form.get("name", assignment.name)
+        assignment.description = request.form.get("description", assignment.description)
+        
+        due_date_str = request.form.get("due_date")
+        if due_date_str:
+            try:
+                assignment.due_date = datetime.strptime(due_date_str, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                return jsonify({"error": "Invalid date format. Use YYYY-MM-DD HH:MM:SS"}), 400
+
+        # Handle rubric file update/deletion
+        if request.form.get('delete_rubric') == 'true':
+            # Optionally delete the old file from the server
+            if assignment.rubric and os.path.exists(assignment.rubric):
+                os.remove(assignment.rubric)
+            assignment.rubric = None
+        elif 'rubric' in request.files:
+            rubric_file = request.files['rubric']
+            if rubric_file and allowed_file(rubric_file.filename):
+                # Optionally delete the old file before saving the new one
+                if assignment.rubric and os.path.exists(assignment.rubric):
+                    os.remove(assignment.rubric)
+                filename = secure_filename(rubric_file.filename)
+                rubric_path = os.path.join(UPLOAD_FOLDER, filename)
+                rubric_file.save(rubric_path)
+                assignment.rubric = rubric_path
+
+        # Handle attachment file update/deletion
+        if request.form.get('delete_attachment') == 'true':
+            if assignment.attachment and os.path.exists(assignment.attachment):
+                os.remove(assignment.attachment)
+            assignment.attachment = None
+        elif 'attachment' in request.files:
+            attachment_file = request.files['attachment']
+            if attachment_file and allowed_file(attachment_file.filename):
+                if assignment.attachment and os.path.exists(assignment.attachment):
+                    os.remove(assignment.attachment)
+                filename = secure_filename(attachment_file.filename)
+                attachment_path = os.path.join(UPLOAD_FOLDER, filename)
+                attachment_file.save(attachment_path)
+                assignment.attachment = attachment_path
+
+        # Commit the changes to the database
+        db.session.commit()
+        print(f"✅ Assignment {assignment_id} updated successfully.")
+        
+        return jsonify({
+            "message": "Assignment updated successfully",
+            "assignment": assignment.to_dict()
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Failed to update assignment {assignment_id}: {e}")
+        return jsonify({"error": str(e)}), 500
+    
+# Ensure this route exists in your assignment blueprint file
+
+@assignment_bp.route("/<int:assignment_id>", methods=["DELETE"])
+def delete_assignment(assignment_id):
+    """Handles deleting an existing assignment."""
+    
+    print(f"🗑️ DELETE request received for assignment {assignment_id}")
+    
+    try:
+        # Find the existing assignment
+        assignment = Assignment.query.get(assignment_id)
+        if not assignment:
+            return jsonify({"error": "Assignment not found"}), 404
+
+        # Find and delete the associated forum
+        Forum.query.filter_by(assignment_id=assignment.id).delete()
+
+        # Delete physical files from the server
+        if assignment.rubric and os.path.exists(assignment.rubric):
+            os.remove(assignment.rubric)
+            print(f"File deleted: {assignment.rubric}")
+            
+        if assignment.attachment and os.path.exists(assignment.attachment):
+            os.remove(assignment.attachment)
+            print(f"File deleted: {assignment.attachment}")
+
+        # Delete the assignment record itself
+        db.session.delete(assignment)
+        
+        # Commit all changes to the database
+        db.session.commit()
+        
+        print(f"✅ Assignment {assignment_id} and its forum were deleted successfully.")
+        
+        # Return a success response with no content
+        return '', 204
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Failed to delete assignment {assignment_id}: {e}")
+        return jsonify({"error": "Failed to delete assignment."}), 500

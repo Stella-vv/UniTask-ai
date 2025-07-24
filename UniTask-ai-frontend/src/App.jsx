@@ -20,6 +20,7 @@ import AssignmentList from './tutorworkspace/AssignmentList/AssignmentListPage';
 import AssignmentForumPage from './tutorworkspace/Forum/AssignmentForumPage';
 import AssignmentUpload from './tutorworkspace/AssignmentUpload/AssignmentUpload';
 import AssignmentDetail from './tutorworkspace/AssignmentDetail/AssignmentDetail';
+import AssignmentModifyPage from './tutorworkspace/AssignmentModify/AssignmentModifyPage'; 
 import QandAListPage from './tutorworkspace/QandAList/QandAListPage';
 import QandAUploadPage from './tutorworkspace/QandA/QandAUploadPage';
 import FaqList from './tutorworkspace/FaqList/FaqList';
@@ -58,6 +59,7 @@ function App() {
             <Route path="assignment-upload" element={<AssignmentUpload />} />
             <Route path="assignment-detail" element={<AssignmentDetail />} />
             <Route path="assignment-detail/:assignmentId" element={<AssignmentDetail />} />
+            <Route path="assignment-modify/:assignmentId" element={<AssignmentModifyPage />} /> 
             <Route path="qnas" element={<QandAListPage />} />
             <Route path="qnas/upload" element={<QandAUploadPage />} />
             <Route path="faqs" element={<FaqList />} />

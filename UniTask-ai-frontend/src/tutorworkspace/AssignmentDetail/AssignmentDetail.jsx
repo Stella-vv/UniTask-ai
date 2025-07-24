@@ -100,31 +100,32 @@ const AssignmentDetail = () => {
 
 
 
-  // 修改作业
+  // Modify assignment
   const handleModify = () => {
-    // TODO: 导航到修改页面或打开修改对话框
     console.log('Modify assignment:', assignmentData.id);
-    // navigate(`/assignments/${assignmentData.id}/edit`);
+    // Use navigate to go to the modify page
+    navigate(`/tutor/assignment-modify/${assignmentData.id}`);
   };
 
-  // 删除作业
+  // handleDelete function
   const handleDelete = async () => {
+    // Confirm with the user before deleting
     if (window.confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) {
       try {
-        // TODO: 调用删除API
-        // await fetch(`/api/assignments/${assignmentData.id}`, {
-        //   method: 'DELETE'
-        // });
+        setLoading(true); // Optional: show a loading state
         
-        console.log('Delete assignment:', assignmentData.id);
+        // Call the backend DELETE API
+        await api.delete(`/assignments/${assignmentData.id}`);
+        
         alert('Assignment deleted successfully!');
         
-        // TODO: 导航回作业列表页面
-        // navigate('/assignments');
+        // Navigate back to the assignment list page after deletion
+        navigate('/tutor/assignment');
         
       } catch (err) {
         console.error('Failed to delete assignment:', err);
-        alert('Failed to delete assignment, please try again');
+        setError('Failed to delete assignment, please try again.');
+        setLoading(false); // Turn off loading state on error
       }
     }
   };
@@ -271,10 +272,11 @@ const AssignmentDetail = () => {
           <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
             Attachment :
           </Typography>
-          <List sx={assignmentDetailStyles.attachmentList}>
-            {assignmentData.attachments.filter(file => file && file.fileName).map((file, index) => (
-              <React.Fragment key={file.id}>
+            <List sx={assignmentDetailStyles.attachmentList}>
+              {assignmentData.attachments.filter(file => file && (file.fileName || file.filename)).map((file, index) => (
+                // 修正: 使用更可靠的 key，并直接将 key 放在 ListItem 上
                 <ListItem
+                  key={file.id || index} // 使用 file.id，如果不存在则使用 index 作为备用 key
                   sx={assignmentDetailStyles.attachmentItem}
                   onClick={() => handleDownloadFile(file)}
                 >
@@ -282,18 +284,15 @@ const AssignmentDetail = () => {
                     {getFileIcon(file.type)}
                   </Box>
                   <ListItemText
-                    primary={file.fileName}
+                    // 修正: 同时检查 fileName 和 filename
+                    primary={file.fileName || file.filename}
                     primaryTypographyProps={{
                       sx: assignmentDetailStyles.fileName
                     }}
                   />
                 </ListItem>
-                {index < assignmentData.attachments.length - 1 && (
-                  <Divider sx={assignmentDetailStyles.fileDivider} />
-                )}
-              </React.Fragment>
-            ))}
-          </List>
+              ))}
+            </List>
         </Box>
 
         {/* 论坛按钮 */}
