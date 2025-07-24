@@ -1,8 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 from models import db, Assignment, Forum
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
+import uuid
 
 assignment_bp = Blueprint("assignment", __name__, url_prefix="/api/assignments")
 
@@ -240,3 +241,23 @@ def delete_assignment(assignment_id):
         db.session.rollback()
         print(f"❌ Failed to delete assignment {assignment_id}: {e}")
         return jsonify({"error": "Failed to delete assignment."}), 500
+    
+@assignment_bp.route("/download/<path:filename>")
+def download_file(filename):
+    """
+    安全地提供文件下载服务。
+    这个路由会从您的 UPLOAD_FOLDER 目录中寻找文件。
+    """
+    
+    print(f"⬇️ 收到文件下载请求: {filename}")
+    
+    # UPLOAD_FOLDER 变量应该已经在您的文件顶部定义过了
+    # os.path.abspath 会获取上传文件夹的绝对路径
+    directory = os.path.abspath(UPLOAD_FOLDER)
+    
+    try:
+        # send_from_directory 是 Flask 中用于安全发送文件的标准函数
+        # as_attachment=True 会让浏览器弹出下载提示，而不是直接打开文件
+        return send_from_directory(directory, filename, as_attachment=True)
+    except FileNotFoundError:
+        return jsonify({"error": "文件未找到"}), 404

@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import os 
 
 db = SQLAlchemy()
 
@@ -47,6 +48,7 @@ class QAUpload(db.Model):
     uploader = db.relationship("User", backref="qa_uploads")
     course = db.relationship("Course", backref="qa_uploads")
 
+
 class Assignment(db.Model):
     __tablename__ = "assignments"
 
@@ -54,36 +56,46 @@ class Assignment(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     due_date = db.Column(db.DateTime, nullable=True)
-    rubric = db.Column(db.String(255), nullable=True)  # 存储文件路径或 URL
-    attachment = db.Column(db.String(255), nullable=True)  # 存储文件路径或 URL
-
+    rubric = db.Column(db.String(255), nullable=True)
+    attachment = db.Column(db.String(255), nullable=True)
 
     course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
+    # Relationships
     questions = db.relationship("Question", back_populates="assignment", lazy=True)
     forum = db.relationship("Forum", back_populates="assignment", uselist=False)
 
+    # --- A robust and safe to_dict() method ---
     def to_dict(self):
-        def format_file(path):
-            if not path:
-                return None
-            import os
-            return {
-                "fileName": os.path.basename(path),
-                "url": f"/uploads/{os.path.basename(path)}"
+        # Safely create the attachments list
+        attachments_list = []
+        if self.attachment and isinstance(self.attachment, str):
+            attachments_list.append({
+                "id": self.id,
+                "path": self.attachment,
+                "filename": os.path.basename(self.attachment)
+            })
+
+        # Safely create the rubric object
+        rubric_object = None
+        if self.rubric and isinstance(self.rubric, str):
+            rubric_object = {
+                "id": self.id,
+                "path": self.rubric,
+                "filename": os.path.basename(self.rubric)
             }
 
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "dueDate": self.due_date.strftime("%Y-%m-%d") if self.due_date else None,
-            "rubric": format_file(self.rubric),
-            "attachments": [format_file(self.attachment)] if self.attachment else [],
-            "courseName": self.course.name if self.course else None,
-            "createdAt": self.due_date.strftime("%Y-%m-%d") if self.due_date else None,
-            "updatedAt": self.due_date.strftime("%Y-%m-%d") if self.due_date else None
+            "dueDate": self.due_date.strftime("%Y-%m-%d %H:%M:%S") if self.due_date else None,
+            "rubric": rubric_object,
+            "attachments": attachments_list,
+            
+            # --- Key Fix: This check prevents a crash if the course is missing ---
+            "courseName": self.course.name if self.course else "Unknown Course",
         }
 
 

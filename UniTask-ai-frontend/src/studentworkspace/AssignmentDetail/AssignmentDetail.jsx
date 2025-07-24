@@ -1,4 +1,4 @@
-// src/studentworkspace/AssignmentDetail/AssignmentDetail.jsx (Static Version for Student)
+// test/studentworkspace/AssignmentDetail/AssignmentDetail.jsx (Final Corrected Structure)
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -6,208 +6,129 @@ import {
   Typography,
   Button,
   List,
-  ListItem,
   ListItemText,
   Chip,
-  Divider,
   CircularProgress,
   Alert,
+  ListItemButton,
 } from '@mui/material';
-import { Forum as ForumIcon, Description as DescriptionIcon, AttachFile as AttachFileIcon, ArrowBack as ArrowBackIcon} from '@mui/icons-material';
+import { Forum as ForumIcon, Description as DescriptionIcon, AttachFile as AttachFileIcon } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { assignmentDetailStyles } from './AssignmentDetail_style.js'; 
 
-// Renamed for clarity to avoid confusion with the tutor's component
 const StudentAssignmentDetail = () => {
+  // ... (所有现有函数，如 useState, useEffect, handleDownloadFile 等，保持不变)
   const { assignmentId } = useParams();
   const navigate = useNavigate();
-  
   const [assignmentData, setAssignmentData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-   // 获取作业详情数据
   useEffect(() => {
     const fetchAssignmentDetail = async () => {
       try {
         setLoading(true);
         setError(null);
-
-        // 从localStorage获取用户信息
-        const userString = localStorage.getItem('user');
-        if (!userString) {
-          setError('User not logged in. Please log in again.');
-          setLoading(false);
-          navigate('/login');
-          return;
-        }
-
-        const user = JSON.parse(userString);
-        const userId = user.id;
-
-        // 如果没有提供assignmentId，则显示错误
         if (!assignmentId) {
           setError('Assignment ID not provided');
-          setLoading(false);
-          return;
+          setLoading(false); return;
         }
-
-        // 直接获取指定作业的详情
         const response = await api.get(`/assignments/detail/${assignmentId}`);
-        const assignment = response.data;
-
-
-        // 格式化作业数据以适配现有的UI组件
-        const formattedAssignment = {
-          id: assignment.id,
-          name: assignment.name,
-          dueDate: assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString('en-GB') : 'No due date',
-          description: assignment.description || 'No description provided',
-          rubric: assignment.rubric || null,
-          attachments: assignment.attachments || [],
-          courseName: assignment.courseName || 'Unknown Course',
-          createdAt: assignment.createdAt,
-          updatedAt: assignment.updatedAt
-        };
-
-        setAssignmentData(formattedAssignment);
-        
+        setAssignmentData(response.data);
       } catch (err) {
         console.error('Failed to fetch assignment details:', err);
-        if (err.response?.status === 401) {
-          setError('Session expired. Please log in again.');
-          navigate('/login');
-        } else if (err.response?.status === 404) {
-          setError('Assignment not found');
-        } else {
-          setError('Failed to fetch assignment details. Please check your connection and try again.');
-        }
+        setError('Failed to fetch assignment details. Please check your connection and try again.');
       } finally {
         setLoading(false);
       }
     };
-
-    if (assignmentId) {
-      fetchAssignmentDetail();
-    }
+    fetchAssignmentDetail();
   }, [assignmentId]);
 
-    // 如果没有数据
-  if (!assignmentData) {
-    return (
-      <Box sx={assignmentDetailStyles.container}>
-        <Box sx={assignmentDetailStyles.topHeader}>
-          <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>
-            Assignment Detail
-          </Typography>
-        </Box>
-        <Box sx={assignmentDetailStyles.contentArea}>
-          <Typography variant="h6" sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
-            No assignment data available
-          </Typography>
-        </Box>
-      </Box>
-    );
-  }
-
-  const handleGoToForum = () => {
-    const targetAssignmentId = assignmentId || assignmentData?.id;
-    console.log('Navigate to forum, assignment ID:', targetAssignmentId);
-    navigate(`/assignments/${targetAssignmentId}/forum`);
+  const handleDownloadFile = (fileObject) => {
+    const filename = fileObject?.filename;
+    if (!filename) { alert('Filename is not available.'); return; }
+    const downloadUrl = `${api.defaults.baseURL}/assignments/download/${filename}`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    const displayName = filename.split('_').slice(1).join('_') || filename;
+    link.setAttribute('download', displayName);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
   };
+
+  const getDisplayName = (fileObject) => {
+    if (!fileObject) return 'Unnamed File';
+    return fileObject.filename || 'Unnamed File';
+  };
+
+  const getFileIcon = (fileObject) => {
+    const fileName = getDisplayName(fileObject);
+    const extension = fileName?.split('.').pop().toLowerCase();
+    switch (extension) {
+      case 'pdf': return <DescriptionIcon sx={{ color: '#f40f02' }} />;
+      case 'doc': case 'docx': return <DescriptionIcon sx={{ color: '#2b579a' }} />;
+      default: return <AttachFileIcon sx={{ color: '#666' }} />;
+    }
+  };
+  
+  const handleGoToForum = () => {
+    navigate(`/student/assignments/${assignmentId}/forum`);
+  };
+
+  if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
+  if (error) return <Alert severity="error">{error}</Alert>;
+  if (!assignmentData) return <Typography>No assignment data found.</Typography>;
 
   return (
     <Box sx={assignmentDetailStyles.container}>
       <Box sx={assignmentDetailStyles.topHeader}>
-        <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>
-          Assignment Detail
-        </Typography>
+        <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>Assignment Detail</Typography>
       </Box>
 
-      {/* 内容区域 */}
       <Box sx={assignmentDetailStyles.contentArea}>
-        {/* 作业标题和操作按钮 */}
-        <Box sx={assignmentDetailStyles.titleSection}>
-          <Typography variant="h4" sx={assignmentDetailStyles.assignmentTitle}>
-            {assignmentData.name}
-          </Typography>
-          {/* <Box sx={assignmentDetailStyles.actionButtons}>
-            <Button
-              variant="contained"
-              startIcon={<EditIcon />}
-              onClick={handleModify}
-              sx={assignmentDetailStyles.modifyButton}
-            >
-              Modify
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<DeleteIcon />}
-              onClick={handleDelete}
-              sx={assignmentDetailStyles.deleteButton}
-            >
-              Delete
-            </Button>
-          </Box> */}
-        </Box>
-
-        <Box sx={assignmentDetailStyles.infoSection}>
-          <Typography variant="h6" sx={assignmentDetailStyles.infoLabel}>
-            Due Date : <span style={{ fontWeight: 400 }}>{assignmentData.dueDate}</span>
-          </Typography>
-        </Box>
-
-        <Box sx={assignmentDetailStyles.descriptionSection}>
-          <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
-            Assignment Description:
-          </Typography>
-          <Typography variant="body1" sx={assignmentDetailStyles.descriptionText}>
-            {assignmentData.description}
-          </Typography>
-        </Box>
-
-        {/* 评分标准 */}
-        {assignmentData.rubric && assignmentData.rubric.fileName && (
-          <Box sx={assignmentDetailStyles.rubricSection}>
-            <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
-              Rubric:
-            </Typography>
-            <Chip
-              label={assignmentData.rubric.fileName}
-              onClick={() => handleDownloadFile(assignmentData.rubric)}
-              sx={assignmentDetailStyles.fileChip}
-              clickable
-            />
+        {/* Key Change: A new wrapper for all the main content that needs to scroll */}
+        <Box sx={assignmentDetailStyles.mainContentWrapper}>
+          <Typography variant="h4" sx={assignmentDetailStyles.assignmentTitle}>{assignmentData.name}</Typography>
+          <Box sx={assignmentDetailStyles.infoSection}>
+            <Typography variant="h6" sx={assignmentDetailStyles.infoLabel}>Due Date : <span style={{ fontWeight: 400 }}>{new Date(assignmentData.dueDate).toLocaleDateString()}</span></Typography>
           </Box>
-        )}
-
-        <Box sx={assignmentDetailStyles.attachmentSection}>
-          <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
-            Attachment:
-          </Typography>
-          <List sx={assignmentDetailStyles.attachmentList}>
-            {assignmentData.attachments.filter(file => file && file.fileName).map((file, index) => (
-              <React.Fragment key={file.id}>
-                <ListItem button>
-                  <Box sx={assignmentDetailStyles.fileIcon}>{getFileIcon(file.type)}</Box>
-                  <ListItemText primary={file.fileName} />
-                </ListItem>
-                {index < assignmentData.attachments.length - 1 && <Divider />}
-              </React.Fragment>
-            ))}
-          </List>
+          <Box sx={assignmentDetailStyles.descriptionSection}>
+            <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>Assignment Description:</Typography>
+            <Typography variant="body1" sx={assignmentDetailStyles.descriptionText}>{assignmentData.description}</Typography>
+          </Box>
+          {assignmentData.rubric && (
+            <Box sx={assignmentDetailStyles.rubricSection}>
+              <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>Rubric:</Typography>
+              <Chip
+                icon={getFileIcon(assignmentData.rubric)}
+                label={getDisplayName(assignmentData.rubric)}
+                onClick={() => handleDownloadFile(assignmentData.rubric)}
+                sx={assignmentDetailStyles.fileChip}
+                clickable
+              />
+            </Box>
+          )}
+          {assignmentData.attachments && assignmentData.attachments.length > 0 && (
+            <Box sx={assignmentDetailStyles.attachmentSection}>
+              <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>Attachment(s):</Typography>
+              <List sx={assignmentDetailStyles.attachmentList}>
+                {assignmentData.attachments.map((file, index) => (
+                  <ListItemButton key={file.id || index} onClick={() => handleDownloadFile(file)}>
+                    <Box sx={assignmentDetailStyles.fileIcon}>{getFileIcon(file)}</Box>
+                    <ListItemText primary={getDisplayName(file)} />
+                  </ListItemButton>
+                ))}
+              </List>
+            </Box>
+          )}
         </Box>
 
+        {/* The Forum button is now a sibling to the main content wrapper */}
         <Box sx={assignmentDetailStyles.forumButtonContainer}>
-          <Button
-            variant="contained"
-            startIcon={<ForumIcon />}
-            onClick={handleGoToForum}
-            sx={assignmentDetailStyles.forumButton}
-          >
-            Forum
-          </Button>
+          <Button variant="contained" startIcon={<ForumIcon />} onClick={handleGoToForum} sx={assignmentDetailStyles.forumButton}>Forum</Button>
         </Box>
       </Box>
     </Box>
