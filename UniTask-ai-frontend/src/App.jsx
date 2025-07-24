@@ -32,6 +32,7 @@ import StudentAssignmentList from './studentworkspace/AssignmentList/AssignmentL
 import StudentAssignmentForumPage from './studentworkspace/Forum/AssignmentForumPage';
 import StudentAssignmentDetail from './studentworkspace/AssignmentDetail/AssignmentDetail'; 
 import StudentFaqList from './studentworkspace/Faqlist/Faqlist';
+import ChatPage from './studentworkspace/Chat/ChatPage';
 
 
 function App() {
@@ -76,7 +77,7 @@ function App() {
             <Route path="assignment-detail/:assignmentId" element={<StudentAssignmentDetail />} />
             <Route path="assignments/:assignmentId/forum" element={<StudentAssignmentForumPage />} />
             <Route path="faqs" element={<StudentFaqList />} />
-
+            <Route path="help" element={<ChatPage />} />
 
             {/* Future student pages can be added here */}
           </Route>

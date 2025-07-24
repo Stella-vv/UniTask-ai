@@ -4,13 +4,20 @@ export const faqListStyles = {
 
   topHeader: {
     bgcolor: 'primary.main',
-    height: '100px',
+    // Modified: Reduced the height from 100px to 80px to make it thinner
+    height: '80px',
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     color: 'white',
+    p: 3,
+    gap: 2,
+    mt: -4,
+    ml: -4,
+    mr: -4,
+    width: 'calc(100% + 64px)',
   },
 
   headerTitle: { color: 'white', fontWeight: 600, fontSize: '2rem' },

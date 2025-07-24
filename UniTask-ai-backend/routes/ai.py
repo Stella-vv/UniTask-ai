@@ -9,7 +9,7 @@ def ask_ai():
     query = data.get("query", "").strip()
 
     if not query:
-        return jsonify({"answer": "请提供一个问题"}), 400
+        return jsonify({"answer": "Provide a question please"}), 400
 
     answer = find_answer(query)
     return jsonify({"answer": answer})

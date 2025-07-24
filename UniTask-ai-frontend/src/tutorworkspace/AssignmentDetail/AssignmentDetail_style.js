@@ -9,7 +9,7 @@ export const assignmentDetailStyles = {
   topHeader: {
     bgcolor: 'primary.main',
     // 保持高度，如果设计需要特定高度的话
-    height: '100px',
+    height: '80px',
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
     display: 'flex',
