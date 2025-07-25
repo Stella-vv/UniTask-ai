@@ -15,11 +15,10 @@ def register():
 
     new_user = User(
         email=data["email"],
-        password=data["password"],  # 🚫 明文存储（仅限测试）
+        password=data["password"],  
         role=data["role"],
-        #cohort=data.get("cohort")
-        school = data.get("school"),  # ← 新字段
-        year = data.get("year")      # ← 新字段
+        school = data.get("school"),  
+        year = data.get("year")      
 
     )
     try:
@@ -35,7 +34,6 @@ def register():
             "id": new_user.id,
             "email": new_user.email,
             "role": new_user.role,
-            #"cohort": new_user.cohort
             "school": new_user.school,
             "year": new_user.year
         }
@@ -52,7 +50,7 @@ def login():
     if not user or user.password != data["password"]:
         return jsonify({"message": "Invalid email or password"}), 401
 
-    token = f"token-{user.id}"  # 可换成 JWT
+    token = f"token-{user.id}"  
 
     return jsonify({
         "message": "Login successful!",
@@ -61,7 +59,6 @@ def login():
             "id": user.id,
             "email": user.email,
             "role": user.role,
-            #"cohort": user.cohort
             "school": user.school,
             "year": user.year
         }

@@ -1,10 +1,9 @@
-# routes/mock_user.py  —— 不依赖 models、db
+# routes/mock_user.py
 from flask import Blueprint, request, jsonify
 import uuid
 
 mock_bp = Blueprint("mock", __name__, url_prefix="/api")
 
-# 用列表当“内存数据库”
 USERS = []
 
 @mock_bp.post("/register")
@@ -19,7 +18,7 @@ def mock_register():
     user = {
         "id": str(uuid.uuid4()),
         "email": data["email"],
-        "password": data["password"],  # 明文仅用于演示
+        "password": data["password"],  
         "role": data["role"]
     }
     USERS.append(user)
@@ -33,7 +32,6 @@ def mock_login():
     if not user or user["password"] != data.get("password"):
         return jsonify({"message": "Invalid creds"}), 401
 
-    # 返回伪 Token
     return jsonify({
         "message": "Login OK",
         "token": "mock-token",

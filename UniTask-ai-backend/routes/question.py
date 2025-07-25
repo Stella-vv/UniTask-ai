@@ -5,7 +5,7 @@ from models import db, Question, Assignment, Forum, User
 question_bp = Blueprint("question", __name__, url_prefix="/api/question")
 @question_bp.route("/test", methods=["GET"])
 def test_question_bp():
-    return jsonify({"message": "✅ Question blueprint is active"})
+    return jsonify({"message": "Question blueprint is active"})
 
 @question_bp.route("/submit", methods=["POST"])
 def submit_question():
@@ -31,7 +31,7 @@ def submit_question():
     db.session.commit()
 
     return jsonify({"message": "Question submitted", "question_id": question.id}), 201
-# 获取某个用户的所有问题
+
 @question_bp.route("/user/<int:user_id>", methods=["GET"])
 def get_user_questions(user_id):
     questions = Question.query.filter_by(user_id=user_id).all()
@@ -45,7 +45,6 @@ def get_user_questions(user_id):
         } for q in questions
     ]), 200
 
-# 获取某作业的所有问题
 @question_bp.route("/assignment/<int:assignment_id>", methods=["GET"])
 def get_assignment_questions(assignment_id):
     questions = Question.query.filter_by(assignment_id=assignment_id).all()

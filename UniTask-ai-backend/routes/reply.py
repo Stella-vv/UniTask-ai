@@ -6,7 +6,7 @@ from datetime import datetime
 
 reply_bp = Blueprint("reply", __name__, url_prefix="/api")
 
-# 添加回复
+# add reply
 @reply_bp.route("/replies", methods=["POST"])
 def create_reply():
     data = request.get_json()
@@ -17,7 +17,7 @@ def create_reply():
     if not content or not user_id or not question_id:
         return jsonify({"error": "Missing required fields"}), 400
 
-    # 检查 question 是否存在
+    # Check whether the question exists
     question = Question.query.get(question_id)
     if not question:
         return jsonify({"error": "Question not found"}), 404
@@ -43,7 +43,7 @@ def create_reply():
         }
     }), 201
 
-# 获取某个问题下的所有回复
+# Get all the responses under a certain question
 @reply_bp.route("/questions/<int:question_id>/replies", methods=["GET"])
 def get_replies_for_question(question_id):
     question = Question.query.get(question_id)

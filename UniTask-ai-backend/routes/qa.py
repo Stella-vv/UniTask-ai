@@ -5,7 +5,7 @@ import os
 
 qa_bp = Blueprint("qa", __name__, url_prefix="/api/qa")
 
-# 上传 Q&A 文件
+# upload Q&A file
 @qa_bp.route("/upload", methods=["POST"])
 def upload_qa_file():
     file = request.files.get("file")
@@ -37,7 +37,7 @@ def upload_qa_file():
 
     return jsonify({"message": "Q&A uploaded", "upload_id": upload_record.id}), 201
 
-# 获取某课程的所有上传记录（可选功能）
+# Obtain all uploaded records of a certain course
 @qa_bp.route("/course/<int:course_id>/uploads", methods=["GET"])
 def get_uploaded_qas(course_id):
     uploads = QAUpload.query.filter_by(course_id=course_id).all()

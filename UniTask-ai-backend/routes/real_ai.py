@@ -4,7 +4,7 @@ import subprocess
 real_ai_bp = Blueprint("real_ai", __name__, url_prefix="/api/ai")
 
 def ask_faq_model(question):
-    """直接调用 Ollama 的 faq-mistral 模型回答问题"""
+    """Directly invoke Ollama's faq-mistral model to answer the questions"""
     result = subprocess.run(
         ["ollama", "run", "faq-mistral"],
         input=question.encode(),

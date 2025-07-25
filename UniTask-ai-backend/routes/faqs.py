@@ -5,7 +5,7 @@ from models import db, FAQ
 
 faq_bp = Blueprint("faq", __name__, url_prefix="/api/faqs")
 
-# 创建 FAQ
+# create FAQ
 @faq_bp.route("/", methods=["POST"])
 def create_faq():
     data = request.get_json()
@@ -38,7 +38,7 @@ def create_faq():
         }
     }), 201
 
-# 获取课程 FAQ 列表
+# get course FAQ list
 @faq_bp.route("/course/<int:course_id>", methods=["GET"])
 def get_course_faqs(course_id):
     faqs = FAQ.query.filter_by(course_id=course_id).order_by(FAQ.id.desc()).all()
@@ -51,7 +51,7 @@ def get_course_faqs(course_id):
         } for f in faqs
     ]), 200
 
-# 获取单个 FAQ
+# Get a single FAQ
 @faq_bp.route("/<int:faq_id>", methods=["GET"])
 def get_faq(faq_id):
     faq = FAQ.query.get(faq_id)
@@ -65,7 +65,7 @@ def get_faq(faq_id):
         "course_id": faq.course_id
     }), 200
 
-# 删除 FAQ
+# delete FAQ
 @faq_bp.route("/<int:faq_id>", methods=["DELETE"])
 def delete_faq(faq_id):
     faq = FAQ.query.get(faq_id)
@@ -76,7 +76,7 @@ def delete_faq(faq_id):
     db.session.commit()
     return jsonify({"message": "FAQ deleted"}), 200
 
-# 更新 FAQ
+# update FAQ
 @faq_bp.route("/<int:faq_id>", methods=["PUT"])
 def update_faq(faq_id):
     faq = FAQ.query.get(faq_id)

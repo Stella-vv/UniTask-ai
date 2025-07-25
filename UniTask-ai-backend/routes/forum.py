@@ -4,7 +4,7 @@ from models import db, Forum, Question, Assignment, Reply
 
 forum_bp = Blueprint("forum", __name__, url_prefix="/api/forum")
 
-# 获取指定 assignment 的论坛
+# The forum for obtaining the specified assignment
 @forum_bp.route("/<int:assignment_id>", methods=["GET"])
 def get_forum(assignment_id):
     forum = Forum.query.filter_by(assignment_id=assignment_id).first()
@@ -17,7 +17,7 @@ def get_forum(assignment_id):
         "created_at": forum.created_at.isoformat()
     }), 200
 
-# 发帖提问
+# Post a question
 @forum_bp.route("/<int:forum_id>/questions", methods=["POST"])
 def create_question(forum_id):
     data = request.get_json()
@@ -48,7 +48,7 @@ def create_question(forum_id):
         }
     }), 201
 
-# 获取论坛中所有问题及其回复
+# Get all the questions and their responses in the forum
 @forum_bp.route("/<int:forum_id>/questions", methods=["GET"])
 def get_forum_questions(forum_id):
     forum = Forum.query.get(forum_id)
@@ -72,7 +72,7 @@ def get_forum_questions(forum_id):
         } for q in forum.questions
     ]), 200
 
-# 回复某个问题
+# Reply to a certain question
 @forum_bp.route("/questions/<int:question_id>/replies", methods=["POST"])
 def create_reply(question_id):
     data = request.get_json()

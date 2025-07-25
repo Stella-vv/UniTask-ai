@@ -7,11 +7,9 @@ import uuid
 
 assignment_bp = Blueprint("assignment", __name__, url_prefix="/api/assignments")
 
-# 上传目录（你可以按需修改）
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt'}
 
-# 确保上传目录存在
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
@@ -24,7 +22,7 @@ def handle_assignments():
     
     # Logic for creating a new assignment
     if request.method == "POST":
-        print("📥 POST received (multipart/form-data)")
+        print("POST received (multipart/form-data)")
         
         name = request.form.get("name")
         description = request.form.get("description")
@@ -76,7 +74,7 @@ def handle_assignments():
             db.session.add(new_forum)
 
             db.session.commit()
-            print("✅ Assignment and forum committed to DB.")
+            print("Assignment and forum committed to DB.")
 
             return jsonify({
                 "message": "Assignment and forum created successfully",
@@ -88,28 +86,28 @@ def handle_assignments():
             }), 201
         except Exception as e:
             db.session.rollback()
-            print("❌ Commit failed:", e)
+            print("Commit failed:", e)
             return jsonify({"error": str(e)}), 500
 
     if request.method == "GET":
-        """获取所有作业的列表"""
-        print("✅ GET received for all assignments")
+        """Get a list of all the assignments"""
+        print("GET received for all assignments")
         try:
             assignments = Assignment.query.all()
             return jsonify([a.to_dict() for a in assignments]), 200
         except Exception as e:
-            print(f"❌ Error fetching all assignments: {e}")
+            print(f"Error fetching all assignments: {e}")
             return jsonify({"error": "An internal server error occurred"}), 500
 
 @assignment_bp.route("/<int:user_id>", methods=["GET"])
 def get_assignments_by_user(user_id):
-    """获取单个用户的所有作业"""
+    """Obtain all the jobs of a single user"""
     assignments = Assignment.query.filter_by(user_id=user_id).all()
     return jsonify([a.to_dict() for a in assignments])
 
 @assignment_bp.route("/detail/<int:assignment_id>", methods=["GET"])
 def get_assignment_detail(assignment_id):
-    """获取单个作业的详细信息"""
+    """Obtain detailed information about individual assignments"""
     try:
         assignment = Assignment.query.get(assignment_id)
         if not assignment:
@@ -117,17 +115,17 @@ def get_assignment_detail(assignment_id):
         
         return jsonify(assignment.to_dict())
     except Exception as e:
-        print(f"❌ Error fetching assignment {assignment_id}: {e}")
+        print(f"Error fetching assignment {assignment_id}: {e}")
         return jsonify({"error": "An internal server error occurred"}), 500
 
 @assignment_bp.route("/course/<int:course_id>", methods=["GET"])
 def get_assignments_by_course(course_id):
-    """获取单个课程的所有作业"""
+    """Get all the assignments for a single course"""
     try:
         assignments = Assignment.query.filter_by(course_id=course_id).all()
         return jsonify([a.to_dict() for a in assignments])
     except Exception as e:
-        print(f"❌ Error fetching assignments for course {course_id}: {e}")
+        print(f"Error fetching assignments for course {course_id}: {e}")
         return jsonify({"error": "An internal server error occurred"}), 500
 
 
@@ -135,7 +133,7 @@ def get_assignments_by_course(course_id):
 def update_assignment(assignment_id):
     """Handles updating an existing assignment."""
     
-    print(f"📥 PUT received for assignment {assignment_id}")
+    print(f"PUT received for assignment {assignment_id}")
     
     try:
         # Find the existing assignment in the database
@@ -188,7 +186,7 @@ def update_assignment(assignment_id):
 
         # Commit the changes to the database
         db.session.commit()
-        print(f"✅ Assignment {assignment_id} updated successfully.")
+        print(f"Assignment {assignment_id} updated successfully.")
         
         return jsonify({
             "message": "Assignment updated successfully",
@@ -197,7 +195,7 @@ def update_assignment(assignment_id):
 
     except Exception as e:
         db.session.rollback()
-        print(f"❌ Failed to update assignment {assignment_id}: {e}")
+        print(f"Failed to update assignment {assignment_id}: {e}")
         return jsonify({"error": str(e)}), 500
     
 # Ensure this route exists in your assignment blueprint file
@@ -206,7 +204,7 @@ def update_assignment(assignment_id):
 def delete_assignment(assignment_id):
     """Handles deleting an existing assignment."""
     
-    print(f"🗑️ DELETE request received for assignment {assignment_id}")
+    print(f"DELETE request received for assignment {assignment_id}")
     
     try:
         # Find the existing assignment
@@ -232,32 +230,24 @@ def delete_assignment(assignment_id):
         # Commit all changes to the database
         db.session.commit()
         
-        print(f"✅ Assignment {assignment_id} and its forum were deleted successfully.")
+        print(f"Assignment {assignment_id} and its forum were deleted successfully.")
         
         # Return a success response with no content
         return '', 204
 
     except Exception as e:
         db.session.rollback()
-        print(f"❌ Failed to delete assignment {assignment_id}: {e}")
+        print(f"Failed to delete assignment {assignment_id}: {e}")
         return jsonify({"error": "Failed to delete assignment."}), 500
     
 @assignment_bp.route("/download/<path:filename>")
 def download_file(filename):
-    """
-    安全地提供文件下载服务。
-    这个路由会从您的 UPLOAD_FOLDER 目录中寻找文件。
-    """
     
-    print(f"⬇️ 收到文件下载请求: {filename}")
+    print(f"Received a request for file download: {filename}")
     
-    # UPLOAD_FOLDER 变量应该已经在您的文件顶部定义过了
-    # os.path.abspath 会获取上传文件夹的绝对路径
     directory = os.path.abspath(UPLOAD_FOLDER)
     
     try:
-        # send_from_directory 是 Flask 中用于安全发送文件的标准函数
-        # as_attachment=True 会让浏览器弹出下载提示，而不是直接打开文件
         return send_from_directory(directory, filename, as_attachment=True)
     except FileNotFoundError:
         return jsonify({"error": "文件未找到"}), 404
