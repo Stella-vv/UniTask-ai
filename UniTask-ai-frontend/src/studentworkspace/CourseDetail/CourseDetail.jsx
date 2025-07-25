@@ -142,10 +142,10 @@ const StudentCourseDetail = () => {
             Assignment
           </Button>
           <Button
-            component={RouterLink} to="/student/qnas" variant="contained"
+            component={RouterLink} to="/student/faqs" variant="contained"
             startIcon={<LiveHelpIcon />} sx={courseDetailStyles.navButton}
           >
-            Q&As
+            FAQs
           </Button>
         </Box>
       </Box>
