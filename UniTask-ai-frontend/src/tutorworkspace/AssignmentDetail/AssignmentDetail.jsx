@@ -138,10 +138,17 @@ const AssignmentDetail = () => {
   };
 
   // 下载文件
-  const handleDownloadFile = (file) => {
-    // TODO: 实现文件下载功能
-    console.log('下载文件:', file.fileName);
-    // window.open(file.url, '_blank');
+  const handleDownloadFile = (fileObject) => {
+    const filename = fileObject?.filename;
+    if (!filename) { alert('Filename is not available.'); return; }
+    const downloadUrl = `${api.defaults.baseURL}/assignments/download/${filename}`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    const displayName = filename.split('_').slice(1).join('_') || filename;
+    link.setAttribute('download', displayName);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
   };
 
   // 获取文件图标
