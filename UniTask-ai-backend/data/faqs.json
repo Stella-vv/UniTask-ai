@@ -1,22 +1,62 @@
 [
   {
     "question": "这门课的作业截止时间是什么时候？",
-    "answer": "作业1截止时间为2025年7月30日23:59，请注意提前提交以避免系统拥堵。"
+    "aliases": [
+      "作业什么时候交？",
+      "作业的最后提交时间是？",
+      "什么时候截止作业？",
+      "When is the deadline for the assignment?",
+      "What is the last submission date for the homework?",
+      "When do I need to submit my assignment?"
+    ],
+    "answer": "Assignment 1 is due by 23:59 on July 30, 2025. Please submit early to avoid system congestion."
   },
   {
     "question": "可以迟交作业吗？",
-    "answer": "迟交作业将扣除每天10%的分数，最多允许迟交3天，超过将不予评分。"
+    "aliases": [
+      "作业能晚交吗？",
+      "迟交会扣分吗？",
+      "迟交有惩罚吗？",
+      "Can I submit the assignment late?",
+      "What is the penalty for late submission?",
+      "Is late submission allowed?"
+    ],
+    "answer": "Late submissions will incur a 10% penalty per day, up to 3 days late. Submissions later than this will not be graded."
   },
   {
     "question": "如何在系统中上传作业？",
-    "answer": "进入“作业”页面，点击对应作业任务，上传文件并确认提交即可。支持PDF、ZIP格式。"
+    "aliases": [
+      "怎么交作业？",
+      "怎么提交作业？",
+      "如何上传作业？",
+      "How do I submit my assignment?",
+      "How to upload homework to the system?",
+      "Where can I hand in my assignment?"
+    ],
+    "answer": "Go to the 'Assignments' page, click the corresponding task, upload your file, and confirm submission. PDF and ZIP formats are supported."
   },
   {
     "question": "FAQ功能是做什么的？",
-    "answer": "FAQ用于整合导师以往回答过的常见问题，学生可以直接搜索答案，减少重复提问。"
+    "aliases": [
+      "FAQ有什么用？",
+      "FAQ功能的作用是什么？",
+      "为什么要用FAQ？",
+      "What is the FAQ feature for?",
+      "Why do we have FAQ?",
+      "What can I do with the FAQ section?"
+    ],
+    "answer": "The FAQ collects commonly asked questions previously answered by tutors, so students can find answers quickly and avoid asking repetitive questions."
   },
   {
     "question": "系统里的AI助手是真正的AI吗？",
-    "answer": "目前的版本只是模拟AI助手，使用预设数据（mock data）生成回复，未来版本会集成真实AI。"
+    "aliases": [
+      "AI助手是智能的吗？",
+      "AI是实时回答的吗？",
+      "现在的AI是真的吗？",
+      "Is the AI assistant a real AI?",
+      "Is the AI answering in real time?",
+      "Does the AI assistant use real intelligence?"
+    ],
+    "answer": "The current version only simulates an AI assistant using mock data to generate responses. Future versions will integrate a real AI."
   }
 ]
