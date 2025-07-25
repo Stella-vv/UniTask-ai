@@ -67,7 +67,7 @@ print("✅ FAQ deleted:", del_res.json())
 
 # ====== 7. Create assignment (also creates forum) ======
 print("\n📌 Creating assignment (and forum)...")
-with open("uploads/Proposal.pdf", "rb") as rubric_file, open("uploads/dummy_attach.zip", "rb") as attachment_file:
+with open("uploads/dummy_rubric.pdf", "rb") as rubric_file, open("uploads/dummy_attach.zip", "rb") as attachment_file:
     assignment_res = requests.post(f"{BASE}/assignments", files={
         "rubric": rubric_file,
         "attachment": attachment_file
