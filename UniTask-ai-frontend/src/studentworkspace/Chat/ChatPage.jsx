@@ -51,7 +51,7 @@ const ChatPage = () => {
     setError('');
 
     try {
-      const response = await api.post('/ai/ask', { query: userMessage });
+      const response = await api.post('/mock-ai/ask', { query: userMessage });
       const assistantResponse = response.data.answer || 'Sorry, I could not get a response.';
       setMessages(prev => [
         ...prev,
