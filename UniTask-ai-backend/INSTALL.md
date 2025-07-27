@@ -37,7 +37,7 @@ unitask-backend/
 ### 1️⃣ 克隆项目
 
 ```bash
-git clone https://github.com/your-username/unitask-backend.git
+git clone https://github.com/unsw-cse-comp99-3900/capstone-project-25t2-9900-f18a-bread.git
 cd unitask-backend
 ```
 
