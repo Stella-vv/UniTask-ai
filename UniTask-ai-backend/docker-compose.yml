@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: unitask
+      POSTGRES_PASSWORD: unitask123
+      POSTGRES_DB: unitask_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8008:8008"
+    environment:
+      UNITASK_MOCK: false
+      DATABASE_URL: postgresql://unitask:unitask123@db:5432/unitask_db
+    command: >
+      sh -c "sleep 3 && python create_tables.py && python main.py"
+
+volumes:
+  pgdata:
