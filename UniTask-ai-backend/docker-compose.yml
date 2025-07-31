@@ -5,9 +5,9 @@ services:
     image: postgres:14
     restart: always
     environment:
-      POSTGRES_USER: unitask
-      POSTGRES_PASSWORD: unitask123
-      POSTGRES_DB: unitask_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 0827
+      POSTGRES_DB: unitask
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -21,7 +21,8 @@ services:
       - "8008:8008"
     environment:
       UNITASK_MOCK: false
-      DATABASE_URL: postgresql://unitask:unitask123@db:5432/unitask_db
+      UNITASK_DOCKER: true
+      DATABASE_URL: postgresql://postgres:0827@db:5432/unitask
     command: >
       sh -c "sleep 3 && python create_tables.py && python main.py"
 
