@@ -15,16 +15,11 @@ services:
 
   backend:
     build: .
-    depends_on:
-      - db
     ports:
       - "8008:8008"
-    environment:
-      UNITASK_MOCK: false
-      UNITASK_DOCKER: true
-      DATABASE_URL: postgresql://postgres:0827@db:5432/unitask
-    command: >
-      sh -c "sleep 3 && python create_tables.py && python main.py"
-
+    depends_on:
+      - db
+    env_file:
+      - .env
 volumes:
   pgdata:
