@@ -16,6 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { courseDetailStyles } from './CourseDetail_style';
 import api from '../../api';
 
@@ -23,6 +24,7 @@ import api from '../../api';
 const COURSE_ID_TO_DISPLAY = 1;
 
 const CourseDetail = () => {
+  const { courseId } = useParams();
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,7 @@ const CourseDetail = () => {
         setLoading(true);
         setError('');
         // Fetch a specific course. Replace with your actual logic if needed.
-        const response = await api.get(`/courses/${COURSE_ID_TO_DISPLAY}`);
+        const response = await api.get(`/courses/${courseId}`);
         setCourse(response.data);
       } catch (err) {
         console.error('Failed to fetch course data:', err);

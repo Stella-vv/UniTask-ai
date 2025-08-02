@@ -41,7 +41,7 @@ const Logo = () => (
 const Sidebar = () => {
   const navItems = [
     { text: 'Home', icon: <HomeIcon />, path: '/dashboard' },
-    { text: 'Course', icon: <SchoolIcon />, path: '/tutor/course-detail' },
+    { text: 'Course', icon: <SchoolIcon />, path: '/tutor/course' },
     { text: 'Assignment', icon: <AssignmentIcon />, path: '/tutor/assignment' },
     { text: 'Q&As', icon: <LiveHelpIcon />, path: '/tutor/qnas' },
     // 移除了 Forum 导航项
