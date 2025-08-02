@@ -18,4 +18,4 @@ CMD ["sh", "-c", "\
     echo 'Waiting for PostgreSQL...'; sleep 1; \
   done; \
   echo 'PostgreSQL is up! Starting backend...'; \
-  python create_tables.py && python main.py"]
+  python create_tables.py && python main.py "]

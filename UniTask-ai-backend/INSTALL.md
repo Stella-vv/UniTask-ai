@@ -82,6 +82,11 @@ docker compose down
 docker compose up --build
 ```
 
+在新的终端运行测试文件
+```bash
+docker exec -it unitask-ai-backend-backend-1 python integration_test_all.py
+```
+
 
 首次构建可能需要几分钟，会自动：
 
