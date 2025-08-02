@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // 3. Import all page components needed for routing
 import Dashboard from './tutorworkspace/Dashboard/Dashboard';
 import CourseDetail from './tutorworkspace/CourseDetail/CourseDetail';
+import CourseList from './tutorworkspace/CourseList/CourseList';
 import CourseModifyPage from './tutorworkspace/CourseModify/CourseModifyPage';
 import AssignmentList from './tutorworkspace/AssignmentList/AssignmentListPage';
 import AssignmentForumPage from './tutorworkspace/Forum/AssignmentForumPage';
@@ -53,7 +54,8 @@ function App() {
         <Route element={<ProtectedRoute allowedRoles={['tutor']} />}>
           <Route path="/tutor" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
-            <Route path="course-detail" element={<CourseDetail />} />
+            <Route path="course-detail/:courseId" element={<CourseDetail />} />
+            <Route path="Course" element={<CourseList />} />
             <Route path="course-modify/:courseId" element={<CourseModifyPage />} />
             <Route path="Assignment" element={<AssignmentList />} />
             <Route path="assignments/:assignmentId/forum" element={<AssignmentForumPage />} />

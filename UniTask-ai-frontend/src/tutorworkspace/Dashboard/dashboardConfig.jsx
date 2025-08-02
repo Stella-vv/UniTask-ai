@@ -10,7 +10,7 @@ export const dashboardCardData = [
     title: 'Course',
     description: 'You have x courses',
     // path: '/course',
-    path: '/tutor/course-detail', // 修改为指向课程详情页面
+    path: '/tutor/course', // 修改为指向课程列表
   },
   {
     icon: <AssignmentIcon />,
