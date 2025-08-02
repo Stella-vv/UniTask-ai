@@ -61,6 +61,21 @@ cp .env.example .env
 docker compose up
 ```
 
+在新的终端运行
+```bash
+docker exec -it unitask-ai-backend-db-1 psql -U postgres
+```
+```bash
+ALTER USER postgres WITH PASSWORD '0827';
+```
+
+回到之前的终端重新运行
+```bash
+docker compose down
+docker compose up --build
+```
+
+
 首次构建可能需要几分钟，会自动：
 
 - 拉取 PostgreSQL 镜像
@@ -70,7 +85,14 @@ docker compose up
 
 ---
 
-### 4️⃣ 访问后端 API
+### 4️⃣ 启动前端
+```bash
+cd UniTask-ai-frontend
+npm install
+npm run dev
+```
+
+### 5️⃣ 访问后端 API
 
 在浏览器或 Postman 中打开：
 
@@ -92,6 +114,7 @@ UniTask backend connected to PostgreSQL!
 
 ```env
 UNITASK_MOCK=false
+UNITASK_DOCKER=true
 DATABASE_URL=postgresql://unitask:unitask123@db:5432/unitask_db
 ```
 
