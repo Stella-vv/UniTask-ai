@@ -65,8 +65,15 @@ docker compose up
 ```bash
 docker exec -it unitask-ai-backend-db-1 psql -U postgres
 ```
+
+进入数据库重新设置密码
 ```bash
 ALTER USER postgres WITH PASSWORD '0827';
+```
+
+看到ALTER ROLE后输入
+```bash
+\q
 ```
 
 回到之前的终端重新运行
