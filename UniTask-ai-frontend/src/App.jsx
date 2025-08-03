@@ -61,12 +61,18 @@ function App() {
             <Route path="assignment/:assignmentId" element={<AssignmentDetail />} />
             <Route path="assignment/modify/:assignmentId" element={<AssignmentModifyPage />} />
             
-            {/* Other Routes */}
-            <Route path="assignments/:assignmentId/forum" element={<AssignmentForumPage />} />
-            <Route path="qnas" element={<QandAListPage />} />
-            <Route path="qnas/upload" element={<QandAUploadPage />} />
-            <Route path="faqs" element={<FaqList />} />
-            <Route path="faqs/upload" element={<FaqUpload />} />
+            {/* --- Assignment-Specific Q&A and FAQ Routes --- */}
+            <Route path="assignment/:assignmentId/qnas" element={<QandAListPage />} />
+            <Route path="assignment/:assignmentId/qnas/upload" element={<QandAUploadPage />} />
+            <Route path="assignment/:assignmentId/faqs" element={<FaqList />} />
+            <Route path="assignment/:assignmentId/faqs/upload" element={<FaqUpload />} />
+            
+            {/* Other functional routes */}
+            <Route path="assignment/:assignmentId/forum" element={<AssignmentForumPage />} />
+            
+            {/* Obsolete global routes can be removed */}
+            {/* <Route path="qnas" element={<QandAListPage />} /> */}
+            {/* <Route path="faqs" element={<FaqList />} /> */}
           </Route>
         </Route>
 

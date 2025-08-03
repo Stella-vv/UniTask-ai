@@ -1,7 +1,14 @@
-// src/tutorworkspace/faqs/FaqUpload_styles.js
-export const faqUploadStyles = {
-  container: { height: '100%', display: 'flex', flexDirection: 'column', p: 0 },
+// src/tutorworkspace/faqs/FaqUpload_styles.js (Corrected)
 
+export const faqUploadStyles = {
+  container: { 
+    height: '100%', 
+    display: 'flex', 
+    flexDirection: 'column', 
+    p: 0 
+  },
+
+  // --- START: CORRECTED HEADER STYLE ---
   topHeader: {
     bgcolor: 'primary.main',
     height: '100px',
@@ -9,11 +16,21 @@ export const faqUploadStyles = {
     borderTopRightRadius: '16px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start', // FIX: Align text to the left
     color: 'white',
+    p: 3, // FIX: Add padding for the text
+    mt: -4, // FIX: Negative margin to pull header up into parent's padding
+    ml: -4, // FIX: Negative margin to pull header left
+    mr: -4, // FIX: Negative margin to pull header right
+    width: 'calc(100% + 64px)', // FIX: Increase width to span the full container
   },
 
-  headerTitle: { color: 'white', fontWeight: 600, fontSize: '2rem' },
+  headerTitle: { 
+    color: 'white', 
+    fontWeight: 600, 
+    fontSize: '1.75rem', // Adjusted font size for consistency
+  },
+  // --- END: CORRECTED HEADER STYLE ---
 
   formContainer: {
     bgcolor: '#EFF8FF',
@@ -21,18 +38,23 @@ export const faqUploadStyles = {
     borderBottomRightRadius: '16px',
     p: 4,
     flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 3,
     overflowY: 'auto',
   },
 
-  fieldContainer: { mb: 3 },
-  fieldLabel: { mb: 1, fontWeight: 600 },
+  fieldContainer: { 
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+  },
 
-  selectField: {
-    bgcolor: 'white',
-    borderRadius: '8px',
-    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.23)' },
-    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
-    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+  fieldLabel: { 
+    color: 'text.courseText',
+    fontWeight: 600,
+    fontSize: '1.125rem',
+    mb: 1,
   },
 
   textField: {
@@ -44,27 +66,41 @@ export const faqUploadStyles = {
     },
   },
 
-  buttonContainer: { display: 'flex', gap: 2, mt: 4 },
+  buttonContainer: { 
+    display: 'flex', 
+    justifyContent: 'center',
+    gap: 4, 
+    mt: 4,
+    pt: 2,
+  },
 
   confirmButton: {
     bgcolor: 'primary.main',
     color: 'white',
-    textTransform: 'none',
     fontWeight: 600,
-    px: 3,
+    px: 4,
     py: 1.5,
     borderRadius: '25px',
-    '&:hover': { bgcolor: 'primary.dark' },
+    fontSize: '1rem',
+    minWidth: '140px',
+    textTransform: 'none',
+    '&:hover': { 
+      bgcolor: 'primary.dark' 
+    },
   },
 
   cancelButton: {
-    bgcolor: 'grey.500',
+    bgcolor: 'primary.main',
     color: 'white',
-    textTransform: 'none',
     fontWeight: 600,
-    px: 3,
+    px: 4,
     py: 1.5,
     borderRadius: '25px',
-    '&:hover': { bgcolor: 'grey.600' },
+    fontSize: '1rem',
+    minWidth: '140px',
+    textTransform: 'none',
+    '&:hover': { 
+      bgcolor: 'primary.dark' 
+    },
   },
 };

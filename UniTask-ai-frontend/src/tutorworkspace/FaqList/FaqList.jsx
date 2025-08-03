@@ -1,6 +1,7 @@
-// src/tutorworkspace/FaqList/FaqList.jsx
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// FaqList.jsx (Corrected to match Q&A empty state style)
+
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -10,86 +11,58 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  FormControl,
-  Select,
-  MenuItem,
-  InputLabel,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UploadIcon from '@mui/icons-material/Upload';
-import api from '../../api'; // 根据你的路径调整
+import DescriptionIcon from '@mui/icons-material/Description'; // Use DescriptionIcon for consistency
+import api from '../../api';
 import { faqListStyles as styles } from './FaqList_style';
 
 const FaqList = () => {
   const navigate = useNavigate();
+  const { assignmentId } = useParams();
 
-  const [courses, setCourses] = useState([]);
-  const [selectedCourseId, setSelectedCourseId] = useState('');
-  const [selectedCourseName, setSelectedCourseName] = useState('');
   const [faqList, setFaqList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [coursesLoading, setCoursesLoading] = useState(true);
   const [error, setError] = useState('');
+  const [assignmentName, setAssignmentName] = useState('');
 
-  // 初始化课程（写死 1 门）
-  useEffect(() => {
-    setCoursesLoading(true);
-    const list = [{ id: 1, name: 'COMP9900 - Capstone Project' }];
-    setCourses(list);
-    if (list.length) {
-      setSelectedCourseId(list[0].id);
-      setSelectedCourseName(list[0].name);
+  const fetchFaqs = useCallback(async () => {
+    if (!assignmentId) {
+      setError("Assignment ID not found in URL.");
+      setLoading(false);
+      return;
     }
-    setCoursesLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (!selectedCourseId) return;
-    fetchFaqs(selectedCourseId);
-  }, [selectedCourseId]);
-
-  const fetchFaqs = async (courseId) => {
     setLoading(true);
     setError('');
     try {
-      const res = await api.get(`/faqs/course/${courseId}`);
+      const assignmentRes = await api.get(`/assignments/detail/${assignmentId}`);
+      setAssignmentName(assignmentRes.data.name);
+      const res = await api.get(`/faqs/assignment/${assignmentId}`);
       setFaqList(res.data || []);
     } catch (e) {
       console.error('Failed to fetch FAQs:', e);
-      const msg =
-        e.response?.data?.error ||
-        e.response?.data?.message ||
-        'Failed to load FAQs';
-      setError(msg);
+      setError('Failed to load FAQs for this assignment.');
       setFaqList([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [assignmentId]);
 
-  const handleCourseChange = (e) => {
-    const id = e.target.value;
-    const name = courses.find((c) => c.id === id)?.name || '';
-    setSelectedCourseId(id);
-    setSelectedCourseName(name);
-  };
+  useEffect(() => {
+    fetchFaqs();
+  }, [fetchFaqs]);
 
-  const goUpload = () => navigate('/tutor/faqs/upload'); // or '/faq-upload'
+  const goUpload = () => navigate(`/tutor/assignment/${assignmentId}/faqs/upload`);
 
-  // 课程加载中
-  if (coursesLoading) {
+  if (loading && !assignmentName) {
     return (
       <Box sx={styles.container}>
         <Box sx={styles.topHeader}>
-          <Typography variant="h4" sx={styles.headerTitle}>
-            FAQs
-          </Typography>
+          <Typography variant="h4" sx={styles.headerTitle}>FAQs</Typography>
         </Box>
-        <Box sx={styles.contentArea}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200 }}>
-            <CircularProgress />
-            <Typography sx={{ ml: 2 }}>Loading courses...</Typography>
-          </Box>
+        <Box sx={{...styles.contentArea, justifyContent: 'center', alignItems: 'center'}}>
+          <CircularProgress />
         </Box>
       </Box>
     );
@@ -99,102 +72,60 @@ const FaqList = () => {
     <Box sx={styles.container}>
       <Box sx={styles.topHeader}>
         <Typography variant="h4" sx={styles.headerTitle}>
-          FAQs
+          FAQs for  {assignmentName || `Assignment ${assignmentId}`}
         </Typography>
       </Box>
 
       <Box sx={styles.contentArea}>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        {/* 控制区 */}
         <Box sx={styles.controlSection}>
-          <FormControl>
-            <InputLabel>Select Course</InputLabel>
-            <Select
-              value={selectedCourseId}
-              onChange={handleCourseChange}
-              label="Select Course"
-              sx={styles.courseSelector}
-              disabled={courses.length === 0}
-            >
-              {courses.map((c) => (
-                <MenuItem key={c.id} value={c.id}>
-                  {c.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
           <Button
             variant="contained"
             startIcon={<UploadIcon />}
-            sx={{
-              bgcolor: 'primary.main',
-              color: 'white',
-              fontWeight: 600,
-              px: 3,
-              py: 1.5,
-              borderRadius: '25px',
-              fontSize: '1rem',
-              textTransform: 'none',
-              '&:hover': { bgcolor: 'primary.dark' },
-            }}
             onClick={goUpload}
+            sx={styles.uploadButton}
           >
             Upload FAQ
           </Button>
         </Box>
 
-        {/* 列表 */}
         {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 4 }}>
-            <CircularProgress size={24} />
-            <Typography sx={{ ml: 2 }}>Loading FAQs...</Typography>
-          </Box>
+            <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <CircularProgress size={24} />
+              <Typography sx={{ ml: 2 }}>Loading FAQs...</Typography>
+            </Box>
         ) : faqList.length === 0 ? (
-          <Box sx={styles.emptyState}>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              No FAQs found
-            </Typography>
-            <Typography variant="body2">
-              {selectedCourseName
-                ? `No FAQ has been added for ${selectedCourseName} yet.`
-                : 'Select a course to view FAQs.'}
-            </Typography>
-            <Button
-              variant="outlined"
-              startIcon={<UploadIcon />}
-              sx={{ mt: 2 }}
-              onClick={goUpload}
-            >
-              Upload First FAQ
-            </Button>
-          </Box>
-        ) : (
-          faqList.map((faq) => (
-            <Accordion
-              key={faq.id}
-              disableGutters
-              sx={styles.accordion}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                sx={{ '& .faq-title': styles.questionText }}
+            // If list is empty, render the empty state message directly on the blue background
+            <Box sx={styles.emptyState}>
+              <DescriptionIcon sx={styles.emptyIcon} />
+              <Typography variant="h6" sx={{ mb: 1 }}>No FAQs Found</Typography>
+              <Typography variant="body2">No FAQs have been uploaded for this assignment yet.</Typography>
+              <Button
+                variant="outlined"
+                startIcon={<UploadIcon />}
+                onClick={goUpload}
+                sx={{ mt: 2 }}
               >
-                <Typography className="faq-title">{faq.question}</Typography>
-              </AccordionSummary>
-              <AccordionDetails sx={styles.accordionDetails}>
-                <Typography variant="body2" sx={styles.answerText}>
-                  {faq.answer}
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-          ))
+                Upload First FAQ
+              </Button>
+            </Box>
+        ) : (
+            // If list has items, render them inside a container
+            <Box>
+              {faqList.map((faq) => (
+                <Accordion key={faq.id} disableGutters sx={styles.accordion}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={styles.accordionSummary}>
+                    <Typography sx={styles.questionText}>{faq.question}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails sx={styles.accordionDetails}>
+                    <Typography sx={styles.answerText}>{faq.answer}</Typography>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </Box>
         )}
+        
       </Box>
     </Box>
   );
