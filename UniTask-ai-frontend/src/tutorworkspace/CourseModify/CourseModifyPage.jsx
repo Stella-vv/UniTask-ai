@@ -1,4 +1,4 @@
-// src/tutorworkspace/CourseModify/CourseModifyPage.jsx
+// test/tutorworkspace/CourseModify/CourseModifyPage.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -9,15 +9,17 @@ import {
   Button,
   CircularProgress,
   Alert,
+  FormControl,
+  Select,
+  MenuItem
 } from '@mui/material';
 import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
-// We will create this style file in the next step
-import { courseModifyStyles } from './CourseModifyPage_style'; 
-import api from '../../api'; // Assuming you have a centralized api handler
+import { courseModifyStyles } from './CourseModifyPage_style';
+import api from '../../api';
 
 const CourseModifyPage = () => {
   const navigate = useNavigate();
-  const { courseId } = useParams(); // Get courseId from URL
+  const { courseId } = useParams();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -29,13 +31,11 @@ const CourseModifyPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Fetch course data when component mounts
   const fetchCourseData = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
-      // This is a placeholder for your actual API endpoint
-      const response = await api.get(`/courses/${courseId}`); 
+      const response = await api.get(`/courses/${courseId}`);
       setFormData({
         name: response.data.name,
         year: response.data.year,
@@ -62,10 +62,9 @@ const CourseModifyPage = () => {
     setSubmitting(true);
     setError('');
     try {
-      // This is a placeholder for your actual API endpoint to update data
-      await api.put(`/courses/${courseId}`, formData); 
+      await api.put(`/courses/${courseId}`, formData);
       alert('Course updated successfully!');
-      navigate(`/tutor/course-detail`); // Navigate back to the detail page
+      navigate(`/tutor/course-detail/${courseId}`);
     } catch (err) {
       console.error('Failed to update course:', err);
       setError('Failed to update course. Please try again.');
@@ -76,7 +75,7 @@ const CourseModifyPage = () => {
 
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
-      navigate(`/tutor/course-detail`);
+      navigate(`/tutor/course-detail/${courseId}`);
     }
   };
 
@@ -94,25 +93,35 @@ const CourseModifyPage = () => {
 
       <Box sx={courseModifyStyles.formContainer}>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-        
+
         <Box sx={courseModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Course Name:</Typography>
-          <TextField fullWidth value={formData.name} onChange={handleInputChange('name')} />
+          <TextField fullWidth value={formData.name} onChange={handleInputChange('name')} sx={courseModifyStyles.textField}/>
         </Box>
 
         <Box sx={courseModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Year:</Typography>
-          <TextField type="number" fullWidth value={formData.year} onChange={handleInputChange('year')} />
+          <TextField type="number" fullWidth value={formData.year} onChange={handleInputChange('year')} sx={courseModifyStyles.textField}/>
         </Box>
-        
+
         <Box sx={courseModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Semester:</Typography>
-          <TextField fullWidth value={formData.semester} onChange={handleInputChange('semester')} />
+          <FormControl fullWidth>
+            <Select
+              value={formData.semester}
+              onChange={handleInputChange('semester')}
+              sx={courseModifyStyles.selectField}
+            >
+              <MenuItem value="T1">Term 1</MenuItem>
+              <MenuItem value="T2">Term 2</MenuItem>
+              <MenuItem value="T3">Term 3</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
 
         <Box sx={courseModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Description:</Typography>
-          <TextField fullWidth multiline rows={5} value={formData.description} onChange={handleInputChange('description')} />
+          <TextField fullWidth multiline rows={5} value={formData.description} onChange={handleInputChange('description')} sx={courseModifyStyles.textField}/>
         </Box>
 
         <Box sx={courseModifyStyles.buttonContainer}>

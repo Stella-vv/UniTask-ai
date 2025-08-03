@@ -1,9 +1,7 @@
-// test/tutorworkspace/CourseDetail/CourseDetail.jsx (Modified for dynamic data)
-
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
+import {
+  Box,
+  Typography,
   Button,
   List,
   ListItem,
@@ -20,9 +18,6 @@ import { useParams } from 'react-router-dom';
 import { courseDetailStyles } from './CourseDetail_style';
 import api from '../../api';
 
-// In a real app, this ID might come from user selection or another part of the state.
-const COURSE_ID_TO_DISPLAY = 1;
-
 const CourseDetail = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
@@ -35,7 +30,6 @@ const CourseDetail = () => {
       try {
         setLoading(true);
         setError('');
-        // Fetch a specific course. Replace with your actual logic if needed.
         const response = await api.get(`/courses/${courseId}`);
         setCourse(response.data);
       } catch (err) {
@@ -46,7 +40,7 @@ const CourseDetail = () => {
       }
     };
     fetchCourse();
-  }, []);
+  }, [courseId]);
 
   const handleModify = () => {
     if (course && course.id) {
@@ -56,12 +50,22 @@ const CourseDetail = () => {
     }
   };
 
-  const handleDelete = () => {
-    // Implement delete logic here.
-    // Make sure to ask for confirmation.
-    if (window.confirm('Are you sure you want to delete this course?')) {
-      console.log('Deleting course:', course.id);
-      // await api.delete(`/courses/${course.id}`);
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
+      try {
+        setLoading(true); // Show a loading state during deletion
+        setError('');
+        
+        await api.delete(`/courses/${course.id}`);
+        
+        alert('Course deleted successfully!');
+        navigate('/tutor/course'); // Navigate back to the course list
+        
+      } catch (err) {
+        console.error('Failed to delete course:', err);
+        setError('Failed to delete the course. Please try again.');
+        setLoading(false); // Turn off loading on error
+      }
     }
   };
 
@@ -91,8 +95,6 @@ const CourseDetail = () => {
     );
   }
 
-  // NOTE: This assumes the 'assessments' data is part of the course object from the API.
-  // If not, you may need to adjust this part.
   const assessments = course.assessments || [
     { id: 1, name: 'Final Exam Assessment Format: Individual 40%' },
     { id: 2, name: 'Hands-on Experiments (Labs) Assessment Format: Individual 20%' },
@@ -109,6 +111,9 @@ const CourseDetail = () => {
       </Box>
       
       <Box sx={courseDetailStyles.contentArea}>
+        {/* Display error message if deletion fails */}
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+
         <Box sx={courseDetailStyles.titleSection}>
           <Typography variant="h4" sx={courseDetailStyles.courseTitle}>
             {course.name}
@@ -118,7 +123,8 @@ const CourseDetail = () => {
               variant="contained" 
               startIcon={<EditIcon />}
               sx={courseDetailStyles.modifyButton}
-              onClick={handleModify} // Added onClick handler
+              onClick={handleModify}
+              disabled={loading} // Disable button while loading/deleting
             >
               Modify
             </Button>
@@ -126,7 +132,8 @@ const CourseDetail = () => {
               variant="contained" 
               startIcon={<DeleteIcon />}
               sx={courseDetailStyles.deleteButton}
-              onClick={handleDelete} // Added onClick handler
+              onClick={handleDelete}
+              disabled={loading} // Disable button while loading/deleting
             >
               Delete
             </Button>
@@ -137,7 +144,7 @@ const CourseDetail = () => {
           Course ID: {course.id}
         </Typography>
 
-        <Box sx={{ mb: 2 }}> {/* Added a Box for better spacing */}
+        <Box sx={{ mb: 2 }}>
           <Typography variant="h6" sx={courseDetailStyles.sectionTitle}>
              Availability:
           </Typography>
