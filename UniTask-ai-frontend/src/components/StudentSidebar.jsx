@@ -44,7 +44,6 @@ const Sidebar = () => {
     { text: 'Course', icon: <SchoolIcon />, path: '/student/course-detail' },
     { text: 'Assignment', icon: <AssignmentIcon />, path: '/student/assignment' },
     { text: 'FAQs', icon: <LiveHelpIcon />, path: '/student/faqs' },
-    { text: 'Help', icon: <HelpOutlineIcon />, path: '/student/help' },
   ];
 
   return (

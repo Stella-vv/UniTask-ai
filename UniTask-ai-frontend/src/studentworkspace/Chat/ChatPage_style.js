@@ -12,6 +12,7 @@ export const chatPageStyles = {
     p: 2,
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between', 
     gap: 2,
     mt: -4,
     ml: -4,
@@ -24,7 +25,26 @@ export const chatPageStyles = {
   
   headerTitle: {
     fontWeight: 600,
-    fontSize: '1.5rem',
+    fontSize: '1.75rem', // Changed from 1.5rem
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+
+
+  backButton: {
+    color: 'white',
+    // Changed from default 1px to 2px
+    border: '2px solid rgba(255, 255, 255, 0.7)', 
+    textTransform: 'none',
+    fontWeight: 600,
+    fontSize: '1rem',
+    borderRadius: '20px',
+    padding: '6px 16px',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      borderColor: 'white', // Keep border color white on hover
+    }
   },
 
   contentWrapper: {

@@ -80,7 +80,7 @@ const StudentAssignmentDetail = () => {
 
   // MODIFICATION: Added handler to navigate to the chat/help page
   const handleGoToChat = () => {
-    navigate('/student/help');
+    navigate(`/student/help/${assignmentId}`);
   };
 
   if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
@@ -131,7 +131,6 @@ const StudentAssignmentDetail = () => {
           )}
         </Box>
 
-        {/* MODIFICATION: The Forum and new Chat button are placed here, side-by-side */}
         <Box sx={assignmentDetailStyles.bottomButtonContainer}>
           <Button variant="contained" startIcon={<ForumIcon />} onClick={handleGoToForum} sx={assignmentDetailStyles.actionButton}>
             Forum
