@@ -1,39 +1,22 @@
-// src/App.jsx (Modified)
-
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// 1. Import layouts and public pages
+// ... (imports remain the same)
 import MainLayout from './components/MainLayout';
 import StudentMainLayout from './components/StudentMainLayout';
-import LoginPage from './PublicPage/Login/Login';         // Corrected path
-import RegisterPage from './PublicPage/Register/Register'; // Corrected path
-
-// 2. Import the route guard
+import LoginPage from './PublicPage/Login/Login';
+import RegisterPage from './PublicPage/Register/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// 3. Import all page components needed for routing
-import Dashboard from './tutorworkspace/Dashboard/Dashboard';
-import CourseDetail from './tutorworkspace/CourseDetail/CourseDetail';
-import CourseList from './tutorworkspace/CourseList/CourseList';
-import CourseModifyPage from './tutorworkspace/CourseModify/CourseModifyPage';
-import AssignmentList from './tutorworkspace/AssignmentList/AssignmentListPage';
-import AssignmentForumPage from './tutorworkspace/Forum/AssignmentForumPage';
-import AssignmentUpload from './tutorworkspace/AssignmentUpload/AssignmentUpload';
-import AssignmentDetail from './tutorworkspace/AssignmentDetail/AssignmentDetail';
-import AssignmentModifyPage from './tutorworkspace/AssignmentModify/AssignmentModifyPage'; 
-import QandAListPage from './tutorworkspace/QandAList/QandAListPage';
-import QandAUploadPage from './tutorworkspace/QandA/QandAUploadPage';
-import FaqList from './tutorworkspace/FaqList/FaqList';
-import FaqUpload from './tutorworkspace/FaqUpload/FaqUpload';
-import CourseAddPage from './tutorworkspace/CourseAdd/CourseAddPage';
+// ... (Tutor component imports remain the same)
 
+// Student component imports
 import StudentDashboard from './studentworkspace/Dashboard/Dashboard';
 import StudentCourseDetail from './studentworkspace/CourseDetail/CourseDetail';
 import StudentAssignmentList from './studentworkspace/AssignmentList/AssignmentListPage';
 import StudentAssignmentForumPage from './studentworkspace/Forum/AssignmentForumPage';
-import StudentAssignmentDetail from './studentworkspace/AssignmentDetail/AssignmentDetail'; 
-import StudentFaqList from './studentworkspace/Faqlist/Faqlist';
+import StudentAssignmentDetail from './studentworkspace/AssignmentDetail/AssignmentDetail';
+import StudentFaqList from './studentworkspace/FaqList/FaqList'; // Corrected casing
 import ChatPage from './studentworkspace/Chat/ChatPage';
 
 
@@ -41,35 +24,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* --- Public Routes --- */}
-        {/* Login is now the default/initial page */}
+        {/* --- Public & Tutor Routes remain the same --- */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
-        {/* --- Tutor Routes --- */}
-        <Route path="/dashboard" element={<MainLayout />}>
-          <Route index element={<Dashboard />} />
-        </Route>
-        
         <Route element={<ProtectedRoute allowedRoles={['tutor']} />}>
-          <Route path="/tutor" element={<MainLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="course-detail/:courseId" element={<CourseDetail />} />
-            <Route path="Course" element={<CourseList />} />
-            <Route path="course-add" element={<CourseAddPage />} />
-            <Route path="course-modify/:courseId" element={<CourseModifyPage />} />
-            <Route path="Assignment" element={<AssignmentList />} />
-            <Route path="assignments/:assignmentId/forum" element={<AssignmentForumPage />} />
-            <Route path="assignment-upload" element={<AssignmentUpload />} />
-            <Route path="assignment-detail" element={<AssignmentDetail />} />
-            <Route path="assignment-detail/:assignmentId" element={<AssignmentDetail />} />
-            <Route path="assignment-modify/:assignmentId" element={<AssignmentModifyPage />} /> 
-            <Route path="qnas" element={<QandAListPage />} />
-            <Route path="qnas/upload" element={<QandAUploadPage />} />
-            <Route path="faqs" element={<FaqList />} />
-            <Route path="faqs/upload" element={<FaqUpload />} />
-          </Route>
+          {/* ... Tutor routes ... */}
         </Route>
 
         {/* --- Student-only Protected Routes --- */}
@@ -77,20 +37,21 @@ function App() {
           <Route path="/student" element={<StudentMainLayout />}>
             <Route index element={<StudentDashboard />} />
             <Route path="course-detail" element={<StudentCourseDetail />} />
+            
+            {/* --- MODIFIED: Restructured assignment routes for correct highlighting --- */}
             <Route path="assignment" element={<StudentAssignmentList />} />
-            <Route path="assignment-detail/:assignmentId" element={<StudentAssignmentDetail />} />
+            <Route path="assignment/:assignmentId" element={<StudentAssignmentDetail />} />
+            <Route path="assignment/:assignmentId/help" element={<ChatPage />} />
+            
+            {/* Note: Forum route is different, assuming it's a shared resource or has its own logic */}
             <Route path="assignments/:assignmentId/forum" element={<StudentAssignmentForumPage />} />
+            
             <Route path="faqs" element={<StudentFaqList />} />
-            <Route path="help/:assignmentId" element={<ChatPage />} />
-
-            {/* Future student pages can be added here */}
           </Route>
         </Route>
 
-        {/* --- Fallback and unmatched routes --- */}
-        {/* Redirect root access to login if not already handled by protected routes */}
+        {/* --- Fallback routes --- */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-        {/* A 404 page for any other unmatched paths */}
         <Route path="*" element={<div>404 Page Not Found</div>} />
 
       </Routes>

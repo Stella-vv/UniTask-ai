@@ -78,9 +78,8 @@ const StudentAssignmentDetail = () => {
     navigate(`/student/assignments/${assignmentId}/forum`);
   };
 
-  // MODIFICATION: Added handler to navigate to the chat/help page
   const handleGoToChat = () => {
-    navigate(`/student/help/${assignmentId}`);
+    navigate(`/student/assignment/${assignmentId}/help`);
   };
 
   if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
