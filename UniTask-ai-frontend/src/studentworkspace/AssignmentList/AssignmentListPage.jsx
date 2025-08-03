@@ -36,7 +36,7 @@ const StudentAssignmentList = () => {
   }, []); // Empty array means this effect runs only once after the initial render
 
   const handleViewAssignmentDetail = (assignmentId) => {
-    navigate(`/student/assignment-detail/${assignmentId}`);
+    navigate(`/student/assignment/${assignmentId}`);
     console.log(`Navigating to assignment detail: ${assignmentId}`);
   };
 
