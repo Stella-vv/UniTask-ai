@@ -44,7 +44,8 @@ const CourseDetail = () => {
 
   const handleModify = () => {
     if (course && course.id) {
-      navigate(`/tutor/course-modify/${course.id}`);
+      
+      navigate(`/tutor/course/modify/${course.id}`);
     } else {
       alert('Cannot modify course: Course ID is missing.');
     }

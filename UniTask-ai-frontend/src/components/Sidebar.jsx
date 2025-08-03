@@ -40,11 +40,10 @@ const Logo = () => (
 
 const Sidebar = () => {
   const navItems = [
-    { text: 'Home', icon: <HomeIcon />, path: '/dashboard' },
+    { text: 'Home', icon: <HomeIcon />, path: '/tutor', end: true },
     { text: 'Course', icon: <SchoolIcon />, path: '/tutor/course' },
     { text: 'Assignment', icon: <AssignmentIcon />, path: '/tutor/assignment' },
     { text: 'Q&As', icon: <LiveHelpIcon />, path: '/tutor/qnas' },
-    // 移除了 Forum 导航项
     { text: 'FAQs', icon: <HelpOutlineIcon />, path: '/tutor/faqs' },
   ];
 
@@ -70,6 +69,7 @@ const Sidebar = () => {
               <ListItemButton 
                 component={NavLink}
                 to={item.path}
+                end={item.end}
                 sx={{
                   borderRadius: 12,
                   margin: '10px 16px',

@@ -102,9 +102,7 @@ const AssignmentDetail = () => {
 
   // Modify assignment
   const handleModify = () => {
-    console.log('Modify assignment:', assignmentData.id);
-    // Use navigate to go to the modify page
-    navigate(`/tutor/assignment-modify/${assignmentData.id}`);
+    navigate(`/tutor/assignment/modify/${assignmentId}`);
   };
 
   // handleDelete function

@@ -1,34 +1,33 @@
-// src/PublicPage/Login/Login.jsx (Modified)
+// src/PublicPage/Login/Login.jsx (Corrected)
 
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Alert, Link as MuiLink } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import api from "../../api"; // This relative path is correct based on your structure.
+import api from "../../api";
 
 export default function Login() {
   const nav = useNavigate();
-  const [email, setEmail]       = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [err, setErr]           = useState('');
+  const [err, setErr] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
       const { data } = await api.post('/login', { email, password });
 
-      // Ensure the backend returns a token and a user object with a role
       if (data.token && data.user && data.user.role) {
         // 1. Store authentication info
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user',  JSON.stringify(data.user));
-        // Store the role separately for quick access by the protected route
+        localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('role', data.user.role);
 
         // 2. Redirect based on the role
         if (data.user.role === 'student') {
           nav('/student'); // Redirect students to /student
         } else if (data.user.role === 'tutor') {
-          nav('/dashboard'); // Redirect tutors to the root (Tutor Dashboard)
+          // --- MODIFIED: Changed the path from '/dashboard' to '/tutor' ---
+          nav('/tutor');
         } else {
           setErr('Unrecognized user role.');
         }

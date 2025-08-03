@@ -27,11 +27,11 @@ const CourseList = () => {
   }, []);
 
   const handleViewCourseDetail = (courseId) => {
-    navigate(`/tutor/course-detail/${courseId}`);
+    navigate(`/tutor/course/${courseId}`);
   };
 
   const handleAddCourse = () => {
-    navigate('/tutor/course-add');
+    navigate('/tutor/course/add');
   };
 
   return (

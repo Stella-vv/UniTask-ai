@@ -32,11 +32,11 @@ const AssignmentList = () => {
   }, []); // Empty array means this effect runs once after the initial render
 
   const handleUploadAssignment = () => {
-    navigate('/tutor/assignment-upload');
+    navigate('/tutor/assignment/upload');
   };
 
   const handleViewAssignmentDetail = (assignmentId) => {
-    navigate(`/tutor/assignment-detail/${assignmentId}`); // Navigate to assignment detail page
+    navigate(`/tutor/assignment/${assignmentId}`);
   };
 
   if (loading) {

@@ -120,7 +120,7 @@ const AssignmentModifyPage = () => {
       });
       
       alert('Assignment updated successfully!');
-      navigate(`/tutor/assignment-detail/${assignmentId}`);
+      navigate(`/tutor/assignment/${assignmentId}`);
     } catch (err) {
       console.error('Failed to update assignment:', err);
       const errorMessage = err.response?.data?.message || 'Failed to update assignment. Please try again.';
@@ -132,7 +132,7 @@ const AssignmentModifyPage = () => {
 
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel?')) {
-      navigate(`/tutor/assignment-detail/${assignmentId}`);
+      navigate(`/tutor/assignment/${assignmentId}`);
     }
   };
   
