@@ -81,7 +81,7 @@ function App() {
             <Route path="assignment-detail/:assignmentId" element={<StudentAssignmentDetail />} />
             <Route path="assignments/:assignmentId/forum" element={<StudentAssignmentForumPage />} />
             <Route path="faqs" element={<StudentFaqList />} />
-            <Route path="help" element={<ChatPage />} />
+            <Route path="help/:assignmentId" element={<ChatPage />} />
 
             {/* Future student pages can be added here */}
           </Route>
