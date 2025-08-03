@@ -1,6 +1,3 @@
-// src/tutorworkspace/CourseModify/CourseModifyPage_style.js
-
-// This style is similar to other form pages in your project for consistency
 export const courseModifyStyles = {
   container: {
     height: '100%',
@@ -50,6 +47,39 @@ export const courseModifyStyles = {
     fontWeight: 600,
     fontSize: '1.125rem',
     mb: 1,
+  },
+
+  textField: {
+    '& .MuiOutlinedInput-root': {
+      bgcolor: 'white',
+      borderRadius: '8px',
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'primary.main',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'primary.main',
+      },
+    },
+  },
+
+  selectField: {
+    bgcolor: 'white',
+    borderRadius: '8px',
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'rgba(0, 0, 0, 0.23)',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'primary.main',
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'primary.main',
+    },
+  
+    '& .MuiSelect-select': {
+      color: 'text.courseText', 
+      fontSize: '1rem',
+      padding: '16.5px 14px',
+    },
   },
   buttonContainer: {
     display: 'flex',
