@@ -17,29 +17,31 @@ import {
   Forum as ForumIcon,
   Description as DescriptionIcon,
   AttachFile as AttachFileIcon,
+  LiveHelp as QnaIcon, // Icon for Q&A
+  HelpOutline as FaqIcon, // Icon for FAQ
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { assignmentDetailStyles } from './AssignmentDetail_style';
 import api from '../../api';
 
 const AssignmentDetail = () => {
-  // 从路由获取作业ID
+  // Get assignment ID from route
   const { assignmentId } = useParams();
   const navigate = useNavigate();
   
-  // 状态管理
+  // State management
   const [assignmentData, setAssignmentData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 获取作业详情数据
+  // Fetch assignment detail data
   useEffect(() => {
     const fetchAssignmentDetail = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // 从localStorage获取用户信息
+        // Get user info from localStorage
         const userString = localStorage.getItem('user');
         if (!userString) {
           setError('User not logged in. Please log in again.');
@@ -49,21 +51,20 @@ const AssignmentDetail = () => {
         }
 
         const user = JSON.parse(userString);
-        const userId = user.id;
 
-        // 如果没有提供assignmentId，则显示错误
+        // If assignmentId is not provided, show an error
         if (!assignmentId) {
           setError('Assignment ID not provided');
           setLoading(false);
           return;
         }
 
-        // 直接获取指定作业的详情
+        // Directly fetch the details of the specified assignment
         const response = await api.get(`/assignments/detail/${assignmentId}`);
         const assignment = response.data;
 
 
-        // 格式化作业数据以适配现有的UI组件
+        // Format assignment data to fit existing UI components
         const formattedAssignment = {
           id: assignment.id,
           name: assignment.name,
@@ -72,8 +73,6 @@ const AssignmentDetail = () => {
           rubric: assignment.rubric || null,
           attachments: assignment.attachments || [],
           courseName: assignment.courseName || 'Unknown Course',
-          createdAt: assignment.createdAt,
-          updatedAt: assignment.updatedAt
         };
 
         setAssignmentData(formattedAssignment);
@@ -96,7 +95,7 @@ const AssignmentDetail = () => {
     if (assignmentId) {
       fetchAssignmentDetail();
     }
-  }, [assignmentId]);
+  }, [assignmentId, navigate]);
 
 
 
@@ -128,14 +127,23 @@ const AssignmentDetail = () => {
     }
   };
 
-  // 跳转到论坛
+  // Navigate to forum
   const handleGoToForum = () => {
-    const targetAssignmentId = assignmentId || assignmentData?.id || '12345'; // 使用路由参数、数据ID或默认值
-    console.log('Navigate to forum, assignment ID:', targetAssignmentId);
-    navigate(`/tutor/assignments/${targetAssignmentId}/forum`);
+    navigate(`/tutor/assignment/${assignmentId}/forum`);
   };
 
-  // 下载文件
+  // Navigate to Q&As
+  const handleGoToQAs = () => {
+    navigate(`/tutor/assignment/${assignmentId}/qnas`);
+  };
+
+  // Navigate to FAQs
+  const handleGoToFAQs = () => {
+    navigate(`/tutor/assignment/${assignmentId}/faqs`);
+  };
+
+
+  // Download file
   const handleDownloadFile = (fileObject) => {
     const filename = fileObject?.filename;
     if (!filename) { alert('Filename is not available.'); return; }
@@ -149,7 +157,7 @@ const AssignmentDetail = () => {
     link.parentNode.removeChild(link);
   };
 
-  // 获取文件图标
+  // Get file icon
   const getFileIcon = (fileType) => {
     switch (fileType) {
       case 'pdf':
@@ -164,7 +172,7 @@ const AssignmentDetail = () => {
     }
   };
 
-  // 加载状态
+  // Loading state
   if (loading) {
     return (
       <Box sx={assignmentDetailStyles.container}>
@@ -173,16 +181,14 @@ const AssignmentDetail = () => {
             Assignment Detail
           </Typography>
         </Box>
-        <Box sx={assignmentDetailStyles.contentArea}>
-          <Typography variant="h6" sx={{ textAlign: 'center', py: 4 }}>
-            Loading assignment details...
-          </Typography>
+        <Box sx={{...assignmentDetailStyles.contentArea, justifyContent: 'center', alignItems: 'center'}}>
+          <CircularProgress />
         </Box>
       </Box>
     );
   }
 
-  // 错误状态
+  // Error state
   if (error) {
     return (
       <Box sx={assignmentDetailStyles.container}>
@@ -191,28 +197,26 @@ const AssignmentDetail = () => {
             Assignment Detail
           </Typography>
         </Box>
-        <Box sx={assignmentDetailStyles.contentArea}>
-          <Typography variant="h6" sx={{ textAlign: 'center', py: 4, color: 'error.main' }}>
-            {error}
-          </Typography>
+        <Box sx={{...assignmentDetailStyles.contentArea, justifyContent: 'center', alignItems: 'center'}}>
+          <Alert severity="error">{error}</Alert>
         </Box>
       </Box>
     );
   }
 
-  // 正常显示
+  // Normal display
   return (
     <Box sx={assignmentDetailStyles.container}>
-      {/* 顶部蓝色区域 */}
+      {/* Top blue area */}
       <Box sx={assignmentDetailStyles.topHeader}>
         <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>
           Assignment Detail
         </Typography>
       </Box>
 
-      {/* 内容区域 */}
+      {/* Content area */}
       <Box sx={assignmentDetailStyles.contentArea}>
-        {/* 作业标题和操作按钮 */}
+        {/* Assignment title and action buttons */}
         <Box sx={assignmentDetailStyles.titleSection}>
           <Typography variant="h4" sx={assignmentDetailStyles.assignmentTitle}>
             {assignmentData.name}
@@ -237,34 +241,30 @@ const AssignmentDetail = () => {
           </Box>
         </Box>
 
-        {/* 作业基本信息 */}
+        {/* Basic assignment information */}
         <Box sx={assignmentDetailStyles.infoSection}>
-          <Typography variant="h6" sx={assignmentDetailStyles.infoLabel}>
-            Assignment id : <span style={{ fontWeight: 400 }}>{assignmentData.id}</span>
-          </Typography>
           <Typography variant="h6" sx={assignmentDetailStyles.infoLabel}>
             Due Date : <span style={{ fontWeight: 400 }}>{assignmentData.dueDate}</span>
           </Typography>
         </Box>
 
-        {/* 作业描述 */}
+        {/* Assignment description */}
         <Box sx={assignmentDetailStyles.descriptionSection}>
           <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
-            Assignment Description :
+            Assignment Description:
           </Typography>
           <Typography variant="body1" sx={assignmentDetailStyles.descriptionText}>
             {assignmentData.description}
           </Typography>
         </Box>
 
-        {/* 评分标准 */}
+        {/* Rubric */}
         {assignmentData.rubric && assignmentData.rubric.filename && (
           <Box sx={assignmentDetailStyles.rubricSection}>
             <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
               Rubric:
             </Typography>
             <Chip
-              /* FIX: Use the correct property 'filename' for the label */
               label={assignmentData.rubric.filename}
               onClick={() => handleDownloadFile(assignmentData.rubric)}
               sx={assignmentDetailStyles.fileChip}
@@ -273,16 +273,15 @@ const AssignmentDetail = () => {
           </Box>
         )}
 
-        {/* 附件列表 */}
+        {/* Attachment list */}
         <Box sx={assignmentDetailStyles.attachmentSection}>
           <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
-            Attachment :
+            Attachment(s):
           </Typography>
             <List sx={assignmentDetailStyles.attachmentList}>
               {assignmentData.attachments.filter(file => file && (file.fileName || file.filename)).map((file, index) => (
-                // 修正: 使用更可靠的 key，并直接将 key 放在 ListItem 上
                 <ListItem
-                  key={file.id || index} // 使用 file.id，如果不存在则使用 index 作为备用 key
+                  key={file.id || index}
                   sx={assignmentDetailStyles.attachmentItem}
                   onClick={() => handleDownloadFile(file)}
                 >
@@ -290,7 +289,6 @@ const AssignmentDetail = () => {
                     {getFileIcon(file.type)}
                   </Box>
                   <ListItemText
-                    // 修正: 同时检查 fileName 和 filename
                     primary={file.fileName || file.filename}
                     primaryTypographyProps={{
                       sx: assignmentDetailStyles.fileName
@@ -301,15 +299,31 @@ const AssignmentDetail = () => {
             </List>
         </Box>
 
-        {/* 论坛按钮 */}
-        <Box sx={assignmentDetailStyles.forumButtonContainer}>
+        {/* --- MODIFIED: Button container with all three buttons --- */}
+        <Box sx={assignmentDetailStyles.bottomButtonContainer}>
           <Button
             variant="contained"
             startIcon={<ForumIcon />}
             onClick={handleGoToForum}
-            sx={assignmentDetailStyles.forumButton}
+            sx={assignmentDetailStyles.actionButton}
           >
             Forum
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<QnaIcon />}
+            onClick={handleGoToQAs}
+            sx={assignmentDetailStyles.actionButton}
+          >
+            Q&As
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<FaqIcon />}
+            onClick={handleGoToFAQs}
+            sx={assignmentDetailStyles.actionButton}
+          >
+            FAQs
           </Button>
         </Box>
       </Box>

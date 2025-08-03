@@ -1,11 +1,15 @@
-// src/tutorworkspace/FaqList/FaqList_styles.js
-export const faqListStyles = {
-  container: { height: '100%', display: 'flex', flexDirection: 'column', p: 0 },
+// test/tutorworkspace/FaqList/FaqList_style.js
 
+export const faqListStyles = {
+  container: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    p: 0,
+  },
   topHeader: {
     bgcolor: 'primary.main',
-    // Modified: Reduced the height from 100px to 80px to make it thinner
-    height: '80px',
+    height: '100px',
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
     display: 'flex',
@@ -13,15 +17,16 @@ export const faqListStyles = {
     justifyContent: 'flex-start',
     color: 'white',
     p: 3,
-    gap: 2,
     mt: -4,
     ml: -4,
     mr: -4,
     width: 'calc(100% + 64px)',
   },
-
-  headerTitle: { color: 'white', fontWeight: 600, fontSize: '2rem' },
-
+  headerTitle: {
+    color: 'white',
+    fontWeight: 600,
+    fontSize: '1.75rem',
+  },
   contentArea: {
     bgcolor: '#EFF8FF',
     borderBottomLeftRadius: '16px',
@@ -33,54 +38,55 @@ export const faqListStyles = {
     gap: 3,
     overflowY: 'auto',
   },
-
   controlSection: {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 2,
-    mb: 2,
+    justifyContent: 'flex-end',
   },
-
-  courseSelector: {
-    minWidth: 300,
-    bgcolor: 'white',
+  uploadButton: {
+    bgcolor: 'primary.main',
+    color: 'white',
+    fontWeight: 600,
+    px: 3,
+    py: 1.5,
+    borderRadius: '25px',
+    fontSize: '1rem',
+    textTransform: 'none',
+    '&:hover': {
+        bgcolor: 'primary.dark',
+    },
+  },
+  accordion: {
+    mb: 1,
     borderRadius: '8px',
-    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.23)' },
-    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
-    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+    border: '1px solid #E2E8F0',
+    '&:before': {
+      display: 'none',
+    },
   },
-
+  questionText: {
+    fontWeight: 500,
+  },
+  accordionDetails: {
+    backgroundColor: '#F9FAFB',
+    borderTop: '1px solid #E2E8F0',
+    padding: '16px',
+  },
+  answerText: {
+    color: 'text.secondary',
+  },
+  // --- START: STYLES FOR EMPTY STATE (To match Q&A page) ---
   emptyState: {
+    flex: 1,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    py: 8,
     color: 'text.secondary',
   },
-
-  accordion: {
-    mb: 1.5,
-    border: '1px solid #E2E8F0',
-    borderRadius: '12px !important',
-    boxShadow: 'none',
-    '&:before': { display: 'none' },
+  emptyIcon: {
+    fontSize: '64px',
+    mb: 2,
+    color: 'text.disabled',
   },
-
-  questionText: {
-    fontWeight: 600,
-    fontSize: '1rem',
-    color: 'text.courseText',
-  },
-
-  accordionDetails: {
-    bgcolor: 'white',
-    borderTop: '1px solid #E2E8F0',
-  },
-
-  answerText: {
-    whiteSpace: 'pre-wrap',
-    color: '#475569',
-  },
+  // --- END: STYLES FOR EMPTY STATE ---
 };
