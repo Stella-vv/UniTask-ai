@@ -26,6 +26,7 @@ import QandAListPage from './tutorworkspace/QandAList/QandAListPage';
 import QandAUploadPage from './tutorworkspace/QandA/QandAUploadPage';
 import FaqList from './tutorworkspace/FaqList/FaqList';
 import FaqUpload from './tutorworkspace/FaqUpload/FaqUpload';
+import CourseAddPage from './tutorworkspace/CourseAdd/CourseAddPage';
 
 import StudentDashboard from './studentworkspace/Dashboard/Dashboard';
 import StudentCourseDetail from './studentworkspace/CourseDetail/CourseDetail';
@@ -56,6 +57,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="course-detail/:courseId" element={<CourseDetail />} />
             <Route path="Course" element={<CourseList />} />
+            <Route path="course-add" element={<CourseAddPage />} />
             <Route path="course-modify/:courseId" element={<CourseModifyPage />} />
             <Route path="Assignment" element={<AssignmentList />} />
             <Route path="assignments/:assignmentId/forum" element={<AssignmentForumPage />} />
