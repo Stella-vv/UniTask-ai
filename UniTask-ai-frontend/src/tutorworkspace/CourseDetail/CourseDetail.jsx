@@ -186,12 +186,13 @@ const CourseDetail = () => {
           >
             Assignment
           </Button>
-          <Button
-            component={RouterLink} to="/tutor/qnas" variant="contained"
+          {/* <Button
+            // Navigate to Q&As
+            component={RouterLink} to="/tutor/assignment/${assignmentId}/qnas" variant="contained"
             startIcon={<LiveHelpIcon />} sx={courseDetailStyles.navButton}
           >
             Q&As
-          </Button>
+          </Button> */}
         </Box>
       </Box>
     </Box>
