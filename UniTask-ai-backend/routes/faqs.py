@@ -1,47 +1,60 @@
-# routes/faqs.py
-
 from flask import Blueprint, request, jsonify
 from models import db, FAQ
 
 faq_bp = Blueprint("faq", __name__, url_prefix="/api/faqs")
 
-# create FAQ
+# Create FAQ
 @faq_bp.route("/", methods=["POST"])
 def create_faq():
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    print("📥 Received data for FAQ creation:", data)
+
+    if not data:
+        return jsonify({"error": "No JSON body received"}), 400
+
     question = data.get("question")
     answer = data.get("answer")
     uploaded_by = data.get("uploaded_by")
-    course_id = data.get("course_id")
+    assignment_id = data.get("assignment_id")
 
-    if not all([question, answer, uploaded_by, course_id]):
+    # Validate all required fields are present
+    if not all([question, answer, uploaded_by, assignment_id]):
+        print("❌ Missing fields:", {
+            "question": question,
+            "answer": answer,
+            "uploaded_by": uploaded_by,
+            "assignment_id": assignment_id
+        })
         return jsonify({"error": "Missing required fields"}), 400
 
-    faq = FAQ(
-        question=question,
-        answer=answer,
-        uploaded_by=uploaded_by,
-        course_id=course_id
-    )
+    try:
+        faq = FAQ(
+            question=question,
+            answer=answer,
+            uploaded_by=uploaded_by,
+            assignment_id=assignment_id
+        )
+        db.session.add(faq)
+        db.session.commit()
 
-    db.session.add(faq)
-    db.session.commit()
+        return jsonify({
+            "message": "FAQ created successfully",
+            "faq": {
+                "id": faq.id,
+                "question": faq.question,
+                "answer": faq.answer,
+                "uploaded_by": faq.uploaded_by,
+                "assignment_id": faq.assignment_id
+            }
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
 
-    return jsonify({
-        "message": "FAQ created successfully",
-        "faq": {
-            "id": faq.id,
-            "question": faq.question,
-            "answer": faq.answer,
-            "uploaded_by": faq.uploaded_by,
-            "course_id": faq.course_id
-        }
-    }), 201
-
-# get course FAQ list
-@faq_bp.route("/course/<int:course_id>", methods=["GET"])
-def get_course_faqs(course_id):
-    faqs = FAQ.query.filter_by(course_id=course_id).order_by(FAQ.id.desc()).all()
+# Get all FAQs for a given assignment
+@faq_bp.route("/assignment/<int:assignment_id>", methods=["GET"])
+def get_assignment_faqs(assignment_id):
+    faqs = FAQ.query.filter_by(assignment_id=assignment_id).order_by(FAQ.id.desc()).all()
     return jsonify([
         {
             "id": f.id,
@@ -51,21 +64,22 @@ def get_course_faqs(course_id):
         } for f in faqs
     ]), 200
 
-# Get a single FAQ
+# Get a single FAQ by ID
 @faq_bp.route("/<int:faq_id>", methods=["GET"])
 def get_faq(faq_id):
     faq = FAQ.query.get(faq_id)
     if not faq:
         return jsonify({"error": "FAQ not found"}), 404
+
     return jsonify({
         "id": faq.id,
         "question": faq.question,
         "answer": faq.answer,
         "uploaded_by": faq.uploaded_by,
-        "course_id": faq.course_id
+        "assignment_id": faq.assignment_id
     }), 200
 
-# delete FAQ
+# Delete FAQ
 @faq_bp.route("/<int:faq_id>", methods=["DELETE"])
 def delete_faq(faq_id):
     faq = FAQ.query.get(faq_id)
@@ -76,18 +90,23 @@ def delete_faq(faq_id):
     db.session.commit()
     return jsonify({"message": "FAQ deleted"}), 200
 
-# update FAQ
+# Update FAQ
 @faq_bp.route("/<int:faq_id>", methods=["PUT"])
 def update_faq(faq_id):
     faq = FAQ.query.get(faq_id)
     if not faq:
         return jsonify({"error": "FAQ not found"}), 404
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    print("✏️ Received data for FAQ update:", data)
+
+    if not data:
+        return jsonify({"error": "No JSON body received"}), 400
+
     faq.question = data.get("question", faq.question)
     faq.answer = data.get("answer", faq.answer)
-    db.session.commit()
 
+    db.session.commit()
     return jsonify({
         "message": "FAQ updated",
         "faq": {

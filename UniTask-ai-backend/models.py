@@ -29,13 +29,13 @@ class Course(db.Model):
     semester = db.Column(db.String(10), nullable=True)
 
     assignments = db.relationship("Assignment", backref="course", lazy=True)
-    faqs = db.relationship("FAQ", backref="course", lazy=True)
+    #faqs = db.relationship("FAQ", backref="course", lazy=True)
 
 class QAUpload(db.Model):
     __tablename__ = "qa_uploads"
 
     id = db.Column(db.Integer, primary_key=True)
-    course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
+    assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), nullable=False)
     uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     filename = db.Column(db.String(255), nullable=False)       # 原始文件名
@@ -46,7 +46,8 @@ class QAUpload(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     uploader = db.relationship("User", backref="qa_uploads")
-    course = db.relationship("Course", backref="qa_uploads")
+    assignment = db.relationship("Assignment", backref="qa_uploads")
+    #course = db.relationship("Course", backref="qa_uploads")
 
 
 class Assignment(db.Model):
@@ -106,7 +107,7 @@ class FAQ(db.Model):
     question = db.Column(db.Text, nullable=False)
     answer = db.Column(db.Text, nullable=False)
 
-    course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
+    assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), nullable=False)
     uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
 class Question(db.Model):

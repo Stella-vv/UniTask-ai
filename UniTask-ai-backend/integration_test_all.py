@@ -1,7 +1,12 @@
 import requests
 import time
+import os
 
 BASE = "http://localhost:8008/api"
+
+def fail(message, res):
+    print(f"❌ {message}: {res.status_code} {res.text}")
+    exit(1)
 
 # ====== 1. Register a test user ======
 timestamp = int(time.time())
@@ -14,61 +19,34 @@ res = requests.post(f"{BASE}/register", json={
     "school": "CSE",
     "year": 2025
 })
-user = res.json().get("user")
+if res.status_code != 201:
+    fail("Failed to register user", res)
+user = res.json()["user"]
 print("✅ User registered:", user)
 
 # ====== 2. Create a course ======
 print("\n📌 Creating course...")
-course_res = requests.post(f"{BASE}/courses/", json={
+res = requests.post(f"{BASE}/courses/", json={
     "name": "Web Front-End Programming",
-    "description": (
-        "This is a first course in wireless and mobile networking examining the fundamental theories as well as "
-        "the latest advances in wireless data and mobile communication networks. Topics include fundamental concepts "
-        "in wireless coding, modulation, and signal propagation, WiFi and wireless local area networks, cellular networks, "
-        "Bluetooth, and Internet of Things networks. The course will also overview some of the emerging wireless networking "
-        "concepts, such as wireless sensing, and drone-assisted mobile networks. Hands-on experiments with mobile devices "
-        "will be part of the learning exercise, which involves wireless packet capture, analysis, and programming."
-    ),
+    "description": "This is a frontend and wireless course...",
     "year": 2025,
     "semester": "T2"
 })
-course = course_res.json()
+if res.status_code != 201:
+    fail("Failed to create course", res)
+course = res.json()
 print("✅ Course created:", course)
 
-# ====== 3. Create a FAQ ======
-print("\n📌 Creating FAQ...")
-faq_res = requests.post(f"{BASE}/faqs/", json={
-    "question": "When is the midterm exam?",
-    "answer": "The midterm is scheduled for Week 6.",
-    "uploaded_by": user["id"],
-    "course_id": course["id"]
-})
-faq_data = faq_res.json()
-faq_id = faq_data["faq"]["id"]
-print("✅ FAQ created:", faq_data)
+# ====== 3. Create assignment (and forum) ======
+print("\n📌 Creating assignment and forum...")
+rubric_path = "uploads/dummy_rubric.pdf"
+attach_path = "uploads/dummy_attach.zip"
+if not os.path.exists(rubric_path) or not os.path.exists(attach_path):
+    print("❌ Required files not found in uploads/. Please check your test files.")
+    exit(1)
 
-# ====== 4. Retrieve course FAQs ======
-print("\n📌 Retrieving course FAQs...")
-faq_list_res = requests.get(f"{BASE}/faqs/course/{course['id']}")
-print("📋 FAQ List:", faq_list_res.json())
-
-# ====== 5. Update FAQ ======
-print("\n✏️ Updating FAQ...")
-update_res = requests.put(f"{BASE}/faqs/{faq_id}", json={
-    "question": "What week is the midterm?",
-    "answer": "It will be held in Week 7 instead."
-})
-print("✅ FAQ updated:", update_res.json())
-
-# ====== 6. Delete FAQ ======
-print("\n🗑️ Deleting FAQ...")
-del_res = requests.delete(f"{BASE}/faqs/{faq_id}")
-print("✅ FAQ deleted:", del_res.json())
-
-# ====== 7. Create assignment (also creates forum) ======
-print("\n📌 Creating assignment (and forum)...")
-with open("uploads/dummy_rubric.pdf", "rb") as rubric_file, open("uploads/dummy_attach.zip", "rb") as attachment_file:
-    assignment_res = requests.post(f"{BASE}/assignments", files={
+with open(rubric_path, "rb") as rubric_file, open(attach_path, "rb") as attachment_file:
+    res = requests.post(f"{BASE}/assignments", files={
         "rubric": rubric_file,
         "attachment": attachment_file
     }, data={
@@ -79,38 +57,89 @@ with open("uploads/dummy_rubric.pdf", "rb") as rubric_file, open("uploads/dummy_
         "user_id": user["id"]
     })
 
-print("📥 Assignment creation status:", assignment_res.status_code)
-assignment_data = assignment_res.json()
-print("✅ Assignment created:", assignment_data)
+if res.status_code != 201:
+    fail("Failed to create assignment", res)
 
+assignment_data = res.json()
 assignment_id = assignment_data["assignment"]["id"]
 forum_id = assignment_data["forum"]["id"]
-print(f"✅ Forum automatically created with ID: {forum_id} for assignment ID: {assignment_id}")
+print(f"✅ Assignment and forum created (Assignment ID: {assignment_id}, Forum ID: {forum_id})")
 
-# ====== 8. Add a question to the forum ======
+# ====== 4. Create a FAQ ======
+print("\n📌 Creating FAQ...")
+
+# Debug: print the values before sending the request
+print("📤 Sending FAQ creation payload:", {
+    "question": "When is the midterm exam?",
+    "answer": "The midterm is scheduled for Week 6.",
+    "uploaded_by": user["id"],
+    "assignment_id": assignment_id
+})
+print("🧪 Types → user_id:", type(user["id"]), "assignment_id:", type(assignment_id))
+
+res = requests.post(f"{BASE}/faqs/", json={
+    "question": "When is the midterm exam?",
+    "answer": "The midterm is scheduled for Week 6.",
+    "uploaded_by": user["id"],
+    "assignment_id": assignment_id
+})
+
+if res.status_code != 201:
+    fail("Failed to create FAQ", res)
+
+faq = res.json()["faq"]
+faq_id = faq["id"]
+print("✅ FAQ created:", faq)
+
+# ====== 5. Retrieve course FAQs ======
+print("\n📌 Retrieving assignment FAQs...")
+res = requests.get(f"{BASE}/faqs/assignment/{assignment_id}")
+print("📋 FAQ List:", res.json())
+
+# ====== 6. Update FAQ ======
+print("\n✏️ Updating FAQ...")
+res = requests.put(f"{BASE}/faqs/{faq_id}", json={
+    "question": "What week is the midterm?",
+    "answer": "It will be held in Week 7 instead."
+})
+if res.status_code != 200:
+    fail("Failed to update FAQ", res)
+print("✅ FAQ updated:", res.json())
+
+# ====== 7. Delete FAQ ======
+print("\n🗑️ Deleting FAQ...")
+res = requests.delete(f"{BASE}/faqs/{faq_id}")
+if res.status_code != 200:
+    fail("Failed to delete FAQ", res)
+print("✅ FAQ deleted:", res.json())
+
+# ====== 8. Post question to forum ======
 print("\n📌 Posting question to forum...")
-question_res = requests.post(f"{BASE}/forum/{forum_id}/questions", json={
+res = requests.post(f"{BASE}/forum/{forum_id}/questions", json={
     "content": "Can the deadline for this assignment be extended?",
     "user_id": user["id"]
 })
-if question_res.status_code == 201:
-    print("✅ Question posted to forum.")
-else:
-    print("❌ Failed to post question:", question_res.status_code, question_res.text)
+if res.status_code != 201:
+    fail("Failed to post forum question", res)
+print("✅ Question posted to forum.")
 
-# ====== 9. Upload Q&A file ======
+# ====== 9. Upload Q&A CSV ======
 print("\n📌 Uploading Q&A file...")
-with open("uploads/dummy_qas.csv", "rb") as file:
-    upload_res = requests.post(f"{BASE}/qa/upload", files={
+qas_path = "uploads/dummy_qas.csv"
+if not os.path.exists(qas_path):
+    print("❌ Q&A file not found:", qas_path)
+    exit(1)
+
+with open(qas_path, "rb") as file:
+    res = requests.post(f"{BASE}/qa/upload", files={
         "file": file
     }, data={
-        "course_id": course["id"],
+        "assignment_id": assignment_id,
         "user_id": user["id"],
         "description": "Test uploading CSV Q&A data"
     })
 
-print("📎 Upload status:", upload_res.status_code)
-if upload_res.status_code == 201:
+if res.status_code == 201:
     print("✅ Q&A file uploaded successfully.")
 else:
-    print("❌ Failed to upload Q&A file:", upload_res.text)
+    fail("Failed to upload Q&A file", res)

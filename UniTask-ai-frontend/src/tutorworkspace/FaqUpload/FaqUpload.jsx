@@ -87,7 +87,7 @@ const FaqUpload = () => {
       };
       
       // IMPORTANT: This requires a backend endpoint like POST /api/faqs/assignment
-      await api.post('/faqs/assignment', body);
+      await api.post('/faqs/', body);
       alert('FAQ uploaded successfully!');
       
       navigate(`/tutor/assignment/${assignmentId}/faqs`); // Navigate back to the assignment's FAQ list

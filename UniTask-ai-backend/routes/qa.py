@@ -9,11 +9,11 @@ qa_bp = Blueprint("qa", __name__, url_prefix="/api/qa")
 @qa_bp.route("/upload", methods=["POST"])
 def upload_qa_file():
     file = request.files.get("file")
-    course_id = request.form.get("course_id")
+    assignment_id = request.form.get("assignment_id")
     user_id = request.form.get("user_id")
     description = request.form.get("description", "")
 
-    if not file or not course_id or not user_id:
+    if not file or not assignment_id or not user_id:
         return jsonify({"error": "Missing required fields"}), 400
 
     filename = secure_filename(file.filename)
@@ -24,7 +24,7 @@ def upload_qa_file():
     file.save(filepath)
 
     upload_record = QAUpload(
-        course_id=course_id,
+        assignment_id=assignment_id,
         uploaded_by=user_id,
         filename=filename,
         filepath=filepath,
@@ -37,10 +37,10 @@ def upload_qa_file():
 
     return jsonify({"message": "Q&A uploaded", "upload_id": upload_record.id}), 201
 
-# Obtain all uploaded records of a certain course
-@qa_bp.route("/course/<int:course_id>/uploads", methods=["GET"])
-def get_uploaded_qas(course_id):
-    uploads = QAUpload.query.filter_by(course_id=course_id).all()
+# Obtain all uploaded records of a certain assignment
+@qa_bp.route("/assignment/<int:assignment_id>/uploads", methods=["GET"])
+def get_uploaded_qas(assignment_id):
+    uploads = QAUpload.query.filter_by(assignment_id=assignment_id).all()
     result = []
     for u in uploads:
         result.append({

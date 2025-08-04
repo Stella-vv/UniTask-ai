@@ -122,7 +122,7 @@ const QandAUploadPage = () => {
       }
       
       // IMPORTANT: This requires a backend endpoint like `/api/qa/assignment/upload`
-      await api.post('/qa/assignment/upload', submitData, {
+      await api.post('/qa/upload', submitData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
