@@ -72,10 +72,7 @@ const ChatPage = () => {
     setIsLoading(true);
     setError('');
     try {
-      const response = await api.post('/mock-ai/ask', {
-        query: userMessage,
-        assignment_id: assignmentId
-      });
+      const response = await api.post('/ai/ask', { query: userMessage, assignment_id: assignmentId });
       const assistantResponse = response.data.answer || 'Sorry, I could not get a response.';
       setMessages(prev => [...prev, { sender: 'assistant', text: assistantResponse }]);
     } catch (err) {
