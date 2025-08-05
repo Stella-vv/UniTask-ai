@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import db, FAQ
+import traceback
 
 faq_bp = Blueprint("faq", __name__, url_prefix="/api/faqs")
 
@@ -31,8 +32,8 @@ def create_faq():
         faq = FAQ(
             question=question,
             answer=answer,
-            uploaded_by=uploaded_by,
-            assignment_id=assignment_id
+            uploaded_by=int(uploaded_by),
+            assignment_id=int(assignment_id)
         )
         db.session.add(faq)
         db.session.commit()
@@ -47,9 +48,13 @@ def create_faq():
                 "assignment_id": faq.assignment_id
             }
         }), 201
+
     except Exception as e:
+        print("🔥 Exception during FAQ creation:")
+        traceback.print_exc()  # 打印详细错误堆栈
         db.session.rollback()
         return jsonify({"error": f"Database error: {str(e)}"}), 500
+
 
 # Get all FAQs for a given assignment
 @faq_bp.route("/assignment/<int:assignment_id>", methods=["GET"])

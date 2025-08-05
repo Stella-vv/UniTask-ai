@@ -7,7 +7,7 @@ USE_MOCK = os.getenv("UNITASK_MOCK", "false").lower() == "true"
 
 # ===== initial Flask  =====
 app = Flask(__name__)
-
+app.config["DEBUG"] = True
 # ===== using CORS =====
 CORS(
     app,
