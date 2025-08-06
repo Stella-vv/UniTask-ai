@@ -75,7 +75,7 @@ const StudentAssignmentDetail = () => {
   };
   
   const handleGoToForum = () => {
-    navigate(`/student/assignments/${assignmentId}/forum`);
+    navigate(`/student/assignment/${assignmentId}/forum`);
   };
 
   const handleGoToChat = () => {

@@ -61,7 +61,7 @@ const ChatPage = () => {
   }, [messages]);
   
   const handleBackToDetail = () => {
-    navigate(`/student/assignment-detail/${assignmentId}`);
+    navigate(`/student/assignment/${assignmentId}`);
   };
 
   const handleSendMessage = async () => {
