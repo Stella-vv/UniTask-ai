@@ -13,13 +13,29 @@ services:
     ports:
       - "6543:5432"
 
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+      - ./data:/data
+    privileged: true
+    restart: always
+
   backend:
     build: .
     ports:
       - "8008:8008"
     depends_on:
       - db
+      - ollama
     env_file:
       - .env
+    environment:
+      - OLLAMA_HOST=http://ollama:11434  
+
 volumes:
   pgdata:
+  ollama:
