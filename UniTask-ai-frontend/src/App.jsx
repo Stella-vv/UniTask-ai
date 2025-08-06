@@ -35,6 +35,7 @@ import StudentAssignmentList from './studentworkspace/AssignmentList/AssignmentL
 import StudentAssignmentDetail from './studentworkspace/AssignmentDetail/AssignmentDetail';
 import StudentAssignmentForumPage from './studentworkspace/Forum/AssignmentForumPage';
 import StudentFaqList from './studentworkspace/FaqList/FaqList';
+import StudentCourseList from './studentworkspace/CourseList/CourseListPage';
 import ChatPage from './studentworkspace/Chat/ChatPage';
 
 function App() {
@@ -83,7 +84,8 @@ function App() {
         <Route element={<ProtectedRoute allowedRoles={['student']} />}>
           <Route path="/student" element={<StudentMainLayout />}>
             <Route index element={<StudentDashboard />} />
-            <Route path="course-detail" element={<StudentCourseDetail />} />
+            <Route path="course" element={<StudentCourseList />} />
+            <Route path="course/detail" element={<StudentCourseDetail />} /> 
             <Route path="assignment" element={<StudentAssignmentList />} />
             <Route path="assignment/:assignmentId" element={<StudentAssignmentDetail />} />
             <Route path="assignment/:assignmentId/help" element={<ChatPage />} />
