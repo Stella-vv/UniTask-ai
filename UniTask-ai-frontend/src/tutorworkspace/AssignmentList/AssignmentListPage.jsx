@@ -53,7 +53,7 @@ const AssignmentList = () => {
           display: 'flex', alignItems: 'center', boxSizing: 'border-box',
           borderTopLeftRadius: '16px', borderTopRightRadius: '16px',
         }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', fontSize: '1.75rem' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', fontSize: '2rem' }}>
             Assignment List
           </Typography>
         </Box>
@@ -86,7 +86,7 @@ const AssignmentList = () => {
           display: 'flex', alignItems: 'center', boxSizing: 'border-box',
           borderTopLeftRadius: '16px', borderTopRightRadius: '16px',
         }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', fontSize: '1.75rem' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', fontSize: '2rem' }}>
             Assignment List
           </Typography>
         </Box>
