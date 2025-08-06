@@ -1,6 +1,11 @@
 from flask import Blueprint, request, jsonify
 import subprocess
 from models import Assignment, FAQ
+import os
+import requests
+
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
+USE_OLLAMA_HTTP = os.getenv("USE_OLLAMA_HTTP", "true").lower() == "true"
 
 real_ai_bp = Blueprint("real_ai", __name__, url_prefix="/api/ai")
 def build_prompt_with_context(question, assignment_id):
@@ -49,12 +54,26 @@ def ask_real_ai():
 
     # 调用本地 Ollama 模型
     try:
-        result = subprocess.run(
-            ["ollama", "run", "faq-mistral"],
-            input=prompt.encode(),
-            capture_output=True
-        )
-        answer = result.stdout.decode().strip()
+        if USE_OLLAMA_HTTP:
+            # ✅ 使用 HTTP 调用 Docker 中的 Ollama 服务
+            res = requests.post(
+                f"{OLLAMA_HOST}/api/generate",
+                json={
+                    "model": "faq-mistral",  # 改成你实际用的模型名
+                    "prompt": prompt,
+                    "stream": False
+                }
+            )
+            res.raise_for_status()
+            answer = res.json().get("response", "").strip()
+        else:
+            # ✅ 使用本地命令行 ollama（宿主机）
+            result = subprocess.run(
+                ["ollama", "run", "faq-mistral"],
+                input=prompt.encode(),
+                capture_output=True
+            )
+            answer = result.stdout.decode().strip()
     except Exception as e:
         return jsonify({"error": f"Failed to invoke model: {str(e)}"}), 500
 
