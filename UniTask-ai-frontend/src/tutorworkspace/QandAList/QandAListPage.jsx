@@ -99,7 +99,7 @@ const QandAListPage = () => {
     <Box sx={styles.container}>
       <Box sx={styles.topHeader}>
         <Typography variant="h4" sx={styles.headerTitle}>
-          Q&As for: {assignmentName || `Assignment ${assignmentId}`}
+          Q&As for {assignmentName || `Assignment ${assignmentId}`}
         </Typography>
       </Box>
 

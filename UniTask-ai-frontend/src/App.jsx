@@ -25,6 +25,8 @@ import QandAListPage from './tutorworkspace/QandAList/QandAListPage';
 import QandAUploadPage from './tutorworkspace/QandA/QandAUploadPage';
 import FaqList from './tutorworkspace/FaqList/FaqList';
 import FaqUpload from './tutorworkspace/FaqUpload/FaqUpload';
+import FaqModifyPage from './tutorworkspace/FaqModify/FaqModifyPage';
+
 
 // Student Workspace Components
 import StudentDashboard from './studentworkspace/Dashboard/Dashboard';
@@ -66,6 +68,7 @@ function App() {
             <Route path="assignment/:assignmentId/qnas/upload" element={<QandAUploadPage />} />
             <Route path="assignment/:assignmentId/faqs" element={<FaqList />} />
             <Route path="assignment/:assignmentId/faqs/upload" element={<FaqUpload />} />
+            <Route path="assignment/:assignmentId/faqs/modify/:faqId" element={<FaqModifyPage />} />
             
             {/* Other functional routes */}
             <Route path="assignment/:assignmentId/forum" element={<AssignmentForumPage />} />

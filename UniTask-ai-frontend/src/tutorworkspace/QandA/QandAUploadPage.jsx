@@ -148,7 +148,7 @@ const QandAUploadPage = () => {
     <Box sx={qandaUploadPageStyles.container}>
       <Box sx={qandaUploadPageStyles.topHeader}>
         <Typography variant="h4" sx={qandaUploadPageStyles.headerTitle}>
-          Upload Q&As for: {assignmentName || `Assignment ${assignmentId}`}
+          Upload Q&As for  {assignmentName || `Assignment ${assignmentId}`}
         </Typography>
       </Box>
 

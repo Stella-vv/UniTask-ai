@@ -10,22 +10,19 @@ export const qandaUploadPageStyles = {
 
   topHeader: {
     bgcolor: 'primary.main',
-    height: '100px',
+    height: '80px',
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
     display: 'flex',
     alignItems: 'center',
-    // 修改点1：文字靠左对齐
-    justifyContent: 'flex-start', // 从 'center' 修改为 'flex-start'
-    // 修改点2：添加内边距，使文字不紧贴左侧边缘
-    p: 3, // 添加内边距，与 AssignmentList 保持一致
+    justifyContent: 'flex-start',
+    p: 3, 
     gap: 2,
     color: 'white',
-    // 修改点3：通过负外边距和宽度调整，消除与父容器的空隙
-    mt: -4, // 向上负边距
-    ml: -4, // 向左负边距
-    mr: -4, // 向右负边距
-    width: 'calc(100% + 64px)', // 宽度增加，以抵消左右的内边距 (4px * 2 = 64px, 因为 p:4 = 32px)
+    mt: -4,
+    ml: -4, 
+    mr: -4, 
+    width: 'calc(100% + 64px)',
   },
 
   headerIcon: {

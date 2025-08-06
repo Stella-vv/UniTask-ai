@@ -1,4 +1,3 @@
-// test/tutorworkspace/FaqList/FaqList_style.js
 
 export const faqListStyles = {
   container: {
@@ -9,12 +8,12 @@ export const faqListStyles = {
   },
   topHeader: {
     bgcolor: 'primary.main',
-    height: '100px',
+    height: '80px', 
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     color: 'white',
     p: 3,
     mt: -4,
@@ -25,7 +24,20 @@ export const faqListStyles = {
   headerTitle: {
     color: 'white',
     fontWeight: 600,
-    fontSize: '1.75rem',
+    fontSize: '2rem', 
+  },
+  backButton: {
+    color: 'white',
+    borderColor: 'rgba(255, 255, 255, 0.7)',
+    borderWidth: '2px', // Set border width to 2px
+    textTransform: 'none',
+    fontWeight: 600,
+    borderRadius: '20px',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      borderColor: 'white',
+      borderWidth: '2px', // Ensure border width stays 2px on hover
+    }
   },
   contentArea: {
     bgcolor: '#EFF8FF',
@@ -59,12 +71,36 @@ export const faqListStyles = {
     mb: 1,
     borderRadius: '8px',
     border: '1px solid #E2E8F0',
+    overflow: 'hidden', // Add this line to clip the inner content
     '&:before': {
       display: 'none',
     },
+    '&:hover': {
+        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+    }
+  },
+  accordionSummary: {
+    '& .MuiAccordionSummary-content': {
+      alignItems: 'center',
+    }
   },
   questionText: {
     fontWeight: 500,
+    flexGrow: 1,
+    mr: 2,
+  },
+  editButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '8px',
+    borderRadius: '50%',
+    color: 'text.secondary',
+    cursor: 'pointer',
+    '&:hover': {
+        color: 'primary.main',
+        backgroundColor: 'rgba(0, 0, 0, 0.04)'
+    }
   },
   accordionDetails: {
     backgroundColor: '#F9FAFB',
@@ -74,7 +110,6 @@ export const faqListStyles = {
   answerText: {
     color: 'text.secondary',
   },
-  // --- START: STYLES FOR EMPTY STATE (To match Q&A page) ---
   emptyState: {
     flex: 1,
     display: 'flex',
@@ -88,5 +123,4 @@ export const faqListStyles = {
     mb: 2,
     color: 'text.disabled',
   },
-  // --- END: STYLES FOR EMPTY STATE ---
 };
