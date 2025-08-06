@@ -31,7 +31,7 @@ const StudentFaqList = () => {
       try {
         setLoading(true);
         setError('');
-        const res = await axios.get(`${BASE_URL}/api/faqs/course/${selectedCourseId}`);
+        const res = await axios.get(`${BASE_URL}/api/faqs/assignment/${selectedCourseId}`);
         setFaqData(res.data || []);
       } catch (err) {
         console.error('Failed to fetch FAQ data:', err);
