@@ -46,7 +46,7 @@ const Dashboard = () => {
         const [coursesResponse, assignmentsResponse, faqsResponse] = await Promise.allSettled([
           api.get('/courses/'), // Get all courses
           api.get(`/assignments`), // Get user's assignments
-          api.get('/faqs/course/1') // Get FAQs for course 1 (you can make this dynamic)
+          api.get('/faqs/assignment/1') // Get FAQs for course 1 (you can make this dynamic)
         ]);
 
         // Process results and handle any failed requests
