@@ -9,12 +9,12 @@ export const qandaListPageStyles = {
     },
     topHeader: {
         bgcolor: 'primary.main',
-        height: '100px',
+        height: '80px',
         borderTopLeftRadius: '16px',
         borderTopRightRadius: '16px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         color: 'white',
         p: 3,
         mt: -4,
@@ -26,6 +26,19 @@ export const qandaListPageStyles = {
         color: 'white',
         fontWeight: 600,
         fontSize: '1.75rem',
+    },
+    backButton: {
+        color: 'white',
+        borderColor: 'rgba(255, 255, 255, 0.7)',
+        borderWidth: '2px',
+        textTransform: 'none',
+        fontWeight: 600,
+        borderRadius: '20px',
+        '&:hover': {
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: 'white',
+          borderWidth: '2px',
+        }
     },
     contentArea: {
         bgcolor: '#EFF8FF',

@@ -10,12 +10,14 @@ import {
   CircularProgress,
   Alert
 } from '@mui/material';
-import { useParams } from 'react-router-dom'; // Import useParams to get URL parameters
+import { useParams, useNavigate } from 'react-router-dom'; // Import useParams to get URL parameters
 import api from '../../api'; // Use the central api instance
 import { forumPageStyles } from './AssignmentForumPage_style';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const AssignmentForumPage = () => {
   const { assignmentId } = useParams(); // Get assignmentId from the URL
+  const navigate = useNavigate();
   const [forumTitle, setForumTitle] = useState('Forum');
   const [forumId, setForumId] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -70,6 +72,10 @@ const AssignmentForumPage = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const handleGoBack = () => {
+    navigate(`/tutor/assignment/${assignmentId}`);
+  };
 
   // Handle submitting a new question
   const handleSubmitQuestion = async () => {
@@ -128,6 +134,14 @@ const AssignmentForumPage = () => {
         <Typography variant="h4" sx={forumPageStyles.sectionTitle}>
           {forumTitle}
         </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleGoBack}
+          sx={forumPageStyles.backButton}
+        >
+          Back
+        </Button>
       </Box>
 
       {error && !questions.length && <Alert severity="warning" sx={{ m: 2 }}>{error}</Alert>}

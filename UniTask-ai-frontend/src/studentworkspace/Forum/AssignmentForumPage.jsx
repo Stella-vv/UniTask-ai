@@ -10,12 +10,14 @@ import {
   CircularProgress,
   Alert
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { forumPageStyles } from './AssignmentForumPage_style';
 
 const StudentAssignmentForumPage = () => {
   const { assignmentId } = useParams();
+  const navigate = useNavigate();
   const [forumTitle, setForumTitle] = useState('Forum');
   const [forumId, setForumId] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -55,7 +57,7 @@ const StudentAssignmentForumPage = () => {
       }
 
     } catch (err) {
-      console.error('❌ Failed to load forum data:', err);
+      console.error('Failed to load forum data:', err);
       setError('Could not load forum data. Please try again later.');
     } finally {
       setLoading(false);
@@ -66,29 +68,32 @@ const StudentAssignmentForumPage = () => {
     fetchData();
   }, [fetchData]);
 
-  // --- THIS IS THE CORRECTED FUNCTION ---
+  const handleGoBack = () => {
+    // Navigate back to the student's assignment detail page
+    navigate(`/student/assignment/${assignmentId}`);
+  };
+
   const handleSubmitQuestion = async () => {
-    // 1. Validate the data before sending
+    // Validate the data before sending
     if (!newQuestion.trim() || !forumId || !userId) {
       alert("Cannot submit an empty question or user/forum info is missing.");
       return;
     }
     
     try {
-      // 2. Send the POST request and WAIT for the response
+      // Send the POST request and WAIT for the response
       await api.post(`/forum/${forumId}/questions`, {
         content: newQuestion,
         user_id: userId,
-        // Ensure your backend's create_question function can use forum_id to find the assignment_id
       });
 
-      // 3. If the request was successful (no error thrown), clear the input and refetch data
+      // If the request was successful (no error thrown), clear the input and refetch data
       setNewQuestion('');
       fetchData(); // This re-fetches the list from the database, ensuring UI matches the database.
     
     } catch (err) {
-      // 4. If the request fails, log the error and inform the user.
-      console.error('❌ Failed to submit question:', err);
+      // If the request fails, log the error and inform the user.
+      console.error('Failed to submit question:', err);
       alert('An error occurred while submitting your question. Please check the console for details.');
     }
   };
@@ -106,7 +111,7 @@ const StudentAssignmentForumPage = () => {
       setReplyStates(prev => ({ ...prev, [questionId]: { show: false, text: '' } }));
       fetchData();
     } catch (err) {
-      console.error('❌ Failed to submit reply:', err);
+      console.error('Failed to submit reply:', err);
       alert('Failed to submit your reply.');
     }
   };
@@ -133,6 +138,14 @@ const StudentAssignmentForumPage = () => {
         <Typography variant="h4" sx={forumPageStyles.sectionTitle}>
           {forumTitle}
         </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleGoBack}
+          sx={forumPageStyles.backButton}
+        >
+          Back
+        </Button>
       </Box>
 
       {questions.map((q) => (

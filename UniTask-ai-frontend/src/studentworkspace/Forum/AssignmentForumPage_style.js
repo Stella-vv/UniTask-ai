@@ -7,8 +7,7 @@ export const forumPageStyles = {
     gap: 3,
     pb: 0.5,
   },
-
-    assignmentTitleHeader: {
+  assignmentTitleHeader: {
     bgcolor: 'primary.main', 
     color: 'white',          
     borderTopLeftRadius: '16px',
@@ -19,8 +18,23 @@ export const forumPageStyles = {
     mr: -4, 
     width: 'calc(100% + 64px)', 
     boxSizing: 'border-box', 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
   },
-
+  backButton: {
+    color: 'white',
+    borderColor: 'rgba(255, 255, 255, 0.7)',
+    borderWidth: '2px',
+    textTransform: 'none',
+    fontWeight: 600,
+    borderRadius: '20px',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      borderColor: 'white',
+      borderWidth: '2px',
+    }
+  },
   sectionTitle: {
     fontWeight: 600,
     fontSize: '1.75rem', // "Assignment 1" title size

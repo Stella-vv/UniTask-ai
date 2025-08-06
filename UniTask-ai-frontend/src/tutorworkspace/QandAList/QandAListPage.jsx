@@ -1,5 +1,3 @@
-// QandAListPage.jsx (With Styles Imported)
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -20,9 +18,10 @@ import {
   Download as DownloadIcon,
   Description as DescriptionIcon,
   AttachFile as AttachFileIcon,
+  Delete as DeleteIcon,
+  ArrowBack as ArrowBackIcon,
 } from '@mui/icons-material';
 import api from '../../api';
-// --- FIX: Import styles from the external file ---
 import { qandaListPageStyles as styles } from './QandAListPage_style';
 
 
@@ -60,14 +59,44 @@ const QandAListPage = () => {
     fetchQAList();
   }, [fetchQAList]);
 
+  const handleGoBack = () => {
+    navigate(`/tutor/assignment/${assignmentId}`);
+  };
+
   const handleUploadClick = () => {
     navigate(`/tutor/assignment/${assignmentId}/qnas/upload`);
   };
 
   const handleDownloadFile = (qa) => {
     const downloadUrl = `${api.defaults.baseURL}/uploads/qas/${qa.filename}`;
-    window.open(downloadUrl, '_blank');
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', qa.filename);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
   };
+
+  const handleDeleteFile = async (qaIdToDelete) => {
+    // Show a confirmation dialog before proceeding
+    if (window.confirm('Are you sure you want to delete this file? This action cannot be undone.')) {
+        try {
+            // Call the backend API to delete the file.
+            await api.delete(`/qa/delete/${qaIdToDelete}`);
+            
+            setQAList(prevList => prevList.filter(qa => qa.id !== qaIdToDelete));
+
+            alert('File deleted successfully!');
+
+        } catch (err) {
+            console.error('Failed to delete file:', err);
+            // Display an error message if the deletion fails.
+            setError('Failed to delete the file. Please try again.');
+        }
+    }
+  };
+
+
 
   const getFileIcon = (fileType) => {
     const type = fileType?.toLowerCase() || '';
@@ -101,8 +130,15 @@ const QandAListPage = () => {
         <Typography variant="h4" sx={styles.headerTitle}>
           Q&As for {assignmentName || `Assignment ${assignmentId}`}
         </Typography>
-      </Box>
-
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleGoBack}
+          sx={styles.backButton}
+        >
+          Back
+        </Button>
+      </Box>        
       <Box sx={styles.contentArea}>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
@@ -148,6 +184,17 @@ const QandAListPage = () => {
                         <Typography sx={styles.fileDetails}>Uploaded: {formatUploadTime(qa.created_at)}</Typography>
                       </Box>
                       <IconButton onClick={() => handleDownloadFile(qa)} sx={{ ml: 1 }}><DownloadIcon /></IconButton>
+                      <IconButton 
+                        onClick={() => handleDeleteFile(qa.id)} 
+                        sx={{ 
+                            ml: 1, 
+                            '&:hover': {
+                                color: 'error.main', 
+                            },
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </ListItem>
                     {index < qaList.length - 1 && <Divider sx={{ mx: 3 }} />}
                   </React.Fragment>
