@@ -41,7 +41,7 @@ const Logo = () => (
 const Sidebar = () => {
   const navItems = [
     { text: 'Home', icon: <HomeIcon />, path: '/student' },
-    { text: 'Course', icon: <SchoolIcon />, path: '/student/course-detail' },
+    { text: 'Course', icon: <SchoolIcon />, path: '/student/course' },
     { text: 'Assignment', icon: <AssignmentIcon />, path: '/student/assignment' },
     { text: 'FAQs', icon: <LiveHelpIcon />, path: '/student/faqs' },
   ];

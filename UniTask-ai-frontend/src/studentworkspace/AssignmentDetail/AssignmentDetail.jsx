@@ -12,8 +12,7 @@ import {
   Alert,
   ListItemButton,
 } from '@mui/material';
-// MODIFICATION: Import HelpOutlineIcon for the new button
-import { Forum as ForumIcon, Description as DescriptionIcon, AttachFile as AttachFileIcon, HelpOutline as HelpIcon } from '@mui/icons-material';
+import { Forum as ForumIcon, Description as DescriptionIcon, AttachFile as AttachFileIcon, HelpOutline as HelpIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { assignmentDetailStyles } from './AssignmentDetail_style.js'; 
@@ -45,6 +44,10 @@ const StudentAssignmentDetail = () => {
     };
     fetchAssignmentDetail();
   }, [assignmentId]);
+
+  const handleGoBack = () => {
+    navigate(-1); // Navigates to the previous page in history
+  };
 
   const handleDownloadFile = (fileObject) => {
     const filename = fileObject?.filename;
@@ -90,6 +93,14 @@ const StudentAssignmentDetail = () => {
     <Box sx={assignmentDetailStyles.container}>
       <Box sx={assignmentDetailStyles.topHeader}>
         <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>Assignment Detail</Typography>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleGoBack}
+          sx={assignmentDetailStyles.backButton}
+        >
+          Back
+        </Button>
       </Box>
 
       <Box sx={assignmentDetailStyles.contentArea}>

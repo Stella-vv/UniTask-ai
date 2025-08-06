@@ -9,11 +9,12 @@ import {
   ListItem,
   ListItemText,
   CircularProgress,
-  Alert
+  Alert,
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import LiveHelpIcon from '@mui/icons-material/LiveHelp';
-import { Link as RouterLink } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Link as RouterLink, useNavigate } from 'react-router-dom'; 
 import { courseDetailStyles } from './CourseDetail_style';
 import api from '../../api';
 
@@ -24,6 +25,7 @@ const StudentCourseDetail = () => {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate(); 
 
   // Fetch dynamic data from API
   useEffect(() => {
@@ -42,6 +44,10 @@ const StudentCourseDetail = () => {
     };
     fetchCourse();
   }, []);
+
+  const handleGoBack = () => {
+    navigate(-1); // This will take the user to the previous page
+  };
 
   // Loading and Error states
   if (loading) {
@@ -84,6 +90,14 @@ const StudentCourseDetail = () => {
         <Typography variant="h4" sx={courseDetailStyles.headerTitle}>
           Course Detail
         </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleGoBack}
+          sx={courseDetailStyles.backButton}
+        >
+          Back
+        </Button>
       </Box>
       
       <Box sx={courseDetailStyles.contentArea}>
