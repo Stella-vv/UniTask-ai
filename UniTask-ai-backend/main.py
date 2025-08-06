@@ -68,6 +68,11 @@ def index():
         else "UniTask MOCK backend is up!"
     )
 
+@app.route("/api/uploads/qas/<path:filename>")
+def serve_qas_file(filename):
+    return send_from_directory("uploads/qas", filename)
+
+
 __all__ = ["app"]
 if not USE_MOCK:
     __all__.append("db")
