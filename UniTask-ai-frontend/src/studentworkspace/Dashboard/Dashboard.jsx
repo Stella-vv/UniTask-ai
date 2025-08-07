@@ -68,7 +68,7 @@ const Dashboard = () => {
             icon: <MenuBookIcon />,
             title: 'Course',
             description: `You have ${coursesCount} ${coursesCount === 1 ? 'course' : 'courses'}`,
-            path: '/student/course-detail',
+            path: '/student/course',
           },
           {
             icon: <AssignmentIcon />,
