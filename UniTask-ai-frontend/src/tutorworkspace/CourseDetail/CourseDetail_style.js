@@ -11,7 +11,7 @@ export const courseDetailStyles = {
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
     display: 'flex',
-    alignItems: 'center',
+    justifyContent: 'space-between',
     p: 3, 
     mt: -4, 
     ml: -4,
@@ -19,7 +19,19 @@ export const courseDetailStyles = {
     width: 'calc(100% + 64px)',
     boxSizing: 'border-box',
   },
-
+  backButton: {
+    color: 'white',
+    borderColor: 'rgba(255, 255, 255, 0.7)',
+    borderWidth: '2px',
+    textTransform: 'none',
+    fontWeight: 600,
+    borderRadius: '20px',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      borderColor: 'white',
+      borderWidth: '2px',
+    }
+  },
   headerTitle: { 
     color: 'white',
     fontWeight: 600,

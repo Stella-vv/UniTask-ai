@@ -12,16 +12,13 @@ import {
   Alert,
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Link as RouterLink, useNavigate } from 'react-router-dom'; 
+import { useNavigate, useParams } from 'react-router-dom';
 import { courseDetailStyles } from './CourseDetail_style';
 import api from '../../api';
 
-// We'll fetch course with ID 1 for consistency in demonstration
-const COURSE_ID_TO_DISPLAY = 1;
-
 const StudentCourseDetail = () => {
+  const { courseId } = useParams();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -30,10 +27,17 @@ const StudentCourseDetail = () => {
   // Fetch dynamic data from API
   useEffect(() => {
     const fetchCourse = async () => {
+      // Ensure we have a courseId before fetching
+      if (!courseId) {
+          setError('Course ID not found in URL.');
+          setLoading(false);
+          return;
+      }
       try {
         setLoading(true);
         setError('');
-        const response = await api.get(`/courses/${COURSE_ID_TO_DISPLAY}`);
+        // Fetch data using the dynamic courseId from the URL
+        const response = await api.get(`/courses/${courseId}`);
         setCourse(response.data);
       } catch (err) {
         console.error('Failed to fetch course data:', err);
@@ -43,10 +47,16 @@ const StudentCourseDetail = () => {
       }
     };
     fetchCourse();
-  }, []);
+  }, [courseId]);
 
   const handleGoBack = () => {
     navigate('/student/course');
+  };
+
+  const handleGoToAssignments = () => {
+    if (course && course.id) {
+      navigate('/student/assignment', { state: { defaultCourseId: course.id } });
+    }
   };
 
   // Loading and Error states
@@ -150,16 +160,12 @@ const StudentCourseDetail = () => {
         {/* Navigation Buttons */}
         <Box sx={courseDetailStyles.navigationButtons}>
           <Button
-            component={RouterLink} to="/student/assignment" variant="contained"
-            startIcon={<AssignmentIcon />} sx={courseDetailStyles.navButton}
+            onClick={handleGoToAssignments}
+            variant="contained"
+            startIcon={<AssignmentIcon />} 
+            sx={courseDetailStyles.navButton}
           >
             Assignment
-          </Button>
-          <Button
-            component={RouterLink} to="/student/faqs" variant="contained"
-            startIcon={<LiveHelpIcon />} sx={courseDetailStyles.navButton}
-          >
-            FAQs
           </Button>
         </Box>
       </Box>

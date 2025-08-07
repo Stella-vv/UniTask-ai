@@ -28,7 +28,7 @@ const StudentCourseList = () => {
   }, []);
 
   const handleViewCourseDetail = (courseId) => {
-    navigate(`/student/course/detail`);
+    navigate(`/student/course/${courseId}`);
   };
 
   return (

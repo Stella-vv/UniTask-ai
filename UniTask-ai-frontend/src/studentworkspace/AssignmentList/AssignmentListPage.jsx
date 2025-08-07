@@ -14,21 +14,21 @@ import {
   MenuItem,
   InputLabel
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api';
 import { studentAssignmentListStyles as styles } from './AssignmentListPage_style.js';
 
 const StudentAssignmentList = () => {
   const navigate = useNavigate();
+  const location = useLocation(); 
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [courses, setCourses] = useState([]);
-  const [selectedCourseId, setSelectedCourseId] = useState('');
+  const [selectedCourseId, setSelectedCourseId] = useState(location.state?.defaultCourseId || '');
   const [coursesLoading, setCoursesLoading] = useState(true);
 
-  // Effect to fetch the list of courses
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -37,8 +37,7 @@ const StudentAssignmentList = () => {
         const fetchedCourses = res.data || [];
         setCourses(fetchedCourses);
 
-        // --- MODIFICATION: Default to the first course ---
-        if (fetchedCourses.length > 0) {
+        if (!location.state?.defaultCourseId && fetchedCourses.length > 0) {
           setSelectedCourseId(fetchedCourses[0].id);
         }
       } catch (err) {
@@ -48,7 +47,7 @@ const StudentAssignmentList = () => {
       }
     };
     fetchCourses();
-  }, []); // This effect runs only once to populate the dropdown
+  }, [location.state?.defaultCourseId]); 
 
   // Effect to fetch assignments based on the selected course
   useEffect(() => {
