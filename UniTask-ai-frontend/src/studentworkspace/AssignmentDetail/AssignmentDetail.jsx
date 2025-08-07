@@ -46,7 +46,7 @@ const StudentAssignmentDetail = () => {
   }, [assignmentId]);
 
   const handleGoBack = () => {
-    navigate(-1); // Navigates to the previous page in history
+    navigate('/student/assignment');
   };
 
   const handleDownloadFile = (fileObject) => {

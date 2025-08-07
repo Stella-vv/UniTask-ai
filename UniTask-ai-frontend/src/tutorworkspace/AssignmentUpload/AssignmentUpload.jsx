@@ -57,38 +57,35 @@ const AssignmentUpload = () => {
   // 加载状态
   const [isLoading, setIsLoading] = useState(false);
 
-  // 模拟课程数据（后续从API获取）
-  // const courses = [
-  //   { id: 1, name: 'Web Front-End Programming' },
-  //   { id: 2, name: 'Data Structures and Algorithms' },
-  //   { id: 3, name: 'Database Management Systems' },
-  // ];
-
 
     // 获取课程列表
   useEffect(() => {
-    // 暂时使用硬编码的课程数据，因为后端还没有课程列表API
-    const initializeCourses = () => {
-      setCoursesLoading(true);
-      
-      // 使用你在数据库中创建的课程数据
-      const courses = [
-        { id: 1, name: 'COMP9900 - Capstone Project' }
-      ];
-      
-      setCourses(courses);
-      
-      // 自动选择第一门课程
-      setFormData(prev => ({
-        ...prev,
-        courseName: courses[0].name,
-        courseId: courses[0].id
-      }));
-      
-      setCoursesLoading(false);
+    const fetchCourses = async () => {
+      try {
+        setCoursesLoading(true);
+        setCoursesError('');
+        const response = await api.get('/courses/');
+        const fetchedCourses = response.data || [];
+        setCourses(fetchedCourses);
+
+        // If courses are found, default the selection to the first one.
+        if (fetchedCourses.length > 0) {
+          setFormData(prev => ({
+            ...prev,
+            courseId: fetchedCourses[0].id
+          }));
+        } else {
+            setCoursesError('No courses found. Please add a course first.');
+        }
+      } catch (err) {
+        console.error('Failed to fetch courses:', err);
+        setCoursesError('Failed to load courses. Please try again.');
+      } finally {
+        setCoursesLoading(false);
+      }
     };
 
-    initializeCourses();
+    fetchCourses();
   }, []);
 
   // 处理课程选择变化
