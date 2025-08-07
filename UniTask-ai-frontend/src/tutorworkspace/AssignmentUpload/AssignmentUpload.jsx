@@ -75,7 +75,7 @@ const AssignmentUpload = () => {
             courseId: fetchedCourses[0].id
           }));
         } else {
-            setCoursesError('No courses found. Please add a course first.');
+          setCoursesError('No courses found. Please add a course first.');
         }
       } catch (err) {
         console.error('Failed to fetch courses:', err);
