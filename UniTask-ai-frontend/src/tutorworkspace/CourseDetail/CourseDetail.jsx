@@ -12,9 +12,8 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import LiveHelpIcon from '@mui/icons-material/LiveHelp';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate, useParams } from 'react-router-dom';
 import { courseDetailStyles } from './CourseDetail_style';
 import api from '../../api';
 
@@ -41,6 +40,16 @@ const CourseDetail = () => {
     };
     fetchCourse();
   }, [courseId]);
+
+  const handleGoToAssignments = () => {
+    if (course && course.id) {
+      navigate('/tutor/assignment', { state: { defaultCourseId: course.id } });
+    }
+  };
+
+  const handleGoBack = () => {
+    navigate('/tutor/course');
+  };
 
   const handleModify = () => {
     if (course && course.id) {
@@ -109,6 +118,14 @@ const CourseDetail = () => {
         <Typography variant="h4" sx={courseDetailStyles.headerTitle}>
           Course Detail
         </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleGoBack}
+          sx={courseDetailStyles.backButton}
+        >
+          Back
+        </Button>
       </Box>
       
       <Box sx={courseDetailStyles.contentArea}>
@@ -181,18 +198,13 @@ const CourseDetail = () => {
 
         <Box sx={courseDetailStyles.navigationButtons}>
           <Button
-            component={RouterLink} to="/tutor/assignment" variant="contained"
-            startIcon={<AssignmentIcon />} sx={courseDetailStyles.navButton}
+            onClick={handleGoToAssignments}
+            variant="contained"
+            startIcon={<AssignmentIcon />} 
+            sx={courseDetailStyles.navButton}
           >
             Assignment
           </Button>
-          {/* <Button
-            // Navigate to Q&As
-            component={RouterLink} to="/tutor/assignment/${assignmentId}/qnas" variant="contained"
-            startIcon={<LiveHelpIcon />} sx={courseDetailStyles.navButton}
-          >
-            Q&As
-          </Button> */}
         </Box>
       </Box>
     </Box>

@@ -85,7 +85,7 @@ function App() {
           <Route path="/student" element={<StudentMainLayout />}>
             <Route index element={<StudentDashboard />} />
             <Route path="course" element={<StudentCourseList />} />
-            <Route path="course/detail" element={<StudentCourseDetail />} /> 
+            <Route path="course/:courseId" element={<StudentCourseDetail />} />
             <Route path="assignment" element={<StudentAssignmentList />} />
             <Route path="assignment/:assignmentId" element={<StudentAssignmentDetail />} />
             <Route path="assignment/:assignmentId/help" element={<ChatPage />} />

@@ -17,18 +17,19 @@ import {
   MenuItem,
   InputLabel
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api';
 import { tutorAssignmentListStyles as styles } from './AssignmentListPage_style.js';
 
 const AssignmentList = () => {
   const navigate = useNavigate();
+  const location = useLocation(); 
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [courses, setCourses] = useState([]);
-  const [selectedCourseId, setSelectedCourseId] = useState('');
+  const [selectedCourseId, setSelectedCourseId] = useState(location.state?.defaultCourseId || '');
   const [coursesLoading, setCoursesLoading] = useState(true);
 
   useEffect(() => {
@@ -103,7 +104,6 @@ const AssignmentList = () => {
         <Box sx={styles.filterContainer}>
           <FormControl fullWidth disabled={coursesLoading}>
             <InputLabel>Filter by Course</InputLabel>
-            {/* --- MODIFICATION: Style is applied directly to the Select component --- */}
             <Select
               value={selectedCourseId}
               onChange={handleCourseChange}
