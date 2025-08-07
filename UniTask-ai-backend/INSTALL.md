@@ -97,6 +97,24 @@ docker exec -it unitask-ai-backend-backend-1 python integration_test_all.py
 
 ---
 
+搭载ai模型
+```bash
+docker exec -it ollama bash
+```
+进入root
+```bash
+ls /data
+```
+创建模型
+```bash
+ollama create faq-mistral -f /data/Modelfile
+```
+验证创建成功
+```bash
+ollama list
+```
+出现faq-mistral:latest    017b7c39c717    4.4 GB即为搭载完成
+
 ### 4️⃣ 启动前端
 ```bash
 cd UniTask-ai-frontend
