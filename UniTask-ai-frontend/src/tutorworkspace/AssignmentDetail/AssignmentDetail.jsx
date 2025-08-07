@@ -19,6 +19,7 @@ import {
   AttachFile as AttachFileIcon,
   LiveHelp as QnaIcon, // Icon for Q&A
   HelpOutline as FaqIcon, // Icon for FAQ
+  ArrowBack as ArrowBackIcon,
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { assignmentDetailStyles } from './AssignmentDetail_style';
@@ -104,6 +105,10 @@ const AssignmentDetail = () => {
     navigate(`/tutor/assignment/modify/${assignmentId}`);
   };
 
+  const handleGoBack = () => {
+    navigate('/tutor/assignment');
+  };
+
   // handleDelete function
   const handleDelete = async () => {
     // Confirm with the user before deleting
@@ -180,6 +185,14 @@ const AssignmentDetail = () => {
           <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>
             Assignment Detail
           </Typography>
+          <Button
+            variant="outlined"
+            startIcon={<ArrowBackIcon />}
+            onClick={handleGoBack}
+            sx={{...assignmentDetailStyles.modifyButton, ...assignmentDetailStyles.backButton}}
+          >
+            Back
+          </Button>
         </Box>
         <Box sx={{...assignmentDetailStyles.contentArea, justifyContent: 'center', alignItems: 'center'}}>
           <CircularProgress />
@@ -196,6 +209,14 @@ const AssignmentDetail = () => {
           <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>
             Assignment Detail
           </Typography>
+          <Button
+            variant="outlined"
+            startIcon={<ArrowBackIcon />}
+            onClick={handleGoBack}
+            sx={{...assignmentDetailStyles.modifyButton, ...assignmentDetailStyles.backButton}}
+          >
+            Back
+          </Button>
         </Box>
         <Box sx={{...assignmentDetailStyles.contentArea, justifyContent: 'center', alignItems: 'center'}}>
           <Alert severity="error">{error}</Alert>
@@ -212,6 +233,14 @@ const AssignmentDetail = () => {
         <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>
           Assignment Detail
         </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleGoBack}
+          sx={{...assignmentDetailStyles.modifyButton, ...assignmentDetailStyles.backButton}}
+        >
+          Back
+        </Button>
       </Box>
 
       {/* Content area */}

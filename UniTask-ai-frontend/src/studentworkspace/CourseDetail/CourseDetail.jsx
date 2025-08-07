@@ -46,7 +46,7 @@ const StudentCourseDetail = () => {
   }, []);
 
   const handleGoBack = () => {
-    navigate(-1); // This will take the user to the previous page
+    navigate('/student/course');
   };
 
   // Loading and Error states
