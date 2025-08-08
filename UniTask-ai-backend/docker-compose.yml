@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 0827
+      POSTGRES_PASSWORD: "0827"
       POSTGRES_DB: unitask
     volumes:
       - pgdata:/var/lib/postgresql/data
