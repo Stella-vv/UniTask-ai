@@ -28,7 +28,16 @@ print("✅ User registered:", user)
 print("\n📌 Creating course...")
 res = requests.post(f"{BASE}/courses/", json={
     "name": "Web Front-End Programming",
-    "description": "This is a frontend and wireless course...",
+    "description": (
+        "Web Front-End Programming introduces the fundamental concepts, tools, and practices for developing "
+        "interactive and responsive web applications. The course covers the core web technologies—HTML for "
+        "content structure, CSS for styling and layout, and JavaScript for dynamic behavior. Students learn "
+        "to apply modern development techniques such as responsive design, DOM manipulation, event handling, "
+        "and asynchronous communication (AJAX / Fetch API). The course also explores best practices for "
+        "accessibility, performance optimization, and maintainable code structure. Through hands-on projects, "
+        "learners gain practical experience in building user-friendly, cross-browser-compatible web interfaces, "
+        "preparing them for further study or professional work in web development."
+    ),
     "year": 2025,
     "semester": "T2"
 })
@@ -51,7 +60,17 @@ with open(rubric_path, "rb") as rubric_file, open(attach_path, "rb") as attachme
         "attachment": attachment_file
     }, data={
         "name": "Assignment 1",
-        "description": "Please use Flask to implement backend functions",
+        "description": (
+            "In this assignment, you will design and implement a responsive personal portfolio website using HTML, CSS, "
+            "and JavaScript without relying on external front-end frameworks. Your website should include a Home Page "
+            "(introduction, profile image, navigation menu), an About Page (skills and experiences), a Projects Page "
+            "(at least three project entries with images, descriptions, and links), and a Contact Page (functional form "
+            "with client-side validation). The site must be fully responsive, use semantic HTML tags, include CSS animations "
+            "or transitions, and implement JavaScript interactivity such as menu toggling and form validation. All assets "
+            "must be optimized, and the code must pass basic HTML & CSS validation. Submission should include source code "
+            "and a README.md with local viewing instructions. Marking: HTML semantics – 20%, CSS styling & responsiveness – "
+            "30%, JavaScript functionality – 20%, Creativity & design – 15%, Code quality & documentation – 15%."
+        ),
         "due_date": "2025-07-10 23:59:00",
         "course_id": course["id"],
         "user_id": user["id"]
