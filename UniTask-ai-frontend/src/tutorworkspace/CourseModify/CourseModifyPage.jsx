@@ -11,9 +11,20 @@ import {
   Alert,
   FormControl,
   Select,
-  MenuItem
+  MenuItem,
+  // --- MODIFICATION: Import new components ---
+  List,
+  ListItem,
+  ListItemText,
+  IconButton
 } from '@mui/material';
-import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
+import {
+    Check as CheckIcon,
+    Close as CloseIcon,
+    // --- MODIFICATION: Import new Icons ---
+    Add as AddIcon,
+    Delete as DeleteIcon
+} from '@mui/icons-material';
 import { courseModifyStyles } from './CourseModifyPage_style';
 import api from '../../api';
 
@@ -27,6 +38,11 @@ const CourseModifyPage = () => {
     description: '',
     semester: '',
   });
+
+  // --- MODIFICATION: Add state for assessments ---
+  const [assessments, setAssessments] = useState([]);
+  const [currentAssessment, setCurrentAssessment] = useState('');
+
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -36,12 +52,30 @@ const CourseModifyPage = () => {
       setLoading(true);
       setError('');
       const response = await api.get(`/courses/${courseId}`);
+      
+      // --- MODIFICATION START: Load and parse assessment data ---
+      const courseData = response.data;
       setFormData({
-        name: response.data.name,
-        year: response.data.year,
-        description: response.data.description,
-        semester: response.data.semester,
+        name: courseData.name,
+        year: courseData.year,
+        description: courseData.description,
+        semester: courseData.semester,
       });
+
+      if (courseData.assessment) {
+          try {
+              const parsed = JSON.parse(courseData.assessment);
+              if (Array.isArray(parsed)) {
+                  setAssessments(parsed);
+              }
+          } catch (e) {
+              // If it's not valid JSON, treat it as a single string
+              console.error("Could not parse assessment JSON from DB:", e);
+              setAssessments([courseData.assessment]);
+          }
+      }
+      // --- MODIFICATION END ---
+
     } catch (err) {
       console.error('Failed to fetch course data:', err);
       setError('Failed to load course data. Please try again.');
@@ -58,11 +92,28 @@ const CourseModifyPage = () => {
     setFormData(prev => ({ ...prev, [field]: event.target.value }));
   };
 
+  // --- MODIFICATION: Add handlers for assessments ---
+  const handleAddAssessment = () => {
+    if (currentAssessment.trim()) {
+      setAssessments([...assessments, currentAssessment.trim()]);
+      setCurrentAssessment('');
+    }
+  };
+
+  const handleRemoveAssessment = (indexToRemove) => {
+    setAssessments(assessments.filter((_, index) => index !== indexToRemove));
+  };
+
   const handleSubmit = async () => {
     setSubmitting(true);
     setError('');
     try {
-      await api.put(`/courses/${courseId}`, formData);
+      // --- MODIFICATION: Add assessment data to the submission object ---
+      const submissionData = {
+        ...formData,
+        assessment: JSON.stringify(assessments)
+      };
+      await api.put(`/courses/${courseId}`, submissionData);
       alert('Course updated successfully!');
       navigate(`/tutor/course/${courseId}`); 
     } catch (err) {
@@ -122,6 +173,35 @@ const CourseModifyPage = () => {
         <Box sx={courseModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Description:</Typography>
           <TextField fullWidth multiline rows={5} value={formData.description} onChange={handleInputChange('description')} sx={courseModifyStyles.textField}/>
+        </Box>
+
+        {/* --- MODIFICATION: Add UI for assessments --- */}
+        <Box sx={courseModifyStyles.fieldContainer}>
+            <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Assessments:</Typography>
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <TextField
+                    fullWidth
+                    value={currentAssessment}
+                    onChange={(e) => setCurrentAssessment(e.target.value)}
+                    placeholder="Add an assessment item (e.g., Final Exam 40%)"
+                    sx={courseModifyStyles.textField}
+                />
+                <Button variant="contained" onClick={handleAddAssessment} startIcon={<AddIcon />}>Add</Button>
+            </Box>
+            <List dense>
+                {assessments.map((item, index) => (
+                    <ListItem
+                        key={index}
+                        secondaryAction={
+                            <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveAssessment(index)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        }
+                    >
+                        <ListItemText primary={item} />
+                    </ListItem>
+                ))}
+            </List>
         </Box>
 
         <Box sx={courseModifyStyles.buttonContainer}>

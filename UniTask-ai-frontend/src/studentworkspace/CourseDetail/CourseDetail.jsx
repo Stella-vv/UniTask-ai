@@ -1,5 +1,3 @@
-// test/studentworkspace/CourseDetail/CourseDetail.jsx (Corrected version)
-
 import React, { useState, useEffect } from 'react';
 import { 
   Box, 
@@ -86,13 +84,21 @@ const StudentCourseDetail = () => {
     );
   }
 
-  // Use assessments from API if available, otherwise fall back to the static mock data.
-  const assessments = course.assessments || [
-    { id: 1, name: 'Final Exam Assessment Format: Individual 40%' },
-    { id: 2, name: 'Hands-on Experiments (Labs) Assessment Format: Individual 20%' },
-    { id: 3, name: 'Mid-lecture Quizzes Assessment Format: Individual 15%' },
-    { id: 4, name: 'Term Project Assessment Format: Individual 25%' },
-  ];
+  let assessmentsList = [];
+  if (course && course.assessment) {
+    try {
+      // The backend sends a JSON string, so we parse it into an array
+      const parsed = JSON.parse(course.assessment);
+      if (Array.isArray(parsed)) {
+        assessmentsList = parsed;
+      }
+    } catch (e) {
+      console.error("Failed to parse assessment JSON:", e);
+      // If parsing fails, we can leave the list empty or handle it as a single item
+      assessmentsList = [];
+    }
+  }
+
 
   return (
     <Box sx={courseDetailStyles.container}>
@@ -140,21 +146,27 @@ const StudentCourseDetail = () => {
           </Typography>
         </Box>
 
-        {/* Display Assessments (dynamic or static) */}
         <Box sx={courseDetailStyles.assessmentsSection}>
           <Typography variant="h6" sx={courseDetailStyles.sectionTitle}>
             Assessments
           </Typography>
-          <List sx={courseDetailStyles.assessmentsList}>
-            {assessments.map((assessment, index) => (
-              <ListItem key={assessment.id} sx={courseDetailStyles.assessmentItem}>
-                <ListItemText 
-                  primary={`${index + 1}. ${assessment.name}`}
-                  primaryTypographyProps={{ sx: courseDetailStyles.assessmentText }}
-                />
-              </ListItem>
-            ))}
-          </List>
+          {assessmentsList.length > 0 ? (
+            <List sx={courseDetailStyles.assessmentsList}>
+              {assessmentsList.map((assessmentItem, index) => (
+                <ListItem key={index} sx={courseDetailStyles.assessmentItem}>
+                  <ListItemText 
+                    // 'assessmentItem' is now the string itself
+                    primary={`${index + 1}. ${assessmentItem}`}
+                    primaryTypographyProps={{ sx: courseDetailStyles.assessmentText }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography variant="body1" sx={courseDetailStyles.summaryText}>
+              No assessment information provided for this course.
+            </Typography>
+          )}
         </Box>
 
         {/* Navigation Buttons */}

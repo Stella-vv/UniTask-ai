@@ -14,7 +14,6 @@ class User(db.Model):
     school = db.Column(db.String(100), nullable=True)
     year = db.Column(db.Integer, nullable=True)
     
-
     faqs = db.relationship("FAQ", backref="uploader", lazy=True)
     questions = db.relationship("Question", back_populates="author", lazy=True)
     replies = db.relationship("Reply", backref="author", lazy=True)
@@ -27,9 +26,21 @@ class Course(db.Model):
     year = db.Column(db.Integer, nullable=True)
     description = db.Column(db.Text, nullable=True)
     semester = db.Column(db.String(10), nullable=True)
+    assessment = db.Column(db.Text, nullable=True)
 
     assignments = db.relationship("Assignment", backref="course", lazy=True)
     #faqs = db.relationship("FAQ", backref="course", lazy=True)
+
+    # --- FIX: Added the missing to_dict() method ---
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "year": self.year,
+            "semester": self.semester,
+            "description": self.description,
+            "assessment": self.assessment
+        }
 
 class QAUpload(db.Model):
     __tablename__ = "qa_uploads"
@@ -38,10 +49,10 @@ class QAUpload(db.Model):
     assignment_id = db.Column(db.Integer, db.ForeignKey("assignments.id"), nullable=False)
     uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    filename = db.Column(db.String(255), nullable=False)       # 原始文件名
-    filepath = db.Column(db.String(255), nullable=False)       # 实际保存路径
-    filetype = db.Column(db.String(10), nullable=False)        # csv / pdf / xml
-    description = db.Column(db.Text, nullable=True)            # 备注（可选）
+    filename = db.Column(db.String(255), nullable=False)      # Original filename
+    filepath = db.Column(db.String(255), nullable=False)      # Actual save path
+    filetype = db.Column(db.String(10), nullable=False)       # csv / pdf / xml
+    description = db.Column(db.Text, nullable=True)           # Notes (optional)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -59,7 +70,6 @@ class Assignment(db.Model):
     due_date = db.Column(db.DateTime, nullable=True)
     rubric = db.Column(db.String(255), nullable=True)
     attachment = db.Column(db.String(255), nullable=True)
-    assessment = db.Column(db.String(255), nullable=True)  # 新增属性
 
     course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
@@ -94,7 +104,6 @@ class Assignment(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "assessment": self.assessment,  # 返回 assessment
             "dueDate": self.due_date.strftime("%Y-%m-%d %H:%M:%S") if self.due_date else None,
             "rubric": rubric_object,
             "attachments": attachments_list,
