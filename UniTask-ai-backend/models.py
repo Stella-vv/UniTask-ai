@@ -59,6 +59,7 @@ class Assignment(db.Model):
     due_date = db.Column(db.DateTime, nullable=True)
     rubric = db.Column(db.String(255), nullable=True)
     attachment = db.Column(db.String(255), nullable=True)
+    assessment = db.Column(db.String(255), nullable=True)  # 新增属性
 
     course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
@@ -69,6 +70,8 @@ class Assignment(db.Model):
 
     # --- A robust and safe to_dict() method ---
     def to_dict(self):
+        import os
+        
         # Safely create the attachments list
         attachments_list = []
         if self.attachment and isinstance(self.attachment, str):
@@ -91,11 +94,10 @@ class Assignment(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
+            "assessment": self.assessment,  # 返回 assessment
             "dueDate": self.due_date.strftime("%Y-%m-%d %H:%M:%S") if self.due_date else None,
             "rubric": rubric_object,
             "attachments": attachments_list,
-            
-            # --- Key Fix: This check prevents a crash if the course is missing ---
             "courseName": self.course.name if self.course else "Unknown Course",
         }
 
