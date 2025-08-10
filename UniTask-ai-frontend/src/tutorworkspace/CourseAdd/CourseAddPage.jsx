@@ -13,9 +13,18 @@ import {
   FormControl,
   Select,
   MenuItem,
-  FormHelperText
+  FormHelperText,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton
 } from '@mui/material';
-import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
+import {
+    Check as CheckIcon,
+    Close as CloseIcon,
+    Add as AddIcon,
+    Delete as DeleteIcon
+} from '@mui/icons-material';
 import { courseAddStyles } from './CourseAddPage_style';
 import api from '../../api';
 
@@ -27,6 +36,11 @@ const CourseAddPage = () => {
     semester: '', // Default value to empty string
     description: '',
   });
+
+  // --- MODIFICATION: Add state for assessments ---
+  const [assessments, setAssessments] = useState([]);
+  const [currentAssessment, setCurrentAssessment] = useState('');
+
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
@@ -37,6 +51,19 @@ const CourseAddPage = () => {
       setValidationErrors(prev => ({ ...prev, [field]: null }));
     }
   };
+  
+  // --- MODIFICATION: Add handlers for assessments ---
+  const handleAddAssessment = () => {
+    if (currentAssessment.trim()) {
+      setAssessments([...assessments, currentAssessment.trim()]);
+      setCurrentAssessment('');
+    }
+  };
+
+  const handleRemoveAssessment = (indexToRemove) => {
+    setAssessments(assessments.filter((_, index) => index !== indexToRemove));
+  };
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -56,7 +83,14 @@ const CourseAddPage = () => {
     setSubmitting(true);
     setError('');
     try {
-      await api.post('/courses/', formData);
+      // --- MODIFICATION: Add assessment data to the submission object ---
+      const submissionData = {
+        ...formData,
+        // Convert the array to a JSON string for the backend
+        assessment: JSON.stringify(assessments)
+      };
+
+      await api.post('/courses/', submissionData);
       alert('Course added successfully!');
       navigate('/tutor/course');
     } catch (err) {
@@ -145,6 +179,35 @@ const CourseAddPage = () => {
                 error={!!validationErrors.description}
                 helperText={validationErrors.description}
             />
+        </Box>
+
+        {/* --- MODIFICATION: Add UI for assessments --- */}
+        <Box sx={courseAddStyles.fieldContainer}>
+            <Typography variant="h6" sx={courseAddStyles.fieldLabel}>Assessments:</Typography>
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <TextField
+                    fullWidth
+                    value={currentAssessment}
+                    onChange={(e) => setCurrentAssessment(e.target.value)}
+                    placeholder="Add an assessment item (e.g., Final Exam 40%)"
+                    sx={courseAddStyles.textField}
+                />
+                <Button variant="contained" onClick={handleAddAssessment} startIcon={<AddIcon />}>Add</Button>
+            </Box>
+            <List dense>
+                {assessments.map((item, index) => (
+                    <ListItem
+                        key={index}
+                        secondaryAction={
+                            <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveAssessment(index)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        }
+                    >
+                        <ListItemText primary={item} />
+                    </ListItem>
+                ))}
+            </List>
         </Box>
 
         {/* Buttons remain the same */}

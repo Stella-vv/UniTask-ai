@@ -11,6 +11,8 @@ def create_course():
     description = data.get("description")
     year = data.get("year")
     semester = data.get("semester")
+    
+    assessment = data.get("assessment")
 
     if not name:
         return jsonify({"error": "Missing course name"}), 400
@@ -19,45 +21,25 @@ def create_course():
         name=name,
         description=description,
         year=year,
-        semester=semester
+        semester=semester,
+        assessment=assessment
     )
 
     db.session.add(new_course)
     db.session.commit()
 
-    return jsonify({
-        "id": new_course.id,
-        "name": new_course.name,
-        "description": new_course.description,
-        "year": new_course.year,
-        "semester": new_course.semester
-    }), 201
+    return jsonify(new_course.to_dict()), 201
 
 
 @course_bp.route("/", methods=["GET"])
 def get_all_courses():
     courses = Course.query.all()
-    return jsonify([
-        {
-            "id": course.id,
-            "name": course.name,
-            "description": course.description,
-            "year": course.year,
-            "semester": course.semester
-        }
-        for course in courses
-    ]), 200
+    return jsonify([course.to_dict() for course in courses]), 200
 
 @course_bp.route("/<int:course_id>", methods=["GET"])
 def get_course(course_id):
     course = Course.query.get_or_404(course_id)
-    return jsonify({
-        "id": course.id,
-        "name": course.name,
-        "description": course.description,
-        "year": course.year,
-        "semester": course.semester
-    }), 200
+    return jsonify(course.to_dict()), 200
 
 @course_bp.route("/<int:course_id>", methods=["PUT"])
 def update_course(course_id):
@@ -68,18 +50,14 @@ def update_course(course_id):
     course.description = data.get("description", course.description)
     course.year = data.get("year", course.year)
     course.semester = data.get("semester", course.semester)
+    
+    course.assessment = data.get("assessment", course.assessment)
 
     db.session.commit()
 
     return jsonify({
         "message": "Course updated successfully!",
-        "course": {
-            "id": course.id,
-            "name": course.name,
-            "description": course.description,
-            "year": course.year,
-            "semester": course.semester
-        }
+        "course": course.to_dict()
     }), 200
 
 @course_bp.route("/<int:course_id>", methods=["DELETE"])
