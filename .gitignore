@@ -1,18 +1,15 @@
-# 忽略 Python 虚拟环境
+
 venv/
 .venv/
-
-# 忽略 Python 缓存文件
+node_modules/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# 忽略 VSCode、PyCharm 等编辑器配置
 .vscode/
 .idea/
 
-# 忽略其他缓存/临时文件
 *.log
 *.swp
 .DS_Store
