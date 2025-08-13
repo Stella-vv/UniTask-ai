@@ -15,5 +15,14 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/setupTests.js'],
+    // This server configuration fixes the "EMFILE: too many open files" error
+    // by telling Vitest to process MUI packages differently.
+    server: {
+      deps: {
+        inline: [
+          /@mui\/.*/,
+        ],
+      },
+    },
   },
 });
