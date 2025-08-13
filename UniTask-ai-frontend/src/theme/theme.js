@@ -2,15 +2,15 @@ import { createTheme } from '@mui/material/styles';
 
 const palette = {
   primary: {
-    main: '#62BBF5', // left navigation bar background
-    contrastText: '#FFFFFF', // left navigation bar text
+    main: '#62BBF5',
+    contrastText: '#FFFFFF',
   },
   background: {
-    default: '#FFFFFF', // right content area background color
-    paper: '#EFF8FF', // background color for cards/paper elements
+    default: '#FFFFFF',
+    paper: '#EFF8FF',
   },
   text: {
-    primary: '#1E293B', // A dark color for primary text for readability
+    primary: '#1E293B',
     secondary: '#64748B',
     courseText: '#325c8c',
   }
@@ -26,7 +26,7 @@ export const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 16, // Matching the border radius from the image
+    borderRadius: 16,
   },
   components: {
     MuiListItemButton: {
@@ -55,8 +55,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           color: 'inherit',
-          minWidth: '56px', // Increased spacing for the larger icon
-          // Targeting the icon itself inside the container
+          minWidth: '56px', 
           '& .MuiSvgIcon-root': {
             fontSize: '32px', 
           }
@@ -66,7 +65,7 @@ export const theme = createTheme({
     MuiListItemText: {
       styleOverrides: {
         primary: {
-          fontSize: '1.125rem', // Making the font slightly larger (default is 1rem)
+          fontSize: '1.125rem',
           fontWeight: 500,
         }
       }

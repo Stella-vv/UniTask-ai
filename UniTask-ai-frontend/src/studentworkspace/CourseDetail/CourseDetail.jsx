@@ -22,10 +22,8 @@ const StudentCourseDetail = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate(); 
 
-  // Fetch dynamic data from API
   useEffect(() => {
     const fetchCourse = async () => {
-      // Ensure we have a courseId before fetching
       if (!courseId) {
           setError('Course ID not found in URL.');
           setLoading(false);
@@ -57,7 +55,6 @@ const StudentCourseDetail = () => {
     }
   };
 
-  // Loading and Error states
   if (loading) {
     return (
         <Box sx={courseDetailStyles.container}>
@@ -87,14 +84,12 @@ const StudentCourseDetail = () => {
   let assessmentsList = [];
   if (course && course.assessment) {
     try {
-      // The backend sends a JSON string, so we parse it into an array
       const parsed = JSON.parse(course.assessment);
       if (Array.isArray(parsed)) {
         assessmentsList = parsed;
       }
     } catch (e) {
       console.error("Failed to parse assessment JSON:", e);
-      // If parsing fails, we can leave the list empty or handle it as a single item
       assessmentsList = [];
     }
   }
@@ -127,7 +122,6 @@ const StudentCourseDetail = () => {
           Course ID: {course.id}
         </Typography>
 
-        {/* Display Availability */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6" sx={courseDetailStyles.sectionTitle}>
              Availability:
@@ -155,7 +149,6 @@ const StudentCourseDetail = () => {
               {assessmentsList.map((assessmentItem, index) => (
                 <ListItem key={index} sx={courseDetailStyles.assessmentItem}>
                   <ListItemText 
-                    // 'assessmentItem' is now the string itself
                     primary={`${index + 1}. ${assessmentItem}`}
                     primaryTypographyProps={{ sx: courseDetailStyles.assessmentText }}
                   />
@@ -169,7 +162,6 @@ const StudentCourseDetail = () => {
           )}
         </Box>
 
-        {/* Navigation Buttons */}
         <Box sx={courseDetailStyles.navigationButtons}>
           <Button
             onClick={handleGoToAssignments}

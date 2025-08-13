@@ -1,5 +1,4 @@
 export const studentAssignmentListStyles = {
-  // Container for the filter dropdown
   filterContainer: {
     display: 'flex',
     justifyContent: 'flex-start', 
@@ -9,7 +8,6 @@ export const studentAssignmentListStyles = {
     maxWidth: 600, 
   },
   
-  // Style for the dropdown container
   formControl: {
     minWidth: 240,
   },

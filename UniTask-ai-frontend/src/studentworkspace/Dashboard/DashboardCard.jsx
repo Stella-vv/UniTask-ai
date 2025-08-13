@@ -14,17 +14,14 @@ const DashboardCard = ({ icon, title, description, path, isFirst, isLast }) => {
         ...(isLast && dashboardCardStyles.lastCard),
       }}
     >
-      {/* Icon */}
       <Box sx={dashboardCardStyles.iconContainer}>
         {icon}
       </Box>
-      
-      {/* Title */}
+
       <Typography variant="h6" sx={dashboardCardStyles.title}>
         {title}
       </Typography>
-      
-      {/* Description */}
+
       <Typography variant="body2" sx={dashboardCardStyles.description}>
         {description}
       </Typography>

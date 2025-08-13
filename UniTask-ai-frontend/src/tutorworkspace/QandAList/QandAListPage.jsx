@@ -78,10 +78,8 @@ const QandAListPage = () => {
   };
 
   const handleDeleteFile = async (qaIdToDelete) => {
-    // Show a confirmation dialog before proceeding
     if (window.confirm('Are you sure you want to delete this file? This action cannot be undone.')) {
         try {
-            // Call the backend API to delete the file.
             await api.delete(`/qa/delete/${qaIdToDelete}`);
             
             setQAList(prevList => prevList.filter(qa => qa.id !== qaIdToDelete));
@@ -90,13 +88,10 @@ const QandAListPage = () => {
 
         } catch (err) {
             console.error('Failed to delete file:', err);
-            // Display an error message if the deletion fails.
             setError('Failed to delete the file. Please try again.');
         }
     }
   };
-
-
 
   const getFileIcon = (fileType) => {
     const type = fileType?.toLowerCase() || '';

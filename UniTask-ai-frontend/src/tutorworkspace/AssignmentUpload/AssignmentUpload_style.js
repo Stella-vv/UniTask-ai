@@ -13,17 +13,14 @@ export const assignmentUploadStyles = {
     borderTopRightRadius: '16px',
     display: 'flex',
     alignItems: 'center',
-    // 修改点1：文字靠左对齐
-    justifyContent: 'flex-start', // 从 'center' 修改为 'flex-start'
+    justifyContent: 'flex-start', 
     gap: 2,
     color: 'white',
-    // 修改点2：添加内边距
-    p: 3, // 添加内边距，与 AssignmentList 和 AssignmentDetail 保持一致
-    // 修改点3：通过负外边距和宽度调整，消除与父容器的空隙
-    mt: -4, // 向上负边距
-    ml: -4, // 向左负边距
-    mr: -4, // 向右负边距
-    width: 'calc(100% + 64px)', // 宽度增加，以抵消左右总共 64px 的 padding
+    p: 3, 
+    mt: -4, 
+    ml: -4, 
+    mr: -4,
+    width: 'calc(100% + 64px)', 
   },
 
   uploadIcon: {
@@ -172,7 +169,6 @@ export const assignmentUploadStyles = {
     },
   },
 
-  // 文件显示样式
   fileDisplayContainer: {
     display: 'flex',
     alignItems: 'center',
@@ -190,14 +186,12 @@ export const assignmentUploadStyles = {
     flex: 1,
   },
 
-  // 错误状态样式
   errorText: {
     color: '#f44336',
     fontSize: '0.75rem',
     mt: 0.5,
   },
 
-  // 加载状态样式
   loadingOverlay: {
     position: 'absolute',
     top: 0,

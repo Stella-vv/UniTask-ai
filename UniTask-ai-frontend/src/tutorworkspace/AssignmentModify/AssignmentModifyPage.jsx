@@ -154,7 +154,6 @@ const AssignmentModifyPage = () => {
       <Box sx={assignmentModifyStyles.formContainer}>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        {/* Course Name */}
         <Box sx={assignmentModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Course Name:</Typography>
           <FormControl fullWidth>
@@ -163,7 +162,6 @@ const AssignmentModifyPage = () => {
             </Select>
           </FormControl>
         </Box>
-        {/* Title, Description, Due Date */}
         <Box sx={assignmentModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Title:</Typography>
           <TextField fullWidth value={formData.title} onChange={handleInputChange('title')} sx={assignmentModifyStyles.textField} />
@@ -176,8 +174,7 @@ const AssignmentModifyPage = () => {
           <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Due Date:</Typography>
           <TextField type="date" value={formData.dueDate} onChange={handleInputChange('dueDate')} sx={assignmentModifyStyles.dateField} InputLabelProps={{ shrink: true }} />
         </Box>
-        
-        {/* --- Rubrics File Input (Direct JSX) --- */}
+
         <Box sx={assignmentModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Rubrics:</Typography>
           <TextField
@@ -204,8 +201,7 @@ const AssignmentModifyPage = () => {
             sx={assignmentModifyStyles.textField}
           />
         </Box>
-        
-        {/* --- Attachment File Input (Direct JSX) --- */}
+
         <Box sx={assignmentModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Attachment:</Typography>
           <TextField
@@ -233,7 +229,6 @@ const AssignmentModifyPage = () => {
           />
         </Box>
 
-        {/* Action Buttons */}
         <Box sx={assignmentModifyStyles.buttonContainer}>
           <Button variant="contained" onClick={handleSubmit} disabled={submitting || loading} startIcon={submitting ? <CircularProgress size={20} /> : <CheckIcon />} sx={assignmentModifyStyles.confirmButton}>
             {submitting ? 'Saving...' : 'Save Changes'}

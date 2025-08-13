@@ -47,7 +47,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* --- Tutor Routes (Fully Corrected and Unified Structure) --- */}
+        {/* --- Tutor Routes --- */}
         <Route element={<ProtectedRoute allowedRoles={['tutor']} />}>
           <Route path="/tutor" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
@@ -73,10 +73,7 @@ function App() {
             
             {/* Other functional routes */}
             <Route path="assignment/:assignmentId/forum" element={<AssignmentForumPage />} />
-            
-            {/* Obsolete global routes can be removed */}
-            {/* <Route path="qnas" element={<QandAListPage />} /> */}
-            {/* <Route path="faqs" element={<FaqList />} /> */}
+
           </Route>
         </Route>
 

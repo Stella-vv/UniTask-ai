@@ -89,16 +89,15 @@ const FaqModifyPage = () => {
     if (window.confirm('Are you sure you want to permanently delete this FAQ? This action cannot be undone.')) {
       setSubmitting(true); // Disable all buttons
       try {
-        // Assumes a DELETE endpoint like /api/faqs/:faqId exists
         await api.delete(`/faqs/${faqId}`);
         alert('FAQ deleted successfully!');
-        navigate(`/tutor/assignment/${assignmentId}/faqs`); // Go back to the list
+        navigate(`/tutor/assignment/${assignmentId}/faqs`); 
       } catch (e) {
         console.error('FAQ deletion failed:', e);
         const msg = e.response?.data?.message || 'Deletion failed. Please try again.';
         setErrors({ form: msg });
       } finally {
-        setSubmitting(false); // Re-enable buttons
+        setSubmitting(false);
       }
     }
   };

@@ -8,7 +8,7 @@ export const assignmentDetailStyles = {
 
   topHeader: {
     bgcolor: 'primary.main',
-    height: '80px', // Set to 80px to match other pages
+    height: '80px',
     borderTopLeftRadius: '16px',
     borderTopRightRadius: '16px',
     display: 'flex',
@@ -45,14 +45,13 @@ export const assignmentDetailStyles = {
     borderBottomLeftRadius: '16px',
     borderBottomRightRadius: '16px',
     p: 4,
-    flex: 1, // Key: allow this area to fill remaining space
+    flex: 1, 
     display: 'flex',
     flexDirection: 'column',
   },
 
-  // This wrapper will contain all the scrollable content
   mainContentWrapper: {
-    flex: 1, // Key: make this inner wrapper take up space so it can scroll
+    flex: 1, 
     overflowY: 'auto',
   },
 
@@ -60,7 +59,7 @@ export const assignmentDetailStyles = {
     color: 'text.courseText',
     fontWeight: 600,
     fontSize: '2rem',
-    mb: 3, // Add spacing between title and content below
+    mb: 3,
   },
 
   infoSection: {
@@ -129,15 +128,13 @@ export const assignmentDetailStyles = {
     alignItems: 'center',
   },
 
-  // MODIFICATION: Renamed container and added gap for multiple buttons
   bottomButtonContainer: {
     display: 'flex',
     justifyContent: 'center',
-    gap: 4, // Adds space between the buttons
+    gap: 4,
     pt: 3,
   },
 
-  // MODIFICATION: Made a reusable style for the action buttons
   actionButton: {
     bgcolor: 'primary.main',
     color: 'white',

@@ -104,7 +104,6 @@ const StudentAssignmentDetail = () => {
       </Box>
 
       <Box sx={assignmentDetailStyles.contentArea}>
-        {/* Key Change: A new wrapper for all the main content that needs to scroll */}
         <Box sx={assignmentDetailStyles.mainContentWrapper}>
           <Typography variant="h4" sx={assignmentDetailStyles.assignmentTitle}>{assignmentData.name}</Typography>
           <Box sx={assignmentDetailStyles.infoSection}>

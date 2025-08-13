@@ -38,7 +38,7 @@ export const forumPageStyles = {
   },
   sectionTitle: {
     fontWeight: 600,
-    fontSize: '1.75rem', // "Assignment 1" title size
+    fontSize: '1.75rem', 
     color: 'white',
   },
   postContainer: {
@@ -60,7 +60,7 @@ export const forumPageStyles = {
   avatar: {
     width: 40,
     height: 40,
-    bgcolor: 'primary.main', // Example avatar color
+    bgcolor: 'primary.main', 
   },
   userName: {
     fontWeight: 600,
@@ -76,13 +76,13 @@ export const forumPageStyles = {
     lineHeight: 1.6,
   },
   codeBlock: {
-    bgcolor: '#2D2D2D', // Dark background for code
-    color: '#F8F8F2', // Light text for code
+    bgcolor: '#2D2D2D',
+    color: '#F8F8F2',
     fontFamily: 'monospace',
     p: 2,
     borderRadius: '6px',
     overflowX: 'auto',
-    whiteSpace: 'pre-wrap', // Preserve whitespace and wrap
+    whiteSpace: 'pre-wrap', 
     wordBreak: 'break-all',
   },
   replyCount: {
@@ -90,9 +90,8 @@ export const forumPageStyles = {
     fontWeight: 500,
     mt: 2,
   },
-  // Style for the "Submit Reply" section
   submitReplySection: {
-    mt: 'auto', // Push to the bottom
+    mt: 'auto', 
     pt: 2,
     borderTop: '1px solid #E0E0E0',
     display: 'flex',
@@ -120,7 +119,7 @@ export const forumPageStyles = {
     '& .MuiInputBase-input': {
       color: 'text.primary',
     },
-    bgcolor: '#FBFBFB', // Slightly different background for text field
+    bgcolor: '#FBFBFB',
   },
   actionButtons: {
     display: 'flex',

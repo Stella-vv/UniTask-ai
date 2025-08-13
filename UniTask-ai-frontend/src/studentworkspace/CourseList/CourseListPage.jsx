@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, CircularProgress, Alert, List, ListItem, ListItemText, Divider, ListItemButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api'; // Reuse the api instance
+import api from '../../api';
 
 const StudentCourseList = () => {
   const navigate = useNavigate();
@@ -13,7 +13,6 @@ const StudentCourseList = () => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        // Fetch the course list from the backend
         const response = await api.get('/courses/'); 
         setCourses(response.data);
       } catch (err) {

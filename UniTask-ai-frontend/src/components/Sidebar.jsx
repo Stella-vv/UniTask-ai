@@ -9,10 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 
-//Import your logo file from the assets folder
 import customLogo from '../assets/logo.png'; 
-
-// Import icons from MUI
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -22,7 +19,6 @@ import { NavLink } from 'react-router-dom';
 
 const drawerWidth = 280;
 
-// Logo component
 const Logo = () => (
   <Box sx={{ display: 'flex', justifyContent: 'center', p: 3, mb: 0.5 }}>
     <Box

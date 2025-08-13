@@ -13,7 +13,7 @@ export const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: 2,
-    pt: 4, // Adding padding-top to push the header down
+    pt: 4, 
     width: '100%', 
   },
   mainHeader: {

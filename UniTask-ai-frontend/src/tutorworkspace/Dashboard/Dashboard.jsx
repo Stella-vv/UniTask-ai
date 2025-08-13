@@ -19,13 +19,11 @@ const Dashboard = () => {
         setLoading(true);
         setError(null);
 
-        // Fetch data from multiple APIs concurrently
         const [coursesResponse, assignmentsResponse] = await Promise.allSettled([
-          api.get('/courses/'), // Get all courses
-          api.get(`/assignments`), // Get tutor's assignments
+          api.get('/courses/'),
+          api.get(`/assignments`), 
         ]);
 
-        // Process results
         const coursesCount = coursesResponse.status === 'fulfilled' 
           ? coursesResponse.value.data.length 
           : 0;
@@ -34,7 +32,6 @@ const Dashboard = () => {
           ? assignmentsResponse.value.data.length 
           : 0;
         
-        // Update dashboard data with dynamic counts
         const updatedDashboardData = dashboardCardData.map(item => {
           if (item.title === 'Course') {
             return {
@@ -54,7 +51,6 @@ const Dashboard = () => {
 
         setDynamicDashboardData(updatedDashboardData);
 
-        // Log any failed requests for debugging
         if (coursesResponse.status === 'rejected') {
           console.warn('Failed to fetch courses:', coursesResponse.reason);
         }

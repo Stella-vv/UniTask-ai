@@ -29,14 +29,14 @@ export const faqListStyles = {
   backButton: {
     color: 'white',
     borderColor: 'rgba(255, 255, 255, 0.7)',
-    borderWidth: '2px', // Set border width to 2px
+    borderWidth: '2px', 
     textTransform: 'none',
     fontWeight: 600,
     borderRadius: '20px',
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.1)',
       borderColor: 'white',
-      borderWidth: '2px', // Ensure border width stays 2px on hover
+      borderWidth: '2px', 
     }
   },
   contentArea: {
@@ -71,7 +71,7 @@ export const faqListStyles = {
     mb: 1,
     borderRadius: '8px',
     border: '1px solid #E2E8F0',
-    overflow: 'hidden', // Add this line to clip the inner content
+    overflow: 'hidden',
     '&:before': {
       display: 'none',
     },

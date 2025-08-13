@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Alert, MenuItem, Link as MuiLink } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import api from '../../api'; // 根据你的项目层级调整路径
+import api from '../../api'; 
 
 export default function Register() {
   const nav = useNavigate();
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole]         = useState('student');   // 默认学生
+  const [role, setRole]         = useState('student');
   const [school, setSchool]     = useState('CSE');
   const [year, setYear]         = useState(new Date().getFullYear());
   const [err, setErr]           = useState('');
@@ -23,7 +23,7 @@ export default function Register() {
         school,
         year
       });
-      setMsg(data.message); // "User registered!"
+      setMsg(data.message);
       setTimeout(() => nav('/login'), 1000);
     } catch (e) {
       setErr(e.response?.data?.message || 'Register failed');

@@ -13,7 +13,6 @@ vi.mock('../../api', () => ({
 import api from '../../api';
 import Dashboard from './Dashboard';
 
-// Helper to render the component with a router (safe for any internal links)
 const renderDash = () =>
   render(
     <MemoryRouter>
@@ -23,11 +22,9 @@ const renderDash = () =>
 
 describe('Student Dashboard Page (dynamic)', () => {
   beforeEach(() => {
-    // Clean DOM & mocks between tests
     cleanup();
     vi.clearAllMocks();
 
-    // Simulate a logged-in user so the component will hit the API
     localStorage.clear();
     localStorage.setItem('user', JSON.stringify({ id: 42 }));
   });
@@ -52,15 +49,12 @@ describe('Student Dashboard Page (dynamic)', () => {
 
     renderDash();
 
-    // Assert API is called as expected (3 parallel GETs)
     await waitFor(() => {
       expect(api.get).toHaveBeenCalledTimes(3);
       expect(api.get).toHaveBeenNthCalledWith(1, '/courses/');
       expect(api.get).toHaveBeenNthCalledWith(2, '/assignments');
       expect(api.get).toHaveBeenNthCalledWith(3, '/faqs/assignment/1');
     });
-
-    // Assert dynamic copy is rendered from the mocked counts
     expect(await screen.findByText(/You have 2 courses/i)).toBeInTheDocument();
     expect(screen.getByText(/3 assignments created/i)).toBeInTheDocument();
     expect(screen.getByText(/4 FAQs/i)).toBeInTheDocument();

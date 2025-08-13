@@ -25,7 +25,7 @@ export const chatPageStyles = {
   
   headerTitle: {
     fontWeight: 600,
-    fontSize: '1.75rem', // Changed from 1.5rem
+    fontSize: '1.75rem',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -34,7 +34,6 @@ export const chatPageStyles = {
 
   backButton: {
     color: 'white',
-    // Changed from default 1px to 2px
     border: '2px solid rgba(255, 255, 255, 0.7)', 
     textTransform: 'none',
     fontWeight: 600,
@@ -43,7 +42,7 @@ export const chatPageStyles = {
     padding: '6px 16px',
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      borderColor: 'white', // Keep border color white on hover
+      borderColor: 'white',
     }
   },
 
@@ -87,7 +86,6 @@ export const chatPageStyles = {
   },
 
   userAvatar: {
-    // This remains light blue as requested
     bgcolor: 'primary.main', 
     color: 'white',
     width: 40,
@@ -102,7 +100,6 @@ export const chatPageStyles = {
   },
 
   userMessage: {
-    // MODIFICATION: Reverted background color to the original dark blue for contrast
     bgcolor: 'primary.main',
     color: 'white',
     borderBottomRightRadius: '2px',

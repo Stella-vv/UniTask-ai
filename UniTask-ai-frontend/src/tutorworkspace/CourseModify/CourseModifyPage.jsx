@@ -12,7 +12,6 @@ import {
   FormControl,
   Select,
   MenuItem,
-  // --- MODIFICATION: Import new components ---
   List,
   ListItem,
   ListItemText,
@@ -21,7 +20,6 @@ import {
 import {
     Check as CheckIcon,
     Close as CloseIcon,
-    // --- MODIFICATION: Import new Icons ---
     Add as AddIcon,
     Delete as DeleteIcon
 } from '@mui/icons-material';
@@ -39,7 +37,6 @@ const CourseModifyPage = () => {
     semester: '',
   });
 
-  // --- MODIFICATION: Add state for assessments ---
   const [assessments, setAssessments] = useState([]);
   const [currentAssessment, setCurrentAssessment] = useState('');
 
@@ -52,8 +49,7 @@ const CourseModifyPage = () => {
       setLoading(true);
       setError('');
       const response = await api.get(`/courses/${courseId}`);
-      
-      // --- MODIFICATION START: Load and parse assessment data ---
+
       const courseData = response.data;
       setFormData({
         name: courseData.name,
@@ -69,12 +65,10 @@ const CourseModifyPage = () => {
                   setAssessments(parsed);
               }
           } catch (e) {
-              // If it's not valid JSON, treat it as a single string
               console.error("Could not parse assessment JSON from DB:", e);
               setAssessments([courseData.assessment]);
           }
       }
-      // --- MODIFICATION END ---
 
     } catch (err) {
       console.error('Failed to fetch course data:', err);
@@ -92,7 +86,6 @@ const CourseModifyPage = () => {
     setFormData(prev => ({ ...prev, [field]: event.target.value }));
   };
 
-  // --- MODIFICATION: Add handlers for assessments ---
   const handleAddAssessment = () => {
     if (currentAssessment.trim()) {
       setAssessments([...assessments, currentAssessment.trim()]);
@@ -108,7 +101,6 @@ const CourseModifyPage = () => {
     setSubmitting(true);
     setError('');
     try {
-      // --- MODIFICATION: Add assessment data to the submission object ---
       const submissionData = {
         ...formData,
         assessment: JSON.stringify(assessments)
@@ -175,7 +167,6 @@ const CourseModifyPage = () => {
           <TextField fullWidth multiline rows={5} value={formData.description} onChange={handleInputChange('description')} sx={courseModifyStyles.textField}/>
         </Box>
 
-        {/* --- MODIFICATION: Add UI for assessments --- */}
         <Box sx={courseModifyStyles.fieldContainer}>
             <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Assessments:</Typography>
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>

@@ -16,7 +16,7 @@ export const dashboardCardData = [
     icon: <MenuBookIcon />,
     title: 'Course',
     description: 'You have x courses',
-    path: '/student/course-detail', // 修改为指向课程详情页面
+    path: '/student/course-detail',
   },
   {
     icon: <AssignmentIcon />,

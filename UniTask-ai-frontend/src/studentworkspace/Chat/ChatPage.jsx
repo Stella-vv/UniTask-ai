@@ -98,7 +98,6 @@ const ChatPage = () => {
           {assignmentName ? `Help for ${assignmentName}` : 'Help Assistant'}
         </Typography>
         {assignmentId && (
-          // --- MODIFIED: Changed to an outlined button to apply border style ---
           <Button
             variant="outlined"
             startIcon={<ArrowBackIcon />}

@@ -3,10 +3,10 @@ export const dashboardStyles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center', // 垂直居中
+    justifyContent: 'center',
     gap: 4,
     p: 4,
-    height: '100%', // 占满父容器高度
+    height: '100%',
   },
   
   welcomeText: {
@@ -41,7 +41,7 @@ export const dashboardCardStyles = {
     textDecoration: 'none',
     color: 'inherit',
     minHeight: '140px',
-    flex: 1, // 每个卡片占据相等的空间
+    flex: 1,
     borderRight: '1px solid #E2E8F0',
     transition: 'all 0.2s ease-in-out',
     cursor: 'pointer',

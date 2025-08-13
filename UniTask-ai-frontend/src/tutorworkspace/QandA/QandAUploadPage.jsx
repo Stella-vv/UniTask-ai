@@ -32,7 +32,6 @@ const QandAUploadPage = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch assignment name for the header
   const fetchAssignmentName = useCallback(async () => {
       if (assignmentId) {
         try {
@@ -48,7 +47,6 @@ const QandAUploadPage = () => {
     fetchAssignmentName();
   }, [fetchAssignmentName]);
 
-  // Get current user ID from localStorage
   const getCurrentUserId = () => {
     try {
       const userString = localStorage.getItem('user');
@@ -121,13 +119,12 @@ const QandAUploadPage = () => {
         submitData.append('description', formData.description.trim());
       }
       
-      // IMPORTANT: This requires a backend endpoint like `/api/qa/assignment/upload`
       await api.post('/qa/upload', submitData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       alert('Q&A uploaded successfully!');
-      navigate(`/tutor/assignment/${assignmentId}/qnas`); // Navigate back to the assignment's Q&A list
+      navigate(`/tutor/assignment/${assignmentId}/qnas`);
       
     } catch (error) {
       console.error('Q&A upload failed:', error);

@@ -13,7 +13,7 @@ const CourseList = () => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/courses/');  // 注意结尾加了斜杠
+        const response = await api.get('/courses/');
         setCourses(response.data);
       } catch (err) {
         console.error('Failed to fetch courses:', err);

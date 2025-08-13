@@ -1,5 +1,3 @@
-// 注意： courses { id: 2, name: 'Web Front-End Programming' }
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -28,15 +26,6 @@ import api from '../../api';
 
 const AssignmentUpload = () => {
   const navigate = useNavigate();
-  // 表单状态管理
-  // const [formData, setFormData] = useState({
-  //   courseName: 'Web Front-End Programming',
-  //   title: 'Assignment 1',
-  //   description: '',
-  //   dueDate: '01/07/2025',
-  //   rubrics: null,
-  //   attachment: null,
-  // });
   const [formData, setFormData] = useState({
     courseName: '',
     courseId: '',
@@ -47,18 +36,12 @@ const AssignmentUpload = () => {
     attachment: null,
   });
 
-    // 课程列表状态
   const [courses, setCourses] = useState([]);
   const [coursesLoading, setCoursesLoading] = useState(true);
   const [coursesError, setCoursesError] = useState('');
-  // 错误状态管理
   const [errors, setErrors] = useState({});
-  
-  // 加载状态
   const [isLoading, setIsLoading] = useState(false);
 
-
-    // 获取课程列表
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -68,7 +51,6 @@ const AssignmentUpload = () => {
         const fetchedCourses = response.data || [];
         setCourses(fetchedCourses);
 
-        // If courses are found, default the selection to the first one.
         if (fetchedCourses.length > 0) {
           setFormData(prev => ({
             ...prev,
@@ -84,11 +66,9 @@ const AssignmentUpload = () => {
         setCoursesLoading(false);
       }
     };
-
     fetchCourses();
   }, []);
 
-  // 处理课程选择变化
   const handleCourseChange = (event) => {
     const selectedCourseName = event.target.value;
     const selectedCourse = courses.find(course => course.name === selectedCourseName);
@@ -98,8 +78,6 @@ const AssignmentUpload = () => {
       courseName: selectedCourseName,
       courseId: selectedCourse ? selectedCourse.id : ''
     }));
-    
-    // 清除课程相关错误
     if (errors.courseName) {
       setErrors(prev => ({
         ...prev,
@@ -108,14 +86,11 @@ const AssignmentUpload = () => {
     }
   };
 
-  // 处理输入框变化
   const handleInputChange = (field) => (event) => {
     setFormData(prev => ({
       ...prev,
       [field]: event.target.value
     }));
-    
-    // 清除对应字段的错误
     if (errors[field]) {
       setErrors(prev => ({
         ...prev,
@@ -124,7 +99,6 @@ const AssignmentUpload = () => {
     }
   };
 
-  // 处理文件上传
   const handleFileUpload = (field) => (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -132,8 +106,7 @@ const AssignmentUpload = () => {
         ...prev,
         [field]: file
       }));
-      
-      // 清除文件相关错误
+
       if (errors[field]) {
         setErrors(prev => ({
           ...prev,
@@ -143,7 +116,6 @@ const AssignmentUpload = () => {
     }
   };
 
-  // 移除文件
   const handleRemoveFile = (field) => () => {
     setFormData(prev => ({
       ...prev,
@@ -151,16 +123,11 @@ const AssignmentUpload = () => {
     }));
   };
 
-  // 日期格式转换函数
   const formatDateForBackend = (dateString) => {
     if (!dateString) return '';
-    
-    // 前端日期格式：YYYY-MM-DD
-    // 后端期望格式：YYYY-MM-DD HH:MM:SS
     return `${dateString} 23:59:59`;
   };
 
-  // 表单验证
   const validateForm = () => {
     const newErrors = {};
 
@@ -175,9 +142,8 @@ const AssignmentUpload = () => {
     if (!formData.dueDate) {
       newErrors.dueDate = 'Please select deadline';
     } else {
-      // New validation: Due date cannot be in the past
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Set to start of today for comparison
+      today.setHours(0, 0, 0, 0);
       const selectedDate = new Date(formData.dueDate);
 
       if (selectedDate < today) {
@@ -189,7 +155,6 @@ const AssignmentUpload = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // 获取当前用户ID
   const getCurrentUserId = () => {
     try {
       const userString = localStorage.getItem('user');
@@ -204,13 +169,11 @@ const AssignmentUpload = () => {
     return null;
   };
 
-  // 提交表单
 const handleSubmit = async () => {
   if (!validateForm()) {
     return;
   }
 
-  // 检查用户是否登录
   const userId = getCurrentUserId();
   if (!userId) {
     alert('Please login first');
@@ -221,7 +184,6 @@ const handleSubmit = async () => {
   setIsLoading(true);
 
   try {
-    // ✅ 准备 multipart/form-data 数据
     const submitData = new FormData();
     submitData.append('name', formData.title);
     submitData.append('description', formData.description);
@@ -233,17 +195,15 @@ const handleSubmit = async () => {
 
     console.log('📤 Submitting assignment data (FormData)...');
 
-    // ✅ 发送 multipart/form-data 请求
     const response = await api.post('/assignments', submitData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
-    // const response = await api.post('/assignments/', submitData);
 
     console.log('✅ Assignment created successfully:', response.data);
     alert('Assignment uploaded successfully!');
-    navigate('/tutor/assignment'); // 返回到AssignmentList页面
+    navigate('/tutor/assignment');
 
   } catch (error) {
     console.error('❌ Upload failed:', error);
@@ -257,18 +217,13 @@ const handleSubmit = async () => {
   }
 };
 
-
-  // 取消操作
   const handleCancel = () => {
-    // TODO: 根据实际需求处理取消逻辑（如返回上一页）
     if (window.confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
       navigate('/tutor/assignment');
-      // 重置表单或导航回上一页
       console.log('Cancel action');
     }
   };
 
-  // 如果课程正在加载
   if (coursesLoading) {
     return (
       <Box sx={assignmentUploadStyles.container}>
@@ -290,7 +245,6 @@ const handleSubmit = async () => {
 
   return (
           <Box sx={assignmentUploadStyles.container}>
-      {/* 顶部蓝色区域 */}
       <Box sx={assignmentUploadStyles.topHeader}>
         <UploadIcon sx={assignmentUploadStyles.uploadIcon} />
         <Typography variant="h4" sx={assignmentUploadStyles.headerTitle}>
@@ -298,16 +252,13 @@ const handleSubmit = async () => {
         </Typography>
       </Box>
 
-      {/* 表单内容区域 */}
       <Box sx={assignmentUploadStyles.formContainer}>
-        {/* 显示课程加载错误 */}
         {coursesError && (
           <Alert severity="warning" sx={{ mb: 2 }}>
             {coursesError}
           </Alert>
         )}
 
-        {/* 课程名称 */}
         <Box sx={assignmentUploadStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentUploadStyles.fieldLabel}>
             Course name : <span style={{ color: '#f44336' }}>*</span>
@@ -334,7 +285,6 @@ const handleSubmit = async () => {
           )}
         </Box>
 
-        {/* 标题 */}
         <Box sx={assignmentUploadStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentUploadStyles.fieldLabel}>
             Title : <span style={{ color: '#f44336' }}>*</span>
@@ -350,7 +300,6 @@ const handleSubmit = async () => {
           />
         </Box>
 
-        {/* 描述 */}
         <Box sx={assignmentUploadStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentUploadStyles.fieldLabel}>
             Description :
@@ -366,7 +315,6 @@ const handleSubmit = async () => {
           />
         </Box>
 
-        {/* 截止日期 */}
         <Box sx={assignmentUploadStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentUploadStyles.fieldLabel}>
             Due Date : <span style={{ color: '#f44336' }}>*</span>
@@ -381,7 +329,6 @@ const handleSubmit = async () => {
           />
         </Box>
 
-        {/* 评分标准文件 */}
         <Box sx={assignmentUploadStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentUploadStyles.fieldLabel}>
             Rubrics :
@@ -418,7 +365,6 @@ const handleSubmit = async () => {
           </Box>
         </Box>
 
-        {/* 附件 */}
         <Box sx={assignmentUploadStyles.fieldContainer}>
           <Typography variant="h6" sx={assignmentUploadStyles.fieldLabel}>
             Attachment :
@@ -454,7 +400,6 @@ const handleSubmit = async () => {
           </Box>
         </Box>
 
-        {/* 操作按钮 */}
         <Box sx={assignmentUploadStyles.buttonContainer}>
           <Button
             variant="contained"

@@ -49,12 +49,10 @@ const StudentAssignmentList = () => {
     fetchCourses();
   }, [location.state?.defaultCourseId]); 
 
-  // Effect to fetch assignments based on the selected course
   useEffect(() => {
-    // --- MODIFICATION: Do not fetch if no course is selected ---
     if (!selectedCourseId) {
       setLoading(false);
-      setAssignments([]); // Ensure the list is empty if no course is selected
+      setAssignments([]);
       return;
     }
 
@@ -73,7 +71,7 @@ const StudentAssignmentList = () => {
     };
 
     fetchAssignments();
-  }, [selectedCourseId]); // This effect re-runs whenever selectedCourseId changes
+  }, [selectedCourseId]);
 
   const handleViewAssignmentDetail = (assignmentId) => {
     navigate(`/student/assignment/${assignmentId}`);
@@ -107,7 +105,6 @@ const StudentAssignmentList = () => {
         
         {/* Course Filter Dropdown */}
         <Box sx={styles.filterContainer}>
-          {/* --- MODIFICATION: Using outlined variant for the select box --- */}
           <FormControl sx={styles.formControl} fullWidth variant="outlined" disabled={coursesLoading}>
             <InputLabel>Select Course</InputLabel>
             <Select
@@ -116,8 +113,6 @@ const StudentAssignmentList = () => {
               label="Select Course"
               sx={{ bgcolor: 'white' }}
             >
-              {/* You can optionally add an "All Courses" option if needed */}
-              {/* <MenuItem value=""><em>All Courses</em></MenuItem> */}
               {courses.map((course) => (
                 <MenuItem key={course.id} value={course.id}>
                   {course.name}

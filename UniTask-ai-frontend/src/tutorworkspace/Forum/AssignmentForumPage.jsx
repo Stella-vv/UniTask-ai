@@ -10,13 +10,13 @@ import {
   CircularProgress,
   Alert
 } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useParams to get URL parameters
-import api from '../../api'; // Use the central api instance
+import { useParams, useNavigate } from 'react-router-dom';
+import api from '../../api';
 import { forumPageStyles } from './AssignmentForumPage_style';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const AssignmentForumPage = () => {
-  const { assignmentId } = useParams(); // Get assignmentId from the URL
+  const { assignmentId } = useParams();
   const navigate = useNavigate();
   const [forumTitle, setForumTitle] = useState('Forum');
   const [forumId, setForumId] = useState(null);
@@ -27,7 +27,6 @@ const AssignmentForumPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch data dynamically based on assignmentId
   const fetchData = useCallback(async () => {
     if (!assignmentId) {
       setError("Assignment ID is missing from the URL.");
@@ -39,25 +38,21 @@ const AssignmentForumPage = () => {
       setLoading(true);
       setError('');
 
-      // Get user ID from local storage
       const userString = localStorage.getItem('user');
       if (userString) {
         setUserId(JSON.parse(userString).id);
       }
 
-      // 1. Fetch the forum associated with the assignmentId
       const forumRes = await api.get(`/forum/${assignmentId}`);
       const forumData = forumRes.data;
       
       setForumTitle(forumData.title || `Forum for Assignment ${assignmentId}`);
       setForumId(forumData.id);
 
-      // 2. If a forum is found, fetch its questions
       if (forumData.id) {
         const questionsRes = await api.get(`/forum/${forumData.id}/questions`);
         setQuestions(questionsRes.data);
       } else {
-        // Handle case where no forum exists for this assignment yet
         setQuestions([]); 
       }
 
@@ -77,7 +72,6 @@ const AssignmentForumPage = () => {
     navigate(`/tutor/assignment/${assignmentId}`);
   };
 
-  // Handle submitting a new question
   const handleSubmitQuestion = async () => {
     if (!newQuestion.trim() || !forumId || !userId) {
       alert("Cannot submit an empty question, or user/forum info is missing.");
@@ -90,14 +84,13 @@ const AssignmentForumPage = () => {
         user_id: userId,
       });
       setNewQuestion('');
-      fetchData(); // Refetch data to show the new question
+      fetchData();
     } catch (err) {
       console.error('❌ Failed to submit question:', err);
       alert('An error occurred while submitting your question.');
     }
   };
 
-  // Handle submitting a reply
   const handleReplySubmit = async (questionId) => {
     const replyText = replyStates[questionId]?.text;
     if (!replyText || !replyText.trim() || !userId) return;
@@ -109,7 +102,7 @@ const AssignmentForumPage = () => {
         question_id: questionId,
       });
       setReplyStates(prev => ({ ...prev, [questionId]: { show: false, text: '' } }));
-      fetchData(); // Refetch data to show the new reply
+      fetchData();
     } catch (err) {
       console.error('❌ Failed to submit reply:', err);
       alert('Failed to submit your reply.');

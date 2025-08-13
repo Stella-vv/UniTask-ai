@@ -97,7 +97,7 @@ export const faqModifyStyles = {
     },
   },
   deleteButton: {
-    bgcolor: 'error.main', // Use theme's error color (red)
+    bgcolor: 'error.main',
     color: 'white',
     fontWeight: 600,
     px: 4,

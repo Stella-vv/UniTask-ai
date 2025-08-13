@@ -54,7 +54,7 @@ const FaqList = () => {
   const goUpload = () => navigate(`/tutor/assignment/${assignmentId}/faqs/upload`);
   
   const handleEdit = (faqId, event) => {
-    event.stopPropagation(); // Stop the click from expanding the accordion
+    event.stopPropagation();
     navigate(`/tutor/assignment/${assignmentId}/faqs/modify/${faqId}`);
   };
 

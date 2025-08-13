@@ -17,8 +17,8 @@ import {
   Forum as ForumIcon,
   Description as DescriptionIcon,
   AttachFile as AttachFileIcon,
-  LiveHelp as QnaIcon, // Icon for Q&A
-  HelpOutline as FaqIcon, // Icon for FAQ
+  LiveHelp as QnaIcon, 
+  HelpOutline as FaqIcon, 
   ArrowBack as ArrowBackIcon,
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -26,23 +26,19 @@ import { assignmentDetailStyles } from './AssignmentDetail_style';
 import api from '../../api';
 
 const AssignmentDetail = () => {
-  // Get assignment ID from route
   const { assignmentId } = useParams();
   const navigate = useNavigate();
-  
-  // State management
+
   const [assignmentData, setAssignmentData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch assignment detail data
   useEffect(() => {
     const fetchAssignmentDetail = async () => {
       try {
         setLoading(true);
         setError(null);
-        
-        // Get user info from localStorage
+
         const userString = localStorage.getItem('user');
         if (!userString) {
           setError('User not logged in. Please log in again.');
@@ -53,19 +49,16 @@ const AssignmentDetail = () => {
 
         const user = JSON.parse(userString);
 
-        // If assignmentId is not provided, show an error
         if (!assignmentId) {
           setError('Assignment ID not provided');
           setLoading(false);
           return;
         }
 
-        // Directly fetch the details of the specified assignment
         const response = await api.get(`/assignments/detail/${assignmentId}`);
         const assignment = response.data;
 
 
-        // Format assignment data to fit existing UI components
         const formattedAssignment = {
           id: assignment.id,
           name: assignment.name,
@@ -98,9 +91,6 @@ const AssignmentDetail = () => {
     }
   }, [assignmentId, navigate]);
 
-
-
-  // Modify assignment
   const handleModify = () => {
     navigate(`/tutor/assignment/modify/${assignmentId}`);
   };
@@ -109,46 +99,37 @@ const AssignmentDetail = () => {
     navigate('/tutor/assignment');
   };
 
-  // handleDelete function
   const handleDelete = async () => {
-    // Confirm with the user before deleting
     if (window.confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) {
       try {
-        setLoading(true); // Optional: show a loading state
-        
-        // Call the backend DELETE API
+        setLoading(true); 
+
         await api.delete(`/assignments/${assignmentData.id}`);
         
         alert('Assignment deleted successfully!');
         
-        // Navigate back to the assignment list page after deletion
         navigate('/tutor/assignment');
         
       } catch (err) {
         console.error('Failed to delete assignment:', err);
         setError('Failed to delete assignment, please try again.');
-        setLoading(false); // Turn off loading state on error
+        setLoading(false); 
       }
     }
   };
 
-  // Navigate to forum
   const handleGoToForum = () => {
     navigate(`/tutor/assignment/${assignmentId}/forum`);
   };
 
-  // Navigate to Q&As
   const handleGoToQAs = () => {
     navigate(`/tutor/assignment/${assignmentId}/qnas`);
   };
 
-  // Navigate to FAQs
   const handleGoToFAQs = () => {
     navigate(`/tutor/assignment/${assignmentId}/faqs`);
   };
 
-
-  // Download file
   const handleDownloadFile = (fileObject) => {
     const filename = fileObject?.filename;
     if (!filename) { alert('Filename is not available.'); return; }
@@ -162,7 +143,6 @@ const AssignmentDetail = () => {
     link.parentNode.removeChild(link);
   };
 
-  // Get file icon
   const getFileIcon = (fileType) => {
     switch (fileType) {
       case 'pdf':
@@ -177,7 +157,6 @@ const AssignmentDetail = () => {
     }
   };
 
-  // Loading state
   if (loading) {
     return (
       <Box sx={assignmentDetailStyles.container}>
@@ -201,7 +180,6 @@ const AssignmentDetail = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <Box sx={assignmentDetailStyles.container}>
@@ -225,10 +203,8 @@ const AssignmentDetail = () => {
     );
   }
 
-  // Normal display
   return (
     <Box sx={assignmentDetailStyles.container}>
-      {/* Top blue area */}
       <Box sx={assignmentDetailStyles.topHeader}>
         <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>
           Assignment Detail
@@ -243,9 +219,7 @@ const AssignmentDetail = () => {
         </Button>
       </Box>
 
-      {/* Content area */}
       <Box sx={assignmentDetailStyles.contentArea}>
-        {/* Assignment title and action buttons */}
         <Box sx={assignmentDetailStyles.titleSection}>
           <Typography variant="h4" sx={assignmentDetailStyles.assignmentTitle}>
             {assignmentData.name}
@@ -270,14 +244,12 @@ const AssignmentDetail = () => {
           </Box>
         </Box>
 
-        {/* Basic assignment information */}
         <Box sx={assignmentDetailStyles.infoSection}>
           <Typography variant="h6" sx={assignmentDetailStyles.infoLabel}>
             Due Date : <span style={{ fontWeight: 400 }}>{assignmentData.dueDate}</span>
           </Typography>
         </Box>
 
-        {/* Assignment description */}
         <Box sx={assignmentDetailStyles.descriptionSection}>
           <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
             Assignment Description:
@@ -287,7 +259,6 @@ const AssignmentDetail = () => {
           </Typography>
         </Box>
 
-        {/* Rubric */}
         {assignmentData.rubric && assignmentData.rubric.filename && (
           <Box sx={assignmentDetailStyles.rubricSection}>
             <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
@@ -302,7 +273,6 @@ const AssignmentDetail = () => {
           </Box>
         )}
 
-        {/* Attachment list */}
         <Box sx={assignmentDetailStyles.attachmentSection}>
           <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
             Attachment(s):
@@ -328,7 +298,6 @@ const AssignmentDetail = () => {
             </List>
         </Box>
 
-        {/* --- MODIFIED: Button container with all three buttons --- */}
         <Box sx={assignmentDetailStyles.bottomButtonContainer}>
           <Button
             variant="contained"

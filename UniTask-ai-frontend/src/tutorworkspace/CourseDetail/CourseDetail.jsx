@@ -63,18 +63,18 @@ const CourseDetail = () => {
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
       try {
-        setLoading(true); // Show a loading state during deletion
+        setLoading(true);
         setError('');
         
         await api.delete(`/courses/${course.id}`);
         
         alert('Course deleted successfully!');
-        navigate('/tutor/course'); // Navigate back to the course list
+        navigate('/tutor/course');
         
       } catch (err) {
         console.error('Failed to delete course:', err);
         setError('Failed to delete the course. Please try again.');
-        setLoading(false); // Turn off loading on error
+        setLoading(false);
       }
     }
   };
@@ -105,18 +105,15 @@ const CourseDetail = () => {
     );
   }
 
-  // This replaces the old hardcoded 'assessments' const
   let assessmentsList = [];
   if (course && course.assessment) {
     try {
-      // The backend sends a JSON string, so we parse it into an array
       const parsed = JSON.parse(course.assessment);
       if (Array.isArray(parsed)) {
         assessmentsList = parsed;
       }
     } catch (e) {
       console.error("Failed to parse assessment JSON:", e);
-      // If parsing fails, we can leave the list empty or handle it as a single item
       assessmentsList = [];
     }
   }
@@ -138,7 +135,6 @@ const CourseDetail = () => {
       </Box>
       
       <Box sx={courseDetailStyles.contentArea}>
-        {/* Display error message if deletion fails */}
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <Box sx={courseDetailStyles.titleSection}>
@@ -151,7 +147,7 @@ const CourseDetail = () => {
               startIcon={<EditIcon />}
               sx={courseDetailStyles.modifyButton}
               onClick={handleModify}
-              disabled={loading} // Disable button while loading/deleting
+              disabled={loading} 
             >
               Modify
             </Button>
@@ -160,7 +156,7 @@ const CourseDetail = () => {
               startIcon={<DeleteIcon />}
               sx={courseDetailStyles.deleteButton}
               onClick={handleDelete}
-              disabled={loading} // Disable button while loading/deleting
+              disabled={loading}
             >
               Delete
             </Button>
@@ -198,7 +194,6 @@ const CourseDetail = () => {
               {assessmentsList.map((assessmentItem, index) => (
                 <ListItem key={index} sx={courseDetailStyles.assessmentItem}>
                   <ListItemText 
-                    // 'assessmentItem' is now the string itself
                     primary={`${index + 1}. ${assessmentItem}`}
                     primaryTypographyProps={{ sx: courseDetailStyles.assessmentText }}
                   />

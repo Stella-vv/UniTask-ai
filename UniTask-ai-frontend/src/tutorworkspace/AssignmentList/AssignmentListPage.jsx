@@ -85,7 +85,6 @@ const AssignmentList = () => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Header */}
       <Box sx={{
         bgcolor: 'primary.main', color: 'white',
         mt: -4, ml: -4, mr: -4, width: 'calc(100% + 64px)', p: 3,
@@ -97,10 +96,8 @@ const AssignmentList = () => {
         </Typography>
       </Box>
 
-      {/* Content Area */}
       <Box sx={styles.contentArea}>
 
-        {/* Course Filter Dropdown */}
         <Box sx={styles.filterContainer}>
           <FormControl fullWidth disabled={coursesLoading}>
             <InputLabel>Filter by Course</InputLabel>
@@ -122,7 +119,6 @@ const AssignmentList = () => {
           </FormControl>
         </Box>
 
-        {/* Loading/Error/Content Display */}
         {loading ? (
           <CircularProgress />
         ) : error ? (

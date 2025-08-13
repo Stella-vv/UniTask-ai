@@ -9,7 +9,6 @@ export const dashboardCardData = [
     icon: <MenuBookIcon />,
     title: 'Course',
     description: 'You have x courses',
-    // path: '/course',
     path: '/tutor/course', 
   },
   {

@@ -9,7 +9,6 @@ import {
   Button,
   CircularProgress,
   Alert,
-  // --- Import new components ---
   FormControl,
   Select,
   MenuItem,
@@ -33,11 +32,10 @@ const CourseAddPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     year: new Date().getFullYear(),
-    semester: '', // Default value to empty string
+    semester: '', 
     description: '',
   });
 
-  // --- MODIFICATION: Add state for assessments ---
   const [assessments, setAssessments] = useState([]);
   const [currentAssessment, setCurrentAssessment] = useState('');
 
@@ -51,8 +49,7 @@ const CourseAddPage = () => {
       setValidationErrors(prev => ({ ...prev, [field]: null }));
     }
   };
-  
-  // --- MODIFICATION: Add handlers for assessments ---
+
   const handleAddAssessment = () => {
     if (currentAssessment.trim()) {
       setAssessments([...assessments, currentAssessment.trim()]);
@@ -83,10 +80,8 @@ const CourseAddPage = () => {
     setSubmitting(true);
     setError('');
     try {
-      // --- MODIFICATION: Add assessment data to the submission object ---
       const submissionData = {
         ...formData,
-        // Convert the array to a JSON string for the backend
         assessment: JSON.stringify(assessments)
       };
 
@@ -119,7 +114,6 @@ const CourseAddPage = () => {
       <Box sx={courseAddStyles.formContainer}>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        {/* Course Name and Year fields remain the same */}
         <Box sx={courseAddStyles.fieldContainer}>
             <Typography variant="h6" sx={courseAddStyles.fieldLabel}>Course Name:<span style={{ color: '#f44336' }}>*</span></Typography>
             <TextField
@@ -145,7 +139,6 @@ const CourseAddPage = () => {
             />
         </Box>
 
-        {/* --- MODIFIED: Semester Field --- */}
         <Box sx={courseAddStyles.fieldContainer}>
           <Typography variant="h6" sx={courseAddStyles.fieldLabel}>Semester:<span style={{ color: '#f44336' }}>*</span></Typography>
           <FormControl fullWidth error={!!validationErrors.semester}>
@@ -166,7 +159,6 @@ const CourseAddPage = () => {
           </FormControl>
         </Box>
 
-        {/* Description field remains the same */}
         <Box sx={courseAddStyles.fieldContainer}>
             <Typography variant="h6" sx={courseAddStyles.fieldLabel}>Description:<span style={{ color: '#f44336' }}>*</span></Typography>
             <TextField
@@ -181,7 +173,6 @@ const CourseAddPage = () => {
             />
         </Box>
 
-        {/* --- MODIFICATION: Add UI for assessments --- */}
         <Box sx={courseAddStyles.fieldContainer}>
             <Typography variant="h6" sx={courseAddStyles.fieldLabel}>Assessments:</Typography>
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -210,7 +201,6 @@ const CourseAddPage = () => {
             </List>
         </Box>
 
-        {/* Buttons remain the same */}
         <Box sx={courseAddStyles.buttonContainer}>
           <Button
             variant="contained"

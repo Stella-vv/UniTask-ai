@@ -13,7 +13,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Helper function to get current user ID
   const getCurrentUserId = () => {
     try {
       const userString = localStorage.getItem('user');
@@ -36,20 +35,16 @@ const Dashboard = () => {
         const userId = getCurrentUserId();
         if (!userId) {
           console.warn('User not logged in, using default data');
-          // Fall back to static data if user not logged in
           setDashboardData(getDefaultDashboardData());
           setLoading(false);
           return;
         }
-
-        // Fetch data from multiple APIs concurrently
         const [coursesResponse, assignmentsResponse, faqsResponse] = await Promise.allSettled([
-          api.get('/courses/'), // Get all courses
-          api.get(`/assignments`), // Get user's assignments
-          api.get('/faqs/assignment/1') // Get FAQs for course 1 (you can make this dynamic)
+          api.get('/courses/'),
+          api.get(`/assignments`),
+          api.get('/faqs/assignment/1')
         ]);
 
-        // Process results and handle any failed requests
         const coursesCount = coursesResponse.status === 'fulfilled' 
           ? coursesResponse.value.data.length 
           : 0;
@@ -62,7 +57,6 @@ const Dashboard = () => {
           ? faqsResponse.value.data.length 
           : 0;
 
-        // Create dashboard data with dynamic counts
         const dynamicDashboardData = [
           {
             icon: <MenuBookIcon />,
@@ -88,7 +82,6 @@ const Dashboard = () => {
 
         setDashboardData(dynamicDashboardData);
 
-        // Log any failed requests for debugging
         if (coursesResponse.status === 'rejected') {
           console.warn('Failed to fetch courses:', coursesResponse.reason);
         }
@@ -102,7 +95,6 @@ const Dashboard = () => {
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
         setError('Failed to load dashboard data');
-        // Fall back to default data on error
         setDashboardData(getDefaultDashboardData());
       } finally {
         setLoading(false);
@@ -112,7 +104,6 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // Default dashboard data as fallback
   const getDefaultDashboardData = () => [
     {
       icon: <MenuBookIcon />,
@@ -159,7 +150,6 @@ const Dashboard = () => {
         <Typography variant="body1" color="error" sx={{ mt: 2, mb: 2 }}>
           {error}
         </Typography>
-        {/* Still show cards with default data */}
         <Box sx={dashboardStyles.cardsContainer}>
           <Box sx={dashboardStyles.cardsGrid}>
             {dashboardData.map((item, index) => (
@@ -178,12 +168,10 @@ const Dashboard = () => {
 
   return (
     <Box sx={dashboardStyles.container}>
-      {/* Welcome Message */}
       <Typography variant="h5" sx={dashboardStyles.welcomeText}>
         A quick overview of your student dashboard.
       </Typography>
 
-      {/* Cards Container */}
       <Box sx={dashboardStyles.cardsContainer}>
         <Box sx={dashboardStyles.cardsGrid}>
           {dashboardData.map((item, index) => (

@@ -184,16 +184,14 @@ export const assignmentDetailStyles = {
     fontWeight: 500,
   },
 
-  // --- STYLE MODIFICATION: For multiple buttons at the bottom ---
   bottomButtonContainer: {
     display: 'flex',
     justifyContent: 'center',
-    gap: 4, // Adds space between buttons
+    gap: 4,
     mt: 'auto',
     pt: 3,
   },
 
-  // --- STYLE MODIFICATION: Generic style for bottom action buttons ---
   actionButton: {
     bgcolor: 'primary.main',
     color: 'white',

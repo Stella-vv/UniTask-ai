@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { faqListStyles as sharedStyles } from '../../tutorworkspace/FaqList/FaqList_style';
-// --- FIX: This line must match the export in the style file ---
 import { studentFaqListStyles as styles } from './FaqList_style';
 import api from '../../api';
 
@@ -35,7 +34,6 @@ const StudentFaqList = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Fetch courses
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -55,7 +53,6 @@ const StudentFaqList = () => {
     fetchCourses();
   }, []);
 
-  // Fetch assignments based on course
   useEffect(() => {
     const fetchAssignments = async () => {
       if (!selectedCourseId) {
@@ -77,7 +74,6 @@ const StudentFaqList = () => {
     fetchAssignments();
   }, [selectedCourseId]);
 
-  // Fetch FAQs based on course/assignment
   useEffect(() => {
     const fetchFaqs = async () => {
       if (!selectedCourseId) {

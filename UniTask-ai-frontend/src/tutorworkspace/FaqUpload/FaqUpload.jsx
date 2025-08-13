@@ -26,8 +26,7 @@ const FaqUpload = () => {
   const [assignmentName, setAssignmentName] = useState('');
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  
-  // Fetch assignment name for the header
+
   const fetchAssignmentName = useCallback(async () => {
       if (assignmentId) {
         try {
@@ -43,7 +42,6 @@ const FaqUpload = () => {
     fetchAssignmentName();
   }, [fetchAssignmentName]);
 
-  // Get current user ID from localStorage
   const getCurrentUserId = () => {
     try {
       const userString = localStorage.getItem('user');
@@ -83,15 +81,13 @@ const FaqUpload = () => {
         question: formData.question.trim(),
         answer: formData.answer.trim(),
         uploaded_by: userId,
-        assignment_id: assignmentId, // Use assignment_id
+        assignment_id: assignmentId,
       };
-      
-      // IMPORTANT: This requires a backend endpoint like POST /api/faqs/assignment
+    
       await api.post('/faqs/', body);
       alert('FAQ uploaded successfully!');
       
-      navigate(`/tutor/assignment/${assignmentId}/faqs`); // Navigate back to the assignment's FAQ list
-
+      navigate(`/tutor/assignment/${assignmentId}/faqs`); 
     } catch (e) {
       console.error('FAQ upload failed:', e);
       const msg = e.response?.data?.message || 'Upload failed. Please try again.';
