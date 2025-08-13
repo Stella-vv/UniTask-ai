@@ -61,32 +61,6 @@ Run the following command:
 docker compose up
 ```
 
-In a new terminal, run:
-```bash
-docker exec -it unitask-ai-backend-db-1 psql -U postgres
-```
-
-Enter the database and reset the password:
-```bash
-ALTER USER postgres WITH PASSWORD '0827';
-```
-
-After seeing ALTER ROLE, type:
-```bash
-\q
-```
-
-Go back to the previous terminal and rerun:
-```bash
-docker compose down
-docker compose up --build
-```
-
-In a new terminal, run the test file:
-```bash
-docker exec -it unitask-ai-backend-backend-1 python integration_test_all.py
-```
-
 The first build may take a few minutes. It will automatically:
 
 - Pull the PostgreSQL image
