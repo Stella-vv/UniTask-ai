@@ -1,16 +1,18 @@
-// Keep existing imports/configs...
-import '@testing-library/jest-dom/vitest'
-import { TextEncoder, TextDecoder } from 'node:util'
-if (!globalThis.TextEncoder) globalThis.TextEncoder = TextEncoder
-if (!globalThis.TextDecoder) globalThis.TextDecoder = TextDecoder
+// src/setupTests.js
+import '@testing-library/jest-dom/vitest';
+import { cleanup } from '@testing-library/react';
+import { TextEncoder, TextDecoder } from 'node:util';
+import { afterEach } from 'vitest'; // 确保导入 afterEach
 
-// --- Optional polyfills (safe) ---
+if (!globalThis.TextEncoder) globalThis.TextEncoder = TextEncoder;
+if (!globalThis.TextDecoder) globalThis.TextDecoder = TextDecoder;
+
 class ResizeObserver {
   observe() {}
   unobserve() {}
   disconnect() {}
 }
-if (!window.ResizeObserver) window.ResizeObserver = ResizeObserver
+if (!window.ResizeObserver) window.ResizeObserver = ResizeObserver;
 
 if (!window.matchMedia) {
   window.matchMedia = () => ({
@@ -22,5 +24,10 @@ if (!window.matchMedia) {
     removeListener() {},
     onchange: null,
     dispatchEvent() { return false },
-  })
+  });
 }
+
+// 在每个测试后自动调用 cleanup，这是正确且推荐的做法
+afterEach(() => {
+  cleanup();
+});

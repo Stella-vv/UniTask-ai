@@ -10,7 +10,6 @@ import {
   Divider,
   CircularProgress,
   Alert,
-  Chip,
   IconButton,
 } from '@mui/material';
 import {
@@ -65,16 +64,6 @@ const QandAListPage = () => {
 
   const handleUploadClick = () => {
     navigate(`/tutor/assignment/${assignmentId}/qnas/upload`);
-  };
-
-  const handleDownloadFile = (qa) => {
-    const downloadUrl = `${api.defaults.baseURL}/uploads/qas/${qa.filename}`;
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.setAttribute('download', qa.filename);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
   };
 
   const handleDeleteFile = async (qaIdToDelete) => {
@@ -178,7 +167,12 @@ const QandAListPage = () => {
                         <Typography sx={styles.fileName}>{qa.filename}</Typography>
                         <Typography sx={styles.fileDetails}>Uploaded: {formatUploadTime(qa.created_at)}</Typography>
                       </Box>
-                      <IconButton onClick={() => handleDownloadFile(qa)} sx={{ ml: 1 }}><DownloadIcon /></IconButton>
+                      {/* 修复：将 IconButton 包裹在 <a> 标签中以实现声明式下载 */}
+                      <a href={`${api.defaults.baseURL}/qa/download/${qa.id}`} download={qa.filename} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <IconButton sx={{ ml: 1 }} data-testid="DownloadIcon">
+                              <DownloadIcon />
+                          </IconButton>
+                      </a>
                       <IconButton 
                         onClick={() => handleDeleteFile(qa.id)} 
                         sx={{ 
