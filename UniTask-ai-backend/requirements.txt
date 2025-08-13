@@ -6,3 +6,4 @@ psycopg2-binary
 uuid
 fuzzywuzzy
 requests
+pytz>=2024.1

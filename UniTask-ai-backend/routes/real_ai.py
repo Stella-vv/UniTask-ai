@@ -101,23 +101,43 @@ def ask_real_ai():
         return jsonify({"error": prompt}), 404
 
     try:
+        model = os.getenv("OLLAMA_MODEL", "faq-mistral")
+
         if USE_OLLAMA_HTTP:
-            payload = {
-                "model": os.getenv("OLLAMA_MODEL", "faq-mistral"),
-                "prompt": prompt,
-                "stream": False
-            }
-            res = requests.post(
-                f"{OLLAMA_HOST}/api/generate",
-                json=payload,
-                timeout=(3, 60)  # 连接超时3s，读取超时60s
-            )
+            # ✅ 判断使用 OpenAI 接口结构
+            use_openai_api = os.getenv("USE_OPENAI_FORMAT", "true").lower() == "true"
+
+            if use_openai_api:
+                payload = {
+                    "model": model,
+                    "messages": [
+                        {"role": "user", "content": prompt}
+                    ],
+                    "stream": False
+                }
+                endpoint = f"{OLLAMA_HOST}/v1/chat/completions"
+            else:
+                payload = {
+                    "model": model,
+                    "prompt": prompt,
+                    "stream": False
+                }
+                endpoint = f"{OLLAMA_HOST}/api/generate"
+
+            res = requests.post(endpoint, json=payload, timeout=(3, 60))
             res.raise_for_status()
-            answer = (res.json().get("response") or "").strip()
+
+            # ✅ 根据 API 类型提取答案
+            if use_openai_api:
+                answer = res.json()["choices"][0]["message"]["content"].strip()
+            else:
+                answer = (res.json().get("response") or "").strip()
+
         else:
+            # 🖥️ fallback: 本地 ollama run CLI 模式
             import subprocess
             result = subprocess.run(
-                ["ollama", "run", os.getenv("OLLAMA_MODEL", "faq-mistral")],
+                ["ollama", "run", model],
                 input=prompt.encode("utf-8"),
                 capture_output=True,
                 timeout=120
@@ -130,6 +150,7 @@ def ask_real_ai():
             return jsonify({"error": "Model returned empty response"}), 502
 
         return jsonify({"answer": answer, "prompt": prompt})
+
     except requests.exceptions.Timeout:
         return jsonify({"error": "LLM request timed out"}), 504
     except requests.exceptions.ConnectionError:
