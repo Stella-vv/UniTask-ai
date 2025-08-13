@@ -19,7 +19,7 @@ services:
     ports:
       - "11434:11434"
     volumes:
-      - "C:/Users/22851/.ollama/models:/root/.ollama/models"
+      - ollama:/root/.ollama
       - ./data:/data
     privileged: true
     restart: always
