@@ -2,13 +2,12 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from flask import send_from_directory
-# ===== Determine whether to use the Mock mode =====
+
 USE_MOCK = os.getenv("UNITASK_MOCK", "false").lower() == "true"
 
 # ===== initial Flask  =====
 app = Flask(__name__)
 app.config["DEBUG"] = True
-# ===== using CORS =====
 CORS(
     app,
     resources={r"/api/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}},
@@ -30,9 +29,6 @@ if not USE_MOCK:
     from routes.qa import qa_bp
     from routes.mock_ai import mock_ai_bp
     from routes.real_ai import real_ai_bp
-
-
-
     
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = SQLALCHEMY_TRACK_MODIFICATIONS
@@ -80,6 +76,5 @@ if not USE_MOCK:
 def serve_uploaded_file(filename):
     return send_from_directory("uploads", filename)
 
-# ===== Start Flask app =====
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8008)

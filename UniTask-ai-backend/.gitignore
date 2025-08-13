@@ -1,16 +1,16 @@
-# 忽略 Python 虚拟环境
+# Ignore Python virtual environments
 venv/
 .venv/
 
-# 忽略 Python 缓存文件
+# Ignore Python cache files
 **/__pycache__/
 *.py[cod]
 
-# 忽略 VSCode、PyCharm 等编辑器配置
+# Ignore editor configurations (e.g., VSCode, PyCharm)
 .vscode/
 .idea/
 
-# 忽略其他缓存/临时文件
+# Ignore other cache/temporary files
 *.log
 *.swp
 .DS_Store

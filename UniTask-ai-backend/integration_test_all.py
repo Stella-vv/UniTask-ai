@@ -87,7 +87,6 @@ print(f"✅ Assignment and forum created (Assignment ID: {assignment_id}, Forum 
 # ====== 4. Create a FAQ ======
 print("\n📌 Creating FAQ...")
 
-# Debug: print the values before sending the request
 print("📤 Sending FAQ creation payload:", {
     "question": "When is the midterm exam?",
     "answer": "The midterm is scheduled for Week 6.",
