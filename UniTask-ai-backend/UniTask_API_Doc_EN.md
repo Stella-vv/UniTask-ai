@@ -1,104 +1,83 @@
-# UniTask Backend API Documentation
+# UniTask AI Backend
 
-This document describes the currently implemented backend features and API endpoints of the UniTask system.
+## Project Overview
+**UniTask AI Backend** is a backend service designed for **learning and teaching support**, built with **Flask + PostgreSQL + SQLAlchemy**.  
+It provides API endpoints for modules such as **Users, Courses, Assignments, FAQs, Forums, Q&A, and AI simulation**.  
 
----
-
-## Backend startup
-
-### 1️⃣ Create Database
-
-```bash
-export UNITASK_MOCK=false
-python create_tables.py
-```
-### 2️⃣ Startup Backend
-
-```bash
-export UNITASK_MOCK=false
-python main.py
-```
-
-## ✅ Features Implemented
-
-- User Registration (`/api/register`)
-- User Login (`/api/login`)
-- PostgreSQL database connection
-- Connect the frontand backend
-- SQLAlchemy ORM model for 5 core tables:
-  - users
-  - courses
-  - questions
-  - messages
-  - faqs
+This project is developed by the **UNSW UniTask AI** team as part of a course project, focusing on backend architecture, database integration, and core functionalities. It supports frontend integration (React/Vue) and can be extended with AI capabilities in the future.
 
 ---
 
-## 🔐 User Registration
-
-- **URL**: `/api/register`
-- **Method**: POST
-- **Request JSON**:
-
-```json
-{
-  "email": "example@unsw.edu.au",
-  "password": "abc123",
-  "role": "tutor"
-}
-```
-
-- **Response**:
-  - 201 Created if successful
-  - 400 if missing fields
-  - 409 if email already exists
+## Tech Stack
+- **Backend Framework**: Flask
+- **Database**: PostgreSQL
+- **ORM**: SQLAlchemy
+- **Containerization**: Docker, docker-compose
+- **Testing Tools**: Postman / curl
+- **AI Support**: Ollama / LM Studio (optional)
 
 ---
 
-## 🔑 User Login
-
-- **URL**: `/api/login`
-- **Method**: POST
-- **Request JSON**:
-
-```json
-{
-  "email": "example@unsw.edu.au",
-  "password": "abc123"
-}
+## Project Structure
 ```
-
-- **Response**:
-  - 200 OK with user info if successful
-  - 400 if missing fields
-  - 401 if login fails
-
----
-
-## 🛠 Technology Stack
-
-- Flask (backend framework)
-- SQLAlchemy (ORM)
-- PostgreSQL (database)
-- Postman / curl (API testing)
-
----
-
-## 📁 Project Structure
-
-```
-unitask-backend/
-├── app.py
-├── config.py
-├── models.py
-├── routes/
-│   └── user.py
+UniTask-ai-backend/
+├── config.py                 # Configuration file
+├── create_tables.py          # Database initialization
+├── docker-compose.yml        # Docker services configuration
+├── Dockerfile                # Docker image definition
+├── faq_search.py             # FAQ search and matching utility
+├── integration_test_all.py   # Integrated testing script
+├── main.py                   # Main application entry point
+├── models.py                 # Database models
+├── requirements.txt          # Python dependencies
+├── routes/                   # API route modules
+│   ├── auth.py               # User registration/login
+│   ├── course.py             # Course endpoints
+│   ├── assignment.py         # Assignment endpoints
+│   ├── forum.py              # Forum endpoints
+│   ├── question.py           # Student questions
+│   ├── reply.py              # Replies
+│   ├── faqs.py               # FAQ upload and retrieval
+│   ├── qa.py                 # Q&A logic
+│   ├── mock_ai.py            # Simulated AI (mock API)
+│   ├── real_ai.py            # Real AI integration (in progress)
+│   ├── mock_user.py          # In-memory mock users
+│   └── user.py               # User management endpoints
+├── data/                     # FAQ/test data
+├── uploads/                  # Uploaded files (FAQ/assignment attachments)
+├── test.py / test1.py        # Unit tests
+└── UniTask_API_Doc_EN/CN.md  # API documentation
 ```
 
 ---
 
-## 🚀 Next Steps
+## Core Endpoints
 
-- Token-based authentication (JWT)
-- FAQ upload and listing endpoints
-- Assignment & messaging features
+### Users
+- **Register**: `POST /api/register`
+- **Login**: `POST /api/login`
+- **User Management**: `routes/user.py`
+
+### Courses & Assignments
+- Course endpoints: `routes/course.py`
+- Assignment endpoints: `routes/assignment.py`
+- Each assignment automatically creates a related forum (`routes/forum.py`)
+
+### Q&A & FAQs
+- Student Questions: `routes/question.py`
+- Replies: `routes/reply.py`
+- FAQ Upload/Retrieval: `routes/faqs.py`
+- FAQ Search: `faq_search.py`
+
+### AI Modules
+- Simulated AI: `routes/mock_ai.py` (mock API with hardcoded/simple logic)
+- Real AI: `routes/real_ai.py` (supports Ollama/Mistral, in development)
+
+---
+
+## Future Development
+1. Integrate JWT authentication.
+2. Enhance FAQ upload, search, and AI endpoints.
+3. Add complete Swagger documentation for all endpoints.
+4. Implement automated testing and CI/CD.
+5. Expand support for multiple courses and user roles.

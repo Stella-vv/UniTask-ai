@@ -3,7 +3,7 @@
 ## 项目简介
 UniTask AI Backend 是一个面向 **学习与教学支持** 的后端服务，基于 **Flask + PostgreSQL + SQLAlchemy** 搭建，提供用户、课程、作业、FAQ、论坛、问答和 AI 模拟等模块的 API 接口。
 
-本项目是 UNSW Teachwise AI 团队的课程项目，重点在于后端框架、数据库集成及核心功能，支持前端（React/Vue）对接，后续可扩展 AI 功能。
+本项目是 UNSW UniTask AI 团队的课程项目，重点在于后端框架、数据库集成及核心功能，支持前端（React/Vue）对接，后续可扩展 AI 功能。
 
 ---
 
@@ -50,42 +50,6 @@ UniTask-ai-backend/
 
 ---
 
-## 环境配置
-
-1. 克隆项目并进入目录：
-```bash
-git clone <repo-url>
-cd UniTask-ai-backend
-```
-
-2. 创建虚拟环境并安装依赖：
-```bash
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-3. 配置环境变量（可复制 `.env.example`）：
-```bash
-cp .env.example .env
-# 设置 PostgreSQL 数据库连接
-```
-
-4. 初始化数据库：
-```bash
-export UNITASK_MOCK=false
-python create_tables.py
-```
-
-5. 启动后端：
-```bash
-export UNITASK_MOCK=false
-python main.py
-```
-默认运行在 `http://localhost:8008`。
-
----
-
 ## 核心接口
 
 ### 用户
@@ -107,14 +71,6 @@ python main.py
 ### AI 模块
 - 模拟 AI：`routes/mock_ai.py`（伪接口，硬编码或简单逻辑）
 - 真实 AI：`routes/real_ai.py`（支持 Ollama/Mistral，开发中）
-
----
-
-## 使用 Docker 部署
-```bash
-docker-compose up --build
-```
-构建并启动 Flask + PostgreSQL 环境。
 
 ---
 
