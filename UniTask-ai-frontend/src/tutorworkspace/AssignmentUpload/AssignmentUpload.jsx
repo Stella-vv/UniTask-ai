@@ -193,7 +193,7 @@ const handleSubmit = async () => {
     if (formData.rubrics) submitData.append('rubric', formData.rubrics);
     if (formData.attachment) submitData.append('attachment', formData.attachment);
 
-    console.log('📤 Submitting assignment data (FormData)...');
+    console.log(' Submitting assignment data (FormData)...');
 
     const response = await api.post('/assignments', submitData, {
       headers: {
@@ -373,7 +373,7 @@ const handleSubmit = async () => {
             <TextField
               fullWidth
               value={formData.attachment ? formData.attachment.name : ''}
-              placeholder="Choose Attachment"
+              placeholder="Choose Attachment(PDF, DOCX, TXT, ZIP, CSV, IPYNB, XLSX)"
               InputProps={{
                 readOnly: true,
                 endAdornment: (

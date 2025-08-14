@@ -155,7 +155,7 @@ const AssignmentModifyPage = () => {
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <Box sx={assignmentModifyStyles.fieldContainer}>
-          <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Course Name:</Typography>
+          <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Course Name: <span style={{ color: '#f44336' }}>*</span></Typography>
           <FormControl fullWidth>
             <Select value={formData.courseName || ''} readOnly sx={assignmentModifyStyles.selectField}>
               <MenuItem value={formData.courseName}>{formData.courseName}</MenuItem>
@@ -163,7 +163,7 @@ const AssignmentModifyPage = () => {
           </FormControl>
         </Box>
         <Box sx={assignmentModifyStyles.fieldContainer}>
-          <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Title:</Typography>
+          <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Title:<span style={{ color: '#f44336' }}>*</span></Typography>
           <TextField fullWidth value={formData.title} onChange={handleInputChange('title')} sx={assignmentModifyStyles.textField} />
         </Box>
         <Box sx={assignmentModifyStyles.fieldContainer}>
@@ -171,7 +171,7 @@ const AssignmentModifyPage = () => {
           <TextField fullWidth multiline rows={5} value={formData.description} onChange={handleInputChange('description')} sx={assignmentModifyStyles.textField} />
         </Box>
         <Box sx={assignmentModifyStyles.fieldContainer}>
-          <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Due Date:</Typography>
+          <Typography variant="h6" sx={assignmentModifyStyles.fieldLabel}>Due Date:<span style={{ color: '#f44336' }}>*</span></Typography>
           <TextField type="date" value={formData.dueDate} onChange={handleInputChange('dueDate')} sx={assignmentModifyStyles.dateField} InputLabelProps={{ shrink: true }} />
         </Box>
 
@@ -207,7 +207,7 @@ const AssignmentModifyPage = () => {
           <TextField
             fullWidth
             value={attachmentFileName}
-            placeholder="Choose Attachment"
+            placeholder="Choose Attachment(PDF, DOCX, TXT, ZIP, CSV, IPYNB, XLSX)"
             InputProps={{
               readOnly: true,
               endAdornment: (

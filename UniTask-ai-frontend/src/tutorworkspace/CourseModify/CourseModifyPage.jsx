@@ -138,17 +138,17 @@ const CourseModifyPage = () => {
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <Box sx={courseModifyStyles.fieldContainer}>
-          <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Course Name:</Typography>
+          <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Course Name:<span style={{ color: '#f44336' }}>*</span></Typography>
           <TextField fullWidth value={formData.name} onChange={handleInputChange('name')} sx={courseModifyStyles.textField}/>
         </Box>
 
         <Box sx={courseModifyStyles.fieldContainer}>
-          <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Year:</Typography>
+          <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Year:<span style={{ color: '#f44336' }}>*</span></Typography>
           <TextField type="number" fullWidth value={formData.year} onChange={handleInputChange('year')} sx={courseModifyStyles.textField}/>
         </Box>
 
         <Box sx={courseModifyStyles.fieldContainer}>
-          <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Semester:</Typography>
+          <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Semester:<span style={{ color: '#f44336' }}>*</span></Typography>
           <FormControl fullWidth>
             <Select
               value={formData.semester}
@@ -163,7 +163,7 @@ const CourseModifyPage = () => {
         </Box>
 
         <Box sx={courseModifyStyles.fieldContainer}>
-          <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Description:</Typography>
+          <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Description:<span style={{ color: '#f44336' }}>*</span></Typography>
           <TextField fullWidth multiline rows={5} value={formData.description} onChange={handleInputChange('description')} sx={courseModifyStyles.textField}/>
         </Box>
 
