@@ -1,11 +1,10 @@
 from flask import Blueprint, request, jsonify, current_app
-from sqlalchemy import desc
+from sqlalchemy import desc as sa_desc
 from models import Assignment, FAQ
 import os
 import requests
 from datetime import datetime
 import pytz
-from sqlalchemy import desc
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
 USE_OLLAMA_HTTP = os.getenv("USE_OLLAMA_HTTP", "true").lower() == "true"
@@ -35,17 +34,17 @@ def build_prompt_with_context(question, assignment_id: int):
 
     title = getattr(assignment, "name", None) or getattr(assignment, "title", None) or "N/A"
     due   = _fmt_date(getattr(assignment, "due_date", None))
-    desc  = (getattr(assignment, "description", None) or getattr(assignment, "desc", "") or "").strip()
-
+    description = (getattr(assignment, "description", None) or getattr(assignment, "desc", "") or "").strip()
     rubric = os.path.basename(getattr(assignment, "rubric", "") or "")
     attach = os.path.basename(getattr(assignment, "attachment", "") or "")
 
     # Take the most recent 20 FAQs (if there is a created_at field, click it; if not, click the id).
     faqs_q = FAQ.query.filter_by(assignment_id=assignment_id)
+    current_app.logger.info(f"type(desc)={type(sa_desc)}")
     if hasattr(FAQ, "created_at"):
-        faqs_q = faqs_q.order_by(desc(FAQ.created_at))
+        faqs_q = faqs_q.order_by(sa_desc(FAQ.created_at))
     else:
-        faqs_q = faqs_q.order_by(desc(FAQ.id))
+        faqs_q = faqs_q.order_by(sa_desc(FAQ.id))
     faqs = faqs_q.limit(20).all()
 
     system_prompt = (
@@ -60,7 +59,7 @@ def build_prompt_with_context(question, assignment_id: int):
 Assignment Information:
 - Title: {title}
 - Due Date (AEST): {due}
-- Description: {desc if len(desc) <= 800 else desc[:800] + ' ...[truncated]'}
+- Description: {description if len(description) <= 800 else description[:800] + ' ...[truncated]'}
 
 Assignment Files (filenames only):
 - Rubric: {rubric or 'None'}
