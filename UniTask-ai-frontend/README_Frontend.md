@@ -36,7 +36,7 @@ The UniTask AI frontend is a Single Page Application (SPA) built with React 18 a
 - **Code Linting**: ESLint 9.25.0
 
 ## Project Structure
-\`\`\`
+```
 UniTask-ai-frontend/
 ├── public/                 # Static assets, e.g., favicon
 ├── src/                    # Source code
@@ -91,7 +91,7 @@ UniTask-ai-frontend/
 ├── README.md               # Project documentation
 ├── TESTING_Frontend.md     # Frontend testing strategy document
 └── vite.config.js          # Vite configuration file
-\`\`\`
+```
 
 ## Quick Start
 
@@ -100,40 +100,40 @@ UniTask-ai-frontend/
 - **Package Manager**: npm or yarn
 
 ### Install Dependencies
-\`\`\`bash
+```bash
 cd UniTask-ai-frontend
 npm install
-\`\`\`
+```
 
 ### Environment Configuration
 Create a \`.env\` file and configure the backend API URL:
-\`\`\`env
+```env
 VITE_BACKEND_URL=http://localhost:8008/api
-\`\`\`
+```
 
 ### Start Development Server
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
 The app will be available at \`http://localhost:5173\`
 
 ### Build for Production
-\`\`\`bash
+```bash
 npm run build
-\`\`\`
+```
 
 ### Preview Production Build
-\`\`\`bash
+```bash
 npm run preview
-\`\`\`
+```
 
 ### Testing
 The project uses Vitest as its testing framework, combined with the React Testing Library (RTL) for writing user-centric tests. All tests use API mocking (vi.mock) to ensure the frontend tests are independent and stable.
 
 To run all tests:
-\`\`\`bash
+```bash
 npm test
-\`\`\`
+```
 
 ## Authentication
 
@@ -159,7 +159,7 @@ Authentication is implemented through the \`ProtectedRoute\` component. Unauthen
 
 ### API Calls
 Use the configured Axios instance from \`src/api/index.js\`:
-\`\`\`javascript
+```javascript
 import api from '../api';
 
 // GET request
@@ -167,7 +167,7 @@ const response = await api.get('/endpoint');
 
 // POST request
 const response = await api.post('/endpoint', data);
-\`\`\`
+```
 
 ## Scripts
 
