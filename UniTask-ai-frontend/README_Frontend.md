@@ -37,46 +37,60 @@ The UniTask AI frontend is a Single Page Application (SPA) built with React 18 a
 
 ## Project Structure
 \`\`\`
-src/
-├── api/                  # API Configuration
-│   └── index.js          # Axios instance and interceptors
-├── components/           # Shared Components
-│   ├── MainLayout.jsx    # Tutor main layout
-│   ├── StudentMainLayout.jsx # Student main layout
-│   ├── ProtectedRoute.jsx    # Route protection component
-│   ├── Sidebar.jsx       # Tutor sidebar
-│   └── StudentSidebar.jsx # Student sidebar
-├── PublicPage/           # Public Pages
-│   ├── Login/            # Login page
-│   └── Register/         # Registration page
-├── tutorworkspace/       # Tutor Workspace Modules
-│   ├── Dashboard/
-│   ├── CourseList/
-│   ├── CourseDetail/
-│   ├── CourseAdd/
-│   ├── CourseModify/
-│   ├── AssignmentList/
-│   ├── AssignmentUpload/
-│   ├── AssignmentDetail/
-│   ├── AssignmentModify/
-│   ├── Forum/
-│   ├── QandA/
-│   ├── QandAList/
-│   ├── FaqUpload/
-│   └── FaqList/
-├── studentworkspace/     # Student Workspace Modules
-│   ├── Dashboard/
-│   ├── CourseList/
-│   ├── CourseDetail/
-│   ├── AssignmentList/
-│   ├── AssignmentDetail/
-│   ├── Forum/
-│   ├── FaqList/
-│   └── Chat/             # AI Chat Assistant
-├── theme/                # Theme Configuration
-│   └── theme.js          # Material-UI theme
-├── App.jsx               # Main application component & routing
-└── main.jsx              # Application entry point
+UniTask-ai-frontend/
+├── public/                 # Static assets, e.g., favicon
+├── src/                    # Source code
+│   ├── api/                # API Configuration
+│   │   └── index.js        # Axios instance and global interceptors
+│   ├── assets/             # Media assets like images, logos, etc.
+│   ├── components/         # Global shared React components
+│   │   ├── MainLayout.jsx        # Main layout for the Tutor Workspace
+│   │   ├── StudentMainLayout.jsx # Main layout for the Student Workspace
+│   │   ├── ProtectedRoute.jsx    # Route protection guard
+│   │   ├── Sidebar.jsx           # Sidebar navigation for Tutors
+│   │   └── StudentSidebar.jsx    # Sidebar navigation for Students
+│   ├── PublicPage/         # Pages accessible without authentication
+│   │   ├── Login/            # Login page
+│   │   └── Register/         # Registration page
+│   ├── studentworkspace/   # All modules for the Student Workspace
+│   │   ├── Dashboard/        # Student dashboard
+│   │   ├── CourseList/
+│   │   ├── CourseDetail/
+│   │   ├── AssignmentList/
+│   │   ├── AssignmentDetail/
+│   │   ├── Forum/
+│   │   ├── FaqList/
+│   │   └── Chat/             # AI assistant chat page
+│   ├── theme/              # Material-UI theme configuration file
+│   │   └── theme.js
+│   ├── tutorworkspace/     # All modules for the Tutor Workspace
+│   │   ├── Dashboard/
+│   │   ├── CourseList/
+│   │   ├── CourseDetail/
+│   │   ├── CourseAdd/
+│   │   ├── CourseModify/
+│   │   ├── AssignmentList/
+│   │   ├── AssignmentUpload/
+│   │   ├── AssignmentDetail/
+│   │   ├── AssignmentModify/
+│   │   ├── Forum/
+│   │   ├── QandA/
+│   │   ├── QandAList/
+│   │   ├── FaqUpload/
+│   │   └── FaqList/
+│   ├── App.jsx             # Main application component with route configuration
+│   ├── main.jsx            # Application entry point
+│   └── setupTests.js       # Vitest test environment configuration
+├── .env                    # Environment variables
+├── .gitignore              # Git ignore configuration
+├── .nvmrc                  # Node.js version lock file
+├── eslint.config.js        # ESLint configuration file
+├── index.html              # Main HTML entry point for the application
+├── package-lock.json       # Locked dependency versions
+├── package.json            # Project dependencies and scripts configuration
+├── README.md               # Project documentation
+├── TESTING_Frontend.md     # Frontend testing strategy document
+└── vite.config.js          # Vite configuration file
 \`\`\`
 
 ## Quick Start
