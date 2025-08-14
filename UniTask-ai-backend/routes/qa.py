@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 from models import db, QAUpload
 from werkzeug.utils import secure_filename
 import os
@@ -80,3 +80,28 @@ def delete_qa_file(qa_id):
         db.session.rollback()
         print(f"Error deleting file: {e}")
         return jsonify({"error": "An error occurred during file deletion."}), 500
+    
+# Download a QA file
+@qa_bp.route("/download/<int:qa_id>", methods=["GET"])
+def download_qa_file(qa_id):
+    # Find the database record for the file
+    upload_record = QAUpload.query.get(qa_id)
+
+    # If no record is found, return a 404 error
+    if not upload_record:
+        return jsonify({"error": "File not found"}), 404
+
+    # Get the secure filename and file path
+    file_path = upload_record.filepath
+    filename = upload_record.filename
+
+    # Check if the physical file exists
+    if not os.path.exists(file_path):
+        return jsonify({"error": "File not found on server"}), 404
+
+    try:
+        # Send the file to the client
+        return send_file(file_path, as_attachment=True, download_name=filename)
+    except Exception as e:
+        print(f"Error sending file: {e}")
+        return jsonify({"error": "An error occurred while serving the file."}), 500
