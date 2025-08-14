@@ -1,5 +1,3 @@
-// test/tutorworkspace/CourseModify/CourseModifyPage.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -26,10 +24,13 @@ import {
 import { courseModifyStyles } from './CourseModifyPage_style';
 import api from '../../api';
 
+// Define the page component for modifying an existing course.
 const CourseModifyPage = () => {
+  // Hooks for navigation and accessing URL parameters.
   const navigate = useNavigate();
   const { courseId } = useParams();
 
+  // State to hold the main form data for the course being edited.
   const [formData, setFormData] = useState({
     name: '',
     year: '',
@@ -37,20 +38,27 @@ const CourseModifyPage = () => {
     semester: '',
   });
 
+  // State to manage the list of assessments for the course.
   const [assessments, setAssessments] = useState([]);
+  // State for the current assessment item being typed by the user.
   const [currentAssessment, setCurrentAssessment] = useState('');
 
+  // State to track loading and form submission status.
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  // State to store any error messages.
   const [error, setError] = useState('');
 
+  // A memoized function to fetch the course data.
   const fetchCourseData = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
+      // Fetch the details of the specific course to be modified.
       const response = await api.get(`/courses/${courseId}`);
 
       const courseData = response.data;
+      // Populate the form state with the fetched data.
       setFormData({
         name: courseData.name,
         year: courseData.year,
@@ -58,6 +66,7 @@ const CourseModifyPage = () => {
         semester: courseData.semester,
       });
 
+      // Safely parse the 'assessment' field, which is stored as a JSON string.
       if (courseData.assessment) {
           try {
               const parsed = JSON.parse(courseData.assessment);
@@ -65,6 +74,7 @@ const CourseModifyPage = () => {
                   setAssessments(parsed);
               }
           } catch (e) {
+              // Fallback for improperly formatted data.
               console.error("Could not parse assessment JSON from DB:", e);
               setAssessments([courseData.assessment]);
           }
@@ -76,38 +86,45 @@ const CourseModifyPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [courseId]);
+  }, [courseId]); // Dependency array ensures this function is recreated only if courseId changes.
 
+  // Effect to call the data fetching function on component mount.
   useEffect(() => {
     fetchCourseData();
   }, [fetchCourseData]);
 
+  // A higher-order function to handle changes in form inputs.
   const handleInputChange = (field) => (event) => {
     setFormData(prev => ({ ...prev, [field]: event.target.value }));
   };
 
+  // Handler to add the current assessment text to the assessments list.
   const handleAddAssessment = () => {
     if (currentAssessment.trim()) {
       setAssessments([...assessments, currentAssessment.trim()]);
-      setCurrentAssessment('');
+      setCurrentAssessment(''); // Clear the input field.
     }
   };
 
+  // Handler to remove an assessment from the list by its index.
   const handleRemoveAssessment = (indexToRemove) => {
     setAssessments(assessments.filter((_, index) => index !== indexToRemove));
   };
 
+  // Handler to submit the updated course data to the API.
   const handleSubmit = async () => {
     setSubmitting(true);
     setError('');
     try {
+      // Prepare the data for submission, stringifying the assessments array.
       const submissionData = {
         ...formData,
         assessment: JSON.stringify(assessments)
       };
+      // Send a PUT request to update the course.
       await api.put(`/courses/${courseId}`, submissionData);
       alert('Course updated successfully!');
-      navigate(`/tutor/course/${courseId}`); 
+      navigate(`/tutor/course/${courseId}`); // Navigate back to the detail page on success.
     } catch (err) {
       console.error('Failed to update course:', err);
       setError('Failed to update course. Please try again.');
@@ -116,27 +133,34 @@ const CourseModifyPage = () => {
     }
   };
 
+  // Handler for the cancel button, with a confirmation prompt.
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
       navigate(`/tutor/course/${courseId}`); 
     }
   };
 
+  // Display a loading indicator while fetching initial data.
   if (loading) {
     return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
   }
 
+  // Main component render.
   return (
     <Box sx={courseModifyStyles.container}>
+      {/* Header section. */}
       <Box sx={courseModifyStyles.topHeader}>
         <Typography variant="h4" sx={courseModifyStyles.headerTitle}>
           Modify Course
         </Typography>
       </Box>
 
+      {/* Form container. */}
       <Box sx={courseModifyStyles.formContainer}>
+        {/* Display an error alert if an error exists. */}
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
+        {/* Form fields for course details. */}
         <Box sx={courseModifyStyles.fieldContainer}>
           <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Course Name:<span style={{ color: '#f44336' }}>*</span></Typography>
           <TextField fullWidth value={formData.name} onChange={handleInputChange('name')} sx={courseModifyStyles.textField}/>
@@ -167,6 +191,7 @@ const CourseModifyPage = () => {
           <TextField fullWidth multiline rows={5} value={formData.description} onChange={handleInputChange('description')} sx={courseModifyStyles.textField}/>
         </Box>
 
+        {/* Section for adding and listing assessment items. */}
         <Box sx={courseModifyStyles.fieldContainer}>
             <Typography variant="h6" sx={courseModifyStyles.fieldLabel}>Assessments:</Typography>
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -179,6 +204,7 @@ const CourseModifyPage = () => {
                 />
                 <Button variant="contained" onClick={handleAddAssessment} startIcon={<AddIcon />}>Add</Button>
             </Box>
+            {/* List of currently added assessments. */}
             <List dense>
                 {assessments.map((item, index) => (
                     <ListItem
@@ -195,6 +221,7 @@ const CourseModifyPage = () => {
             </List>
         </Box>
 
+        {/* Action buttons for saving or canceling the modification. */}
         <Box sx={courseModifyStyles.buttonContainer}>
           <Button
             variant="contained"
@@ -220,4 +247,5 @@ const CourseModifyPage = () => {
   );
 };
 
+// Export the component for use in other parts of the application.
 export default CourseModifyPage;

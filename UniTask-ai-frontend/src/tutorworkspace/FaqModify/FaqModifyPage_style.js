@@ -1,5 +1,3 @@
-// test/tutorworkspace/FaqModify/FaqModifyPage_style.js
-
 export const faqModifyStyles = {
   container: { 
     height: '100%', 

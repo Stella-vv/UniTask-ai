@@ -1,5 +1,3 @@
-// test/tutorworkspace/QandAUpload/QandAUploadPage_style.js
-
 export const qandaUploadPageStyles = {
   container: {
     height: '100%',

@@ -1,5 +1,3 @@
-// test/tutorworkspace/AssignmentModify/AssignmentModifyPage_style.js
-
 export const assignmentModifyStyles = {
   container: {
     height: '100%',

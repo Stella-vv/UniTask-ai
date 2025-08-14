@@ -25,20 +25,28 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { assignmentDetailStyles } from './AssignmentDetail_style';
 import api from '../../api';
 
+// Define the component to display detailed information about a single assignment for a tutor.
 const AssignmentDetail = () => {
+  // Get the 'assignmentId' from the URL parameters.
   const { assignmentId } = useParams();
+  // Hook for programmatic navigation.
   const navigate = useNavigate();
 
+  // State to hold the fetched and formatted assignment data.
   const [assignmentData, setAssignmentData] = useState(null);
+  // State to manage the loading status of API calls.
   const [loading, setLoading] = useState(true);
+  // State to store any error messages.
   const [error, setError] = useState(null);
 
+  // Effect to fetch assignment details when the component mounts or assignmentId changes.
   useEffect(() => {
     const fetchAssignmentDetail = async () => {
       try {
         setLoading(true);
         setError(null);
 
+        // Check if a user is logged in.
         const userString = localStorage.getItem('user');
         if (!userString) {
           setError('User not logged in. Please log in again.');
@@ -49,16 +57,18 @@ const AssignmentDetail = () => {
 
         const user = JSON.parse(userString);
 
+        // Check if an assignment ID is provided in the URL.
         if (!assignmentId) {
           setError('Assignment ID not provided');
           setLoading(false);
           return;
         }
 
+        // Fetch the raw assignment data from the API.
         const response = await api.get(`/assignments/detail/${assignmentId}`);
         const assignment = response.data;
 
-
+        // Format the raw data into a clean object with default fallbacks.
         const formattedAssignment = {
           id: assignment.id,
           name: assignment.name,
@@ -73,6 +83,7 @@ const AssignmentDetail = () => {
         
       } catch (err) {
         console.error('Failed to fetch assignment details:', err);
+        // Handle specific API error statuses.
         if (err.response?.status === 401) {
           setError('Session expired. Please log in again.');
           navigate('/login');
@@ -82,32 +93,37 @@ const AssignmentDetail = () => {
           setError('Failed to fetch assignment details. Please check your connection and try again.');
         }
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading.
       }
     };
 
     if (assignmentId) {
       fetchAssignmentDetail();
     }
-  }, [assignmentId, navigate]);
+  }, [assignmentId, navigate]); // Dependencies for the effect.
 
+  // Handler to navigate to the assignment modification page.
   const handleModify = () => {
     navigate(`/tutor/assignment/modify/${assignmentId}`);
   };
 
+  // Handler to navigate back to the main assignment list.
   const handleGoBack = () => {
     navigate('/tutor/assignment');
   };
 
+  // Handler to delete the current assignment after confirmation.
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) {
       try {
         setLoading(true); 
 
+        // Send a DELETE request to the API.
         await api.delete(`/assignments/${assignmentData.id}`);
         
         alert('Assignment deleted successfully!');
         
+        // Navigate back to the list after successful deletion.
         navigate('/tutor/assignment');
         
       } catch (err) {
@@ -118,24 +134,31 @@ const AssignmentDetail = () => {
     }
   };
 
+  // Handler to navigate to the assignment's forum page.
   const handleGoToForum = () => {
     navigate(`/tutor/assignment/${assignmentId}/forum`);
   };
 
+  // Handler to navigate to the assignment's Q&A page.
   const handleGoToQAs = () => {
     navigate(`/tutor/assignment/${assignmentId}/qnas`);
   };
 
+  // Handler to navigate to the assignment's FAQ page.
   const handleGoToFAQs = () => {
     navigate(`/tutor/assignment/${assignmentId}/faqs`);
   };
 
+  // Handler to initiate a file download.
   const handleDownloadFile = (fileObject) => {
     const filename = fileObject?.filename;
     if (!filename) { alert('Filename is not available.'); return; }
+    // Construct the full download URL.
     const downloadUrl = `${api.defaults.baseURL}/assignments/download/${filename}`;
+    // Create a temporary anchor element to trigger the download.
     const link = document.createElement('a');
     link.href = downloadUrl;
+    // Clean up the filename for display (removes timestamp prefix).
     const displayName = filename.split('_').slice(1).join('_') || filename;
     link.setAttribute('download', displayName);
     document.body.appendChild(link);
@@ -143,6 +166,7 @@ const AssignmentDetail = () => {
     link.parentNode.removeChild(link);
   };
 
+  // Helper function to return a specific icon based on the file type.
   const getFileIcon = (fileType) => {
     switch (fileType) {
       case 'pdf':
@@ -157,6 +181,7 @@ const AssignmentDetail = () => {
     }
   };
 
+  // Conditional rendering for the loading state.
   if (loading) {
     return (
       <Box sx={assignmentDetailStyles.container}>
@@ -180,6 +205,7 @@ const AssignmentDetail = () => {
     );
   }
 
+  // Conditional rendering for the error state.
   if (error) {
     return (
       <Box sx={assignmentDetailStyles.container}>
@@ -203,8 +229,10 @@ const AssignmentDetail = () => {
     );
   }
 
+  // Main component render.
   return (
     <Box sx={assignmentDetailStyles.container}>
+      {/* Header section with title and back button. */}
       <Box sx={assignmentDetailStyles.topHeader}>
         <Typography variant="h4" sx={assignmentDetailStyles.headerTitle}>
           Assignment Detail
@@ -219,7 +247,9 @@ const AssignmentDetail = () => {
         </Button>
       </Box>
 
+      {/* Main content area. */}
       <Box sx={assignmentDetailStyles.contentArea}>
+        {/* Title section with action buttons (Modify, Delete). */}
         <Box sx={assignmentDetailStyles.titleSection}>
           <Typography variant="h4" sx={assignmentDetailStyles.assignmentTitle}>
             {assignmentData.name}
@@ -244,12 +274,14 @@ const AssignmentDetail = () => {
           </Box>
         </Box>
 
+        {/* Due date information. */}
         <Box sx={assignmentDetailStyles.infoSection}>
           <Typography variant="h6" sx={assignmentDetailStyles.infoLabel}>
             Due Date : <span style={{ fontWeight: 400 }}>{assignmentData.dueDate}</span>
           </Typography>
         </Box>
 
+        {/* Assignment description. */}
         <Box sx={assignmentDetailStyles.descriptionSection}>
           <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
             Assignment Description:
@@ -259,6 +291,7 @@ const AssignmentDetail = () => {
           </Typography>
         </Box>
 
+        {/* Conditionally render the rubric if it exists. */}
         {assignmentData.rubric && assignmentData.rubric.filename && (
           <Box sx={assignmentDetailStyles.rubricSection}>
             <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
@@ -273,11 +306,13 @@ const AssignmentDetail = () => {
           </Box>
         )}
 
+        {/* List of attachments. */}
         <Box sx={assignmentDetailStyles.attachmentSection}>
           <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>
             Attachment(s):
           </Typography>
             <List sx={assignmentDetailStyles.attachmentList}>
+              {/* Filter out any invalid file objects before mapping. */}
               {assignmentData.attachments.filter(file => file && (file.fileName || file.filename)).map((file, index) => (
                 <ListItem
                   key={file.id || index}
@@ -298,6 +333,7 @@ const AssignmentDetail = () => {
             </List>
         </Box>
 
+        {/* Container for bottom navigation buttons. */}
         <Box sx={assignmentDetailStyles.bottomButtonContainer}>
           <Button
             variant="contained"
@@ -329,4 +365,5 @@ const AssignmentDetail = () => {
   );
 };
 
+// Export the component for use in other parts of the application.
 export default AssignmentDetail;
