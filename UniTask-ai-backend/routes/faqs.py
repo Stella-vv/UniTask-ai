@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, FAQ
+from models import db, FAQ, Assignment
 import traceback
 
 faq_bp = Blueprint("faq", __name__, url_prefix="/api/faqs")
@@ -50,7 +50,7 @@ def create_faq():
         }), 201
 
     except Exception as e:
-        print("🔥 Exception during FAQ creation:")
+        print("Exception during FAQ creation:")
         traceback.print_exc()
         db.session.rollback()
         return jsonify({"error": f"Database error: {str(e)}"}), 500
@@ -69,6 +69,35 @@ def get_assignment_faqs(assignment_id):
         } for f in faqs
     ]), 200
 
+
+# Get all FAQs for a given course (all assignments under it)
+@faq_bp.route("/course/<int:course_id>", methods=["GET"])
+def get_course_faqs(course_id):
+    try:
+        # First, identify all the assignment_id under this course
+        assignment_ids = [a.id for a in Assignment.query.filter_by(course_id=course_id).all()]
+        if not assignment_ids:
+            return jsonify([]), 200
+
+        # Check the FAQs of all these assignments
+        faqs = FAQ.query.filter(FAQ.assignment_id.in_(assignment_ids)).order_by(FAQ.id.desc()).all()
+
+        return jsonify([
+            {
+                "id": f.id,
+                "question": f.question,
+                "answer": f.answer,
+                "uploaded_by": f.uploaded_by,
+                "assignment_id": f.assignment_id
+            } for f in faqs
+        ]), 200
+
+    except Exception as e:
+        print("Exception during fetching course FAQs:")
+        traceback.print_exc()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+
+
 # Get a single FAQ by ID
 @faq_bp.route("/<int:faq_id>", methods=["GET"])
 def get_faq(faq_id):
@@ -84,6 +113,7 @@ def get_faq(faq_id):
         "assignment_id": faq.assignment_id
     }), 200
 
+
 # Delete FAQ
 @faq_bp.route("/<int:faq_id>", methods=["DELETE"])
 def delete_faq(faq_id):
@@ -94,6 +124,7 @@ def delete_faq(faq_id):
     db.session.delete(faq)
     db.session.commit()
     return jsonify({"message": "FAQ deleted"}), 200
+
 
 # Update FAQ
 @faq_bp.route("/<int:faq_id>", methods=["PUT"])
@@ -121,14 +152,12 @@ def update_faq(faq_id):
         }
     }), 200
 
+
 # Get all FAQs
 @faq_bp.route("/", methods=["GET"])
 def get_all_faqs():
     try:
-        # Query the database for all FAQ entries
         faqs = FAQ.query.all()
-        
-        # Return the list of all FAQs as JSON
         return jsonify([
             {
                 "id": f.id,
@@ -139,6 +168,6 @@ def get_all_faqs():
             } for f in faqs
         ]), 200
     except Exception as e:
-        print("🔥 Exception during fetching all FAQs:")
+        print("Exception during fetching all FAQs:")
         traceback.print_exc()
         return jsonify({"error": f"Database error: {str(e)}"}), 500
