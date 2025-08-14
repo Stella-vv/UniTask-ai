@@ -93,7 +93,7 @@ print("Sending FAQ creation payload:", {
     "uploaded_by": user["id"],
     "assignment_id": assignment_id
 })
-print("🧪 Types → user_id:", type(user["id"]), "assignment_id:", type(assignment_id))
+print("Types → user_id:", type(user["id"]), "assignment_id:", type(assignment_id))
 
 res = requests.post(f"{BASE}/faqs/", json={
     "question": "When is the midterm exam?",
