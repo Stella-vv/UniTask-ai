@@ -29,9 +29,9 @@ def _create_assignment(user_id):
         "description": "Test assignment",
         "due_date": "2025-12-31 23:59:59",
         "user_id": user_id,
-        "course_id": 1  # 或者数据库里存在的 course_id
+        "course_id": 1  # Or the course_id existing in the database
     }
-    # 必须用 form-data
+    # must use form-data
     r = requests.post(f"{API_BASE}/assignments", data=payload, timeout=TIMEOUT)
     assert r.status_code in (200, 201), r.text
     return r.json()["assignment"]["id"]

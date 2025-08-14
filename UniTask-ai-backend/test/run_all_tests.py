@@ -14,7 +14,7 @@ TEST_DIR = PROJECT_ROOT / "test"                  # your tests live here
 # ===============
 
 SERVICE_URL = os.environ.get("SERVICE_URL", "http://localhost:8008")
-WAIT_FOR_SERVICE = os.environ.get("WAIT_FOR_SERVICE", "1") == "1"  # 默认为1
+WAIT_FOR_SERVICE = os.environ.get("WAIT_FOR_SERVICE", "1") == "1"  #The default is 1
 WAIT_TIMEOUT = 45
 
 ENV_UTF8 = os.environ.copy()

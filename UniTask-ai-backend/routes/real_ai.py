@@ -17,11 +17,11 @@ def _fmt_date(d):
     if not d:
         return "N/A"
     try:
-        # 兼容 date 或 naive datetime
+        # Compatible with date or naive datetime
         if hasattr(d, "tzinfo") and d.tzinfo is not None:
             local_dt = d.astimezone(SYD)
         else:
-            # 当作 naive，本地化再转
+            # Treat it as naive and localize it again
             local_dt = SYD.localize(datetime(d.year, d.month, d.day)) if not hasattr(d, "hour") \
                 else SYD.localize(d)
         return local_dt.strftime("%Y-%m-%d %H:%M")
@@ -40,7 +40,7 @@ def build_prompt_with_context(question, assignment_id: int):
     rubric = os.path.basename(getattr(assignment, "rubric", "") or "")
     attach = os.path.basename(getattr(assignment, "attachment", "") or "")
 
-    # 取最近 20 条 FAQ（如果有 created_at 字段就按它，没有可按 id）
+    # Take the most recent 20 FAQs (if there is a created_at field, click it; if not, click the id).
     faqs_q = FAQ.query.filter_by(assignment_id=assignment_id)
     if hasattr(FAQ, "created_at"):
         faqs_q = faqs_q.order_by(desc(FAQ.created_at))
@@ -87,7 +87,7 @@ def ask_real_ai():
     query = (data.get("query") or "").strip()
     assignment_id_raw = data.get("assignment_id")
 
-    # assignment_id 强校验
+    # Strong verification of assignment_id
     try:
         assignment_id = int(assignment_id_raw)
     except Exception:
@@ -104,7 +104,7 @@ def ask_real_ai():
         model = os.getenv("OLLAMA_MODEL", "faq-mistral")
 
         if USE_OLLAMA_HTTP:
-            # ✅ 判断使用 OpenAI 接口结构
+            # Determine to use the OpenAI interface structure
             use_openai_api = os.getenv("USE_OPENAI_FORMAT", "true").lower() == "true"
 
             if use_openai_api:
@@ -127,14 +127,14 @@ def ask_real_ai():
             res = requests.post(endpoint, json=payload, timeout=(3, 60))
             res.raise_for_status()
 
-            # ✅ 根据 API 类型提取答案
+            # Extract the answer based on the API type
             if use_openai_api:
                 answer = res.json()["choices"][0]["message"]["content"].strip()
             else:
                 answer = (res.json().get("response") or "").strip()
 
         else:
-            # 🖥️ fallback: 本地 ollama run CLI 模式
+            # fallback: Local ollama run CLI mode
             import subprocess
             result = subprocess.run(
                 ["ollama", "run", model],

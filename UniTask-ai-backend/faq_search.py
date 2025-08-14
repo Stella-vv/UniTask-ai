@@ -23,8 +23,8 @@ ALL_QUESTIONS = list(QUESTION_MAP.keys())
 
 def find_answer(user_input, threshold=40):
     """
-    根据用户输入，使用模糊匹配返回最合适的答案。
-    支持 question 和 aliases。
+    Based on the user input, the most appropriate answer is returned using fuzzy matching. 
+    Support questions and aliases.
     """
     if not ALL_QUESTIONS:
         print("[INFO] FAQ data is empty, returning default message")
