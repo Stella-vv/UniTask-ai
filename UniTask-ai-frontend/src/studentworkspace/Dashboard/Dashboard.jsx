@@ -50,7 +50,7 @@ const Dashboard = () => {
         const [coursesResponse, assignmentsResponse, faqsResponse] = await Promise.allSettled([
           api.get('/courses/'),
           api.get(`/assignments`),
-          api.get('/faqs/assignment/1') // Note: Hardcoded FAQ ID.
+          api.get('/faqs/')
         ]);
 
         // Safely get the count from the fulfilled course promise, or 0.

@@ -8,7 +8,7 @@ faq_bp = Blueprint("faq", __name__, url_prefix="/api/faqs")
 @faq_bp.route("/", methods=["POST"])
 def create_faq():
     data = request.get_json(silent=True)
-    print("📥 Received data for FAQ creation:", data)
+    print(" Received data for FAQ creation:", data)
 
     if not data:
         return jsonify({"error": "No JSON body received"}), 400
@@ -20,7 +20,7 @@ def create_faq():
 
     # Validate all required fields are present
     if not all([question, answer, uploaded_by, assignment_id]):
-        print("❌ Missing fields:", {
+        print(" Missing fields:", {
             "question": question,
             "answer": answer,
             "uploaded_by": uploaded_by,
@@ -51,7 +51,7 @@ def create_faq():
 
     except Exception as e:
         print("🔥 Exception during FAQ creation:")
-        traceback.print_exc()  # 打印详细错误堆栈
+        traceback.print_exc()
         db.session.rollback()
         return jsonify({"error": f"Database error: {str(e)}"}), 500
 
@@ -120,3 +120,25 @@ def update_faq(faq_id):
             "answer": faq.answer
         }
     }), 200
+
+# Get all FAQs
+@faq_bp.route("/", methods=["GET"])
+def get_all_faqs():
+    try:
+        # Query the database for all FAQ entries
+        faqs = FAQ.query.all()
+        
+        # Return the list of all FAQs as JSON
+        return jsonify([
+            {
+                "id": f.id,
+                "question": f.question,
+                "answer": f.answer,
+                "uploaded_by": f.uploaded_by,
+                "assignment_id": f.assignment_id
+            } for f in faqs
+        ]), 200
+    except Exception as e:
+        print("🔥 Exception during fetching all FAQs:")
+        traceback.print_exc()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
