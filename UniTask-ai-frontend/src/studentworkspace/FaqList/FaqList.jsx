@@ -98,7 +98,7 @@ const StudentFaqList = () => {
       // Determine the API endpoint based on whether a specific assignment is selected.
       const endpoint = selectedAssignmentId 
         ? `/faqs/assignment/${selectedAssignmentId}`
-        : `/faqs/assignment/${selectedCourseId}`; // Fallback to course-level FAQs.
+        : `/faqs/course/${selectedCourseId}`; // Fallback to course-level FAQs.
       
       try {
         setLoading(true);
