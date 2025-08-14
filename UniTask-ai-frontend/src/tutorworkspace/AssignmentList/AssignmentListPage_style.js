@@ -1,5 +1,3 @@
-// src/tutorworkspace/AssignmentList/AssignmentListPage_style.js
-
 export const tutorAssignmentListStyles = {
   contentArea: {
     bgcolor: 'background.paper',

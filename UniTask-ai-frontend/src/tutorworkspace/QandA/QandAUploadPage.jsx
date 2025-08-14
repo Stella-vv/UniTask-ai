@@ -1,5 +1,3 @@
-// test/tutorworkspace/QandAUpload/QandAUploadPage.jsx (Modified for Assignment-specific uploads)
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -20,10 +18,13 @@ import {
 import { qandaUploadPageStyles } from './QandAUploadPage_style';
 import api from '../../api';
 
+// Define the component for uploading a Q&A file for an assignment.
 const QandAUploadPage = () => {
+  // Hooks for navigation and accessing URL parameters.
   const navigate = useNavigate();
-  const { assignmentId } = useParams(); // Get assignmentId from URL
+  const { assignmentId } = useParams();
 
+  // State to hold form data, assignment name, errors, and loading status.
   const [formData, setFormData] = useState({
     attachment: null,
     description: '',
@@ -32,6 +33,7 @@ const QandAUploadPage = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
+  // A memoized function to fetch the parent assignment's name for display.
   const fetchAssignmentName = useCallback(async () => {
       if (assignmentId) {
         try {
@@ -41,12 +43,14 @@ const QandAUploadPage = () => {
           console.error("Failed to fetch assignment name:", err);
         }
       }
-  }, [assignmentId]);
+  }, [assignmentId]); // Re-run if assignmentId changes.
 
+  // Effect to fetch the assignment name when the component mounts.
   useEffect(() => {
     fetchAssignmentName();
   }, [fetchAssignmentName]);
 
+  // Helper function to get the current user's ID from local storage.
   const getCurrentUserId = () => {
     try {
       const userString = localStorage.getItem('user');
@@ -57,13 +61,16 @@ const QandAUploadPage = () => {
     }
   };
 
+  // Handler for updating the description text field.
   const handleDescriptionChange = (event) => {
     setFormData(prev => ({ ...prev, description: event.target.value }));
   };
 
+  // Handler for the file input change, including validation.
   const handleAttachmentUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+      // Define allowed MIME types for the attachment.
       const allowedTypes = [
         'application/pdf', 'text/csv', 
         'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -71,26 +78,31 @@ const QandAUploadPage = () => {
         'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       ];
       
+      // Validate file type.
       if (!allowedTypes.includes(file.type)) {
         setErrors({ attachment: 'Invalid file type. Please upload PDF, CSV, Excel, XML, or Word.' });
         return;
       }
 
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      // Validate file size (10MB limit).
+      if (file.size > 10 * 1024 * 1024) {
         setErrors({ attachment: 'File size must be less than 10MB.' });
         return;
       }
 
+      // If validation passes, update the form state and clear errors.
       setFormData(prev => ({ ...prev, attachment: file }));
       setErrors(prev => ({ ...prev, attachment: null }));
     }
   };
 
+  // Handler to remove the selected attachment.
   const handleRemoveAttachment = (event) => {
-    event.stopPropagation();
+    event.stopPropagation(); // Prevents the file dialog from re-opening.
     setFormData(prev => ({ ...prev, attachment: null }));
   };
 
+  // Function to validate that an attachment has been provided.
   const validateForm = () => {
     if (!formData.attachment) {
       setErrors({ attachment: 'Please upload an attachment.' });
@@ -99,6 +111,7 @@ const QandAUploadPage = () => {
     return true;
   };
 
+  // Handler to submit the new Q&A file to the API.
   const handleSubmit = async () => {
     if (!validateForm()) return;
 
@@ -111,19 +124,22 @@ const QandAUploadPage = () => {
 
     setIsLoading(true);
     try {
+      // Use FormData to handle file uploads.
       const submitData = new FormData();
-      submitData.append('assignment_id', assignmentId); // Use assignment_id
+      submitData.append('assignment_id', assignmentId);
       submitData.append('user_id', userId.toString());
       submitData.append('file', formData.attachment);
       if (formData.description.trim()) {
         submitData.append('description', formData.description.trim());
       }
       
+      // Send a POST request to the Q&A upload endpoint.
       await api.post('/qa/upload', submitData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       alert('Q&A uploaded successfully!');
+      // Navigate back to the Q&A list on success.
       navigate(`/tutor/assignment/${assignmentId}/qnas`);
       
     } catch (error) {
@@ -135,21 +151,26 @@ const QandAUploadPage = () => {
     }
   };
 
+  // Handler for the cancel button, with a confirmation prompt.
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
       navigate(`/tutor/assignment/${assignmentId}/qnas`);
     }
   };
 
+  // Main component render.
   return (
     <Box sx={qandaUploadPageStyles.container}>
+      {/* Header section with dynamic title. */}
       <Box sx={qandaUploadPageStyles.topHeader}>
         <Typography variant="h4" sx={qandaUploadPageStyles.headerTitle}>
           Upload Q&As for  {assignmentName || `Assignment ${assignmentId}`}
         </Typography>
       </Box>
 
+      {/* Form container. */}
       <Box sx={qandaUploadPageStyles.formContainer}>
+        {/* Optional description field. */}
         <Box sx={qandaUploadPageStyles.fieldContainer}>
           <Typography variant="h6" sx={qandaUploadPageStyles.fieldLabel}>
             Description:
@@ -171,6 +192,7 @@ const QandAUploadPage = () => {
           />
         </Box>
 
+        {/* Attachment upload area. */}
         <Box sx={qandaUploadPageStyles.fieldContainer}>
           <Typography variant="h6" sx={qandaUploadPageStyles.fieldLabel}>
             Attachment: <span style={{ color: '#f44336' }}>*</span>
@@ -189,6 +211,7 @@ const QandAUploadPage = () => {
               accept=".pdf,.csv,.xlsx,.xls,.xml,.doc,.docx"
               disabled={isLoading}
             />
+            {/* Conditionally render the upload placeholder or the uploaded file's details. */}
             {formData.attachment ? (
               <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                 <CheckIcon sx={{ color: 'success.main', fontSize: '48px', mb: 1 }} />
@@ -219,6 +242,7 @@ const QandAUploadPage = () => {
               </>
             )}
           </Box>
+          {/* Display validation errors for the attachment. */}
           {errors.attachment && (
             <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
               {errors.attachment}
@@ -226,6 +250,7 @@ const QandAUploadPage = () => {
           )}
         </Box>
 
+        {/* Action buttons for submitting or canceling the form. */}
         <Box sx={qandaUploadPageStyles.buttonContainer}>
           <Button
             variant="contained"
@@ -252,4 +277,5 @@ const QandAUploadPage = () => {
   );
 };
 
+// Export the component for use in other parts of the application.
 export default QandAUploadPage;

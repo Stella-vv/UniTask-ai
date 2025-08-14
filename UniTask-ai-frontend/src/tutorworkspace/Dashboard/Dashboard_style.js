@@ -26,7 +26,7 @@ export const dashboardStyles = {
     border: '1px solid #E2E8F0',
     borderRadius: '12px',
     overflow: 'hidden',
-    display: 'flex', // 使用 flexbox 而不是 Grid
+    display: 'flex',
     width: '100%',
   },
 };

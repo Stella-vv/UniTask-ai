@@ -1,5 +1,3 @@
-// test/tutorworkspace/CourseAdd/CourseAddPage_style.js
-
 export const courseAddStyles = {
   container: {
     height: '100%',

@@ -1,5 +1,3 @@
-// test/tutorworkspace/QandAList/QandAListPage_style.js
-
 export const qandaListPageStyles = {
     container: {
         height: '100%',
