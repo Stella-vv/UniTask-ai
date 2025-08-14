@@ -1,4 +1,3 @@
-// test/tutorworkspace/Forum/AssignmentForumPage_style.js
 export const forumPageStyles = {
   container: {
     borderRadius: '16px',

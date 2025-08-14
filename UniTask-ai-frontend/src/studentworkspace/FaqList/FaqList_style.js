@@ -1,5 +1,3 @@
-// test/studentworkspace/FaqList/FaqList_style.js
-
 export const studentFaqListStyles = {
   filterContainer: {
     display: 'flex',

@@ -1,5 +1,3 @@
-// src/PublicPage/Login/Login.jsx (Corrected)
-
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Alert, Link as MuiLink } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';

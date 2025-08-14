@@ -8,11 +8,16 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
+// Define the main Dashboard functional component.
 const Dashboard = () => {
+  // State to hold the data for dashboard cards.
   const [dashboardData, setDashboardData] = useState([]);
+  // State to manage the loading status of data fetching.
   const [loading, setLoading] = useState(true);
+  // State to store any errors that occur.
   const [error, setError] = useState(null);
 
+  // Helper function to get the current user's ID from local storage.
   const getCurrentUserId = () => {
     try {
       const userString = localStorage.getItem('user');
@@ -23,40 +28,47 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Failed to get user ID:', error);
     }
-    return null;
+    return null; // Return null if no user is found or an error occurs.
   };
 
+  // Effect to fetch all necessary dashboard data on component mount.
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
         setError(null);
 
+        // Check if the user is logged in.
         const userId = getCurrentUserId();
         if (!userId) {
           console.warn('User not logged in, using default data');
-          setDashboardData(getDefaultDashboardData());
+          setDashboardData(getDefaultDashboardData()); // Use fallback data.
           setLoading(false);
           return;
         }
+        // Fetch multiple data points concurrently without failing if one request errors.
         const [coursesResponse, assignmentsResponse, faqsResponse] = await Promise.allSettled([
           api.get('/courses/'),
           api.get(`/assignments`),
-          api.get('/faqs/assignment/1')
+          api.get('/faqs/assignment/1') // Note: Hardcoded FAQ ID.
         ]);
 
+        // Safely get the count from the fulfilled course promise, or 0.
         const coursesCount = coursesResponse.status === 'fulfilled' 
           ? coursesResponse.value.data.length 
           : 0;
 
+        // Safely get the count from the fulfilled assignments promise, or 0.
         const assignmentsCount = assignmentsResponse.status === 'fulfilled' 
           ? assignmentsResponse.value.data.length 
           : 0;
-
+        
+        // Safely get the count from the fulfilled FAQs promise, or 0.
         const faqsCount = faqsResponse.status === 'fulfilled' 
           ? faqsResponse.value.data.length 
           : 0;
 
+        // Construct the data for dashboard cards using the fetched counts.
         const dynamicDashboardData = [
           {
             icon: <MenuBookIcon />,
@@ -82,6 +94,7 @@ const Dashboard = () => {
 
         setDashboardData(dynamicDashboardData);
 
+        // Log warnings for any API requests that failed.
         if (coursesResponse.status === 'rejected') {
           console.warn('Failed to fetch courses:', coursesResponse.reason);
         }
@@ -93,17 +106,19 @@ const Dashboard = () => {
         }
 
       } catch (error) {
+        // Handle any unexpected errors during the process.
         console.error('Error fetching dashboard data:', error);
         setError('Failed to load dashboard data');
-        setDashboardData(getDefaultDashboardData());
+        setDashboardData(getDefaultDashboardData()); // Use fallback data on error.
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading.
       }
     };
 
     fetchDashboardData();
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on mount.
 
+  // Function to provide a default set of data for the dashboard cards.
   const getDefaultDashboardData = () => [
     {
       icon: <MenuBookIcon />,
@@ -125,6 +140,7 @@ const Dashboard = () => {
     },
   ];
 
+  // Conditional rendering for the loading state.
   if (loading) {
     return (
       <Box sx={dashboardStyles.container}>
@@ -141,6 +157,7 @@ const Dashboard = () => {
     );
   }
 
+  // Conditional rendering for the error state.
   if (error) {
     return (
       <Box sx={dashboardStyles.container}>
@@ -150,6 +167,7 @@ const Dashboard = () => {
         <Typography variant="body1" color="error" sx={{ mt: 2, mb: 2 }}>
           {error}
         </Typography>
+        {/* Render cards with default data even on error. */}
         <Box sx={dashboardStyles.cardsContainer}>
           <Box sx={dashboardStyles.cardsGrid}>
             {dashboardData.map((item, index) => (
@@ -166,14 +184,17 @@ const Dashboard = () => {
     );
   }
 
+  // Main component render for a successful data fetch.
   return (
     <Box sx={dashboardStyles.container}>
       <Typography variant="h5" sx={dashboardStyles.welcomeText}>
         A quick overview of your student dashboard.
       </Typography>
 
+      {/* Container for the grid of dashboard cards. */}
       <Box sx={dashboardStyles.cardsContainer}>
         <Box sx={dashboardStyles.cardsGrid}>
+          {/* Map over the dashboard data to create a card for each item. */}
           {dashboardData.map((item, index) => (
             <DashboardCard 
               key={index}
@@ -188,4 +209,5 @@ const Dashboard = () => {
   );
 };
 
+// Export the component for use in other parts of the application.
 export default Dashboard;
