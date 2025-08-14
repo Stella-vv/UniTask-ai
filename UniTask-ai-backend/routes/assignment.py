@@ -8,7 +8,7 @@ import uuid
 assignment_bp = Blueprint("assignment", __name__, url_prefix="/api/assignments")
 
 UPLOAD_FOLDER = "uploads"
-ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt'}
+ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt', 'zip', 'csv', 'ipynb', 'xlsx'}
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -250,4 +250,4 @@ def download_file(filename):
     try:
         return send_from_directory(directory, filename, as_attachment=True)
     except FileNotFoundError:
-        return jsonify({"error": "文件未找到"}), 404
+        return jsonify({"error": "file not found"}), 404

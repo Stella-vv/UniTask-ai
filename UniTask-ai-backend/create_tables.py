@@ -8,3 +8,4 @@ if __name__ == "__main__":
         print("Creating database tables")
         db.create_all()
         print("Tables created successfully")
+        print("Database URI:", app.config["SQLALCHEMY_DATABASE_URI"])
