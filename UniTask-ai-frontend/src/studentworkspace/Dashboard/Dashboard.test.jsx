@@ -1,4 +1,3 @@
-// src/studentworkspace/Dashboard/Dashboard.test.jsx
 import React from 'react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, waitFor, cleanup } from '@testing-library/react';

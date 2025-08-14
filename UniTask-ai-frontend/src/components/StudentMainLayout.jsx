@@ -1,5 +1,3 @@
-// src/components/StudentMainLayout.jsx (Modified)
-
 import React, { useState, useEffect } from 'react';
 import { Box, CssBaseline, Typography, Avatar } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
