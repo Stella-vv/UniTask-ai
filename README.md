@@ -115,7 +115,7 @@ The frontend application will be available at http://localhost:5173.
 ## Project Structure
 
 ### Frontend (UniTask-ai-frontend)
-\`\`\`
+```
 UniTask-ai-frontend/
 ├── src/                    # Source code
 │   ├── api/                # API Configuration
@@ -128,10 +128,10 @@ UniTask-ai-frontend/
 ├── .env                    # Environment variables
 ├── package.json            # Project dependencies and scripts configuration
 └── vite.config.js          # Vite configuration file
-\`\`\`
+```
 
 ### Backend (UniTask-ai-backend)
-\`\`\`
+```
 UniTask-ai-backend/
 ├── routes/                 # API route blueprints
 ├── test/                   # Pytest integration tests
@@ -140,7 +140,7 @@ UniTask-ai-backend/
 ├── models.py               # SQLAlchemy database models
 ├── Dockerfile              # Docker configuration for the Flask app
 └── docker-compose.yml      # Docker Compose for all services
-\`\`\`
+```
 
 ---
 
