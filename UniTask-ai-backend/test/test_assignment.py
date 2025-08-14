@@ -22,19 +22,33 @@ def _delete(path: str):
 def _mk_assignment_name(tag="ok"):
     return f"Assignment-{uuid.uuid4().hex[:6]}-{tag}"
 
-def _create_assignment(user_id):
-    """Create an assignment for FAQ assignment_id"""
+def _create_user():
+    email = f"user-{uuid.uuid4().hex[:6]}@example.com"
+    r = requests.post(f"{API_BASE}/register", json={"email": email, "password": "pass123", "role": "tutor"}, timeout=TIMEOUT)
+    assert r.status_code in (200, 201, 409), r.text
+    data = r.json()
+    return data.get("id") or data.get("user", {}).get("id")
+
+def _create_course():
+    payload = {"name": f"Course-{uuid.uuid4().hex[:6]}", "description": "Test course"}
+    r = requests.post(f"{API_BASE}/courses", json=payload, timeout=TIMEOUT)
+    assert r.status_code in (200, 201), r.text
+    return r.json().get("id") or r.json().get("course", {}).get("id")
+
+def _create_assignment():
+    """Helper to create a minimal valid assignment"""
+    user_id = _create_user()
+    course_id = _create_course()
     payload = {
-        "name": f"Assignment-{uuid.uuid4().hex[:6]}",
-        "description": "Test assignment",
+        "name": _mk_assignment_name("happy"),
+        "description": "Test assignment description",
         "due_date": "2025-12-31 23:59:59",
         "user_id": user_id,
-        "course_id": 1  # Or the course_id existing in the database
+        "course_id": course_id
     }
-    # must use form-data
-    r = requests.post(f"{API_BASE}/assignments", data=payload, timeout=TIMEOUT)
-    assert r.status_code in (200, 201), r.text
-    return r.json()["assignment"]["id"]
+    r = _post_form("/assignments", payload)
+    assert r.status_code == 201, r.text
+    return r.json()["assignment"]["id"], payload["name"]
 
 
 # 1) Create assignment successfully
