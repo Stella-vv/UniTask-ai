@@ -5,13 +5,13 @@ import os
 BASE = "http://localhost:8008/api"
 
 def fail(message, res):
-    print(f"❌ {message}: {res.status_code} {res.text}")
+    print(f"{message}: {res.status_code} {res.text}")
     exit(1)
 
 # ====== 1. Register a test user ======
 timestamp = int(time.time())
 email = f"test_user_{timestamp}@example.com"
-print("📌 Registering test user...")
+print("Registering test user...")
 res = requests.post(f"{BASE}/register", json={
     "email": email,
     "password": "test123",
@@ -22,10 +22,10 @@ res = requests.post(f"{BASE}/register", json={
 if res.status_code != 201:
     fail("Failed to register user", res)
 user = res.json()["user"]
-print("✅ User registered:", user)
+print("User registered:", user)
 
 # ====== 2. Create a course ======
-print("\n📌 Creating course...")
+print("\n Creating course...")
 res = requests.post(f"{BASE}/courses/", json={
     "name": "Web Front-End Programming",
     "description": (
@@ -44,14 +44,14 @@ res = requests.post(f"{BASE}/courses/", json={
 if res.status_code != 201:
     fail("Failed to create course", res)
 course = res.json()
-print("✅ Course created:", course)
+print("Course created:", course)
 
 # ====== 3. Create assignment (and forum) ======
-print("\n📌 Creating assignment and forum...")
+print("\nCreating assignment and forum...")
 rubric_path = "uploads/dummy_rubric.pdf"
 attach_path = "uploads/dummy_attach.zip"
 if not os.path.exists(rubric_path) or not os.path.exists(attach_path):
-    print("❌ Required files not found in uploads/. Please check your test files.")
+    print(" Required files not found in uploads/. Please check your test files.")
     exit(1)
 
 with open(rubric_path, "rb") as rubric_file, open(attach_path, "rb") as attachment_file:
@@ -82,12 +82,12 @@ if res.status_code != 201:
 assignment_data = res.json()
 assignment_id = assignment_data["assignment"]["id"]
 forum_id = assignment_data["forum"]["id"]
-print(f"✅ Assignment and forum created (Assignment ID: {assignment_id}, Forum ID: {forum_id})")
+print(f"Assignment and forum created (Assignment ID: {assignment_id}, Forum ID: {forum_id})")
 
 # ====== 4. Create a FAQ ======
-print("\n📌 Creating FAQ...")
+print("\n Creating FAQ...")
 
-print("📤 Sending FAQ creation payload:", {
+print("Sending FAQ creation payload:", {
     "question": "When is the midterm exam?",
     "answer": "The midterm is scheduled for Week 6.",
     "uploaded_by": user["id"],
@@ -107,45 +107,45 @@ if res.status_code != 201:
 
 faq = res.json()["faq"]
 faq_id = faq["id"]
-print("✅ FAQ created:", faq)
+print(" FAQ created:", faq)
 
 # ====== 5. Retrieve course FAQs ======
-print("\n📌 Retrieving assignment FAQs...")
+print("\n Retrieving assignment FAQs...")
 res = requests.get(f"{BASE}/faqs/assignment/{assignment_id}")
-print("📋 FAQ List:", res.json())
+print("FAQ List:", res.json())
 
 # ====== 6. Update FAQ ======
-print("\n✏️ Updating FAQ...")
+print("\n Updating FAQ...")
 res = requests.put(f"{BASE}/faqs/{faq_id}", json={
     "question": "What week is the midterm?",
     "answer": "It will be held in Week 7 instead."
 })
 if res.status_code != 200:
     fail("Failed to update FAQ", res)
-print("✅ FAQ updated:", res.json())
+print(" FAQ updated:", res.json())
 
 # ====== 7. Delete FAQ ======
-print("\n🗑️ Deleting FAQ...")
+print("\n Deleting FAQ...")
 res = requests.delete(f"{BASE}/faqs/{faq_id}")
 if res.status_code != 200:
     fail("Failed to delete FAQ", res)
-print("✅ FAQ deleted:", res.json())
+print(" FAQ deleted:", res.json())
 
 # ====== 8. Post question to forum ======
-print("\n📌 Posting question to forum...")
+print("\n Posting question to forum...")
 res = requests.post(f"{BASE}/forum/{forum_id}/questions", json={
     "content": "Can the deadline for this assignment be extended?",
     "user_id": user["id"]
 })
 if res.status_code != 201:
     fail("Failed to post forum question", res)
-print("✅ Question posted to forum.")
+print(" Question posted to forum.")
 
 # ====== 9. Upload Q&A CSV ======
-print("\n📌 Uploading Q&A file...")
+print("\n Uploading Q&A file...")
 qas_path = "uploads/dummy_qas.csv"
 if not os.path.exists(qas_path):
-    print("❌ Q&A file not found:", qas_path)
+    print(" Q&A file not found:", qas_path)
     exit(1)
 
 with open(qas_path, "rb") as file:
@@ -158,6 +158,6 @@ with open(qas_path, "rb") as file:
     })
 
 if res.status_code == 201:
-    print("✅ Q&A file uploaded successfully.")
+    print(" Q&A file uploaded successfully.")
 else:
     fail("Failed to upload Q&A file", res)

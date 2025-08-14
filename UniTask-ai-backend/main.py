@@ -53,7 +53,7 @@ if not USE_MOCK:
 else:
     from routes.mock_user import mock_bp
     app.register_blueprint(mock_bp)
-    print("🧪 Running in MOCK mode – no DB required")
+    print(" Running in MOCK mode – no DB required")
 
 @app.route("/")
 
