@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import StudentAssignmentDetail from './AssignmentDetail';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
@@ -21,12 +19,10 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data for the assignment
 const mockAssignmentData = {
   id: 1,
   name: 'Test Assignment 1',
   description: 'This is a detailed description of the test assignment.',
-  // Changed time to midday UTC to avoid timezone rollover issues
   dueDate: '2025-12-31T12:00:00Z', 
   rubric: { id: 1, filename: 'rubric_test.pdf' },
   attachments: [
@@ -57,9 +53,7 @@ describe('StudentAssignmentDetail Component', () => {
     await waitFor(() => {
       expect(screen.getByText('Test Assignment 1')).toBeInTheDocument();
       expect(screen.getByText(/This is a detailed description/i)).toBeInTheDocument();
-      // Check for formatted date - this will now pass consistently
       expect(screen.getByText('31/12/2025')).toBeInTheDocument(); 
-      // Check for rubric and attachments
       expect(screen.getByText('rubric_test.pdf')).toBeInTheDocument();
       expect(screen.getByText('attachment_one.pdf')).toBeInTheDocument();
       expect(screen.getByText('attachment_two.docx')).toBeInTheDocument();

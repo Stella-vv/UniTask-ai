@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import StudentAssignmentList from './AssignmentListPage';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
@@ -21,7 +19,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data
 const mockCourses = [
   { id: 1, name: 'Data Structures' },
   { id: 2, name: 'Algorithms' },
@@ -39,7 +36,6 @@ const mockAssignmentsCourse2 = [
 describe('StudentAssignmentList Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Default successful API responses
     api.get.mockImplementation((url) => {
       if (url === '/courses/') {
         return Promise.resolve({ data: mockCourses });
@@ -63,7 +59,6 @@ describe('StudentAssignmentList Component', () => {
     );
 
     // Assert: Waits for and renders the assignment list for the default selected course (Course 1)
-    // We no longer check for the progress bar as it can be too quick to appear and disappear.
     expect(await screen.findByText('Homework 1')).toBeInTheDocument();
     expect(screen.getByText('Lab 1')).toBeInTheDocument();
     expect(screen.queryByText('Project A')).not.toBeInTheDocument();
@@ -81,7 +76,6 @@ describe('StudentAssignmentList Component', () => {
     await screen.findByText('Homework 1');
 
     // Act: Simulate user changing the course selection to "Algorithms"
-    // Use getByRole('combobox') which is more reliable for MUI Select
     fireEvent.mouseDown(screen.getByRole('combobox'));
     const courseOption = await screen.findByRole('option', { name: 'Algorithms' });
     fireEvent.click(courseOption);
@@ -138,7 +132,6 @@ describe('StudentAssignmentList Component', () => {
       </BrowserRouter>
     );
 
-    // Wait for the list to render
     const assignmentItem = await screen.findByText('Homework 1');
 
     // Act

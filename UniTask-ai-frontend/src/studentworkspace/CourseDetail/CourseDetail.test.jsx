@@ -6,10 +6,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import StudentCourseDetail from './CourseDetail';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 const mockCourseId = 'cs101';
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -21,14 +19,12 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data for the course
 const mockCourseData = {
   id: mockCourseId,
   name: 'Intro to Programming',
   description: 'A foundational course on programming principles.',
   year: 2025,
   semester: 'T1',
-  // Assessments are stored as a JSON string in the backend
   assessment: JSON.stringify(['Quiz 1 (20%)', 'Final Exam (80%)']),
 };
 

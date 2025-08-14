@@ -6,10 +6,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import StudentFaqList from './FaqList';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
   return {
@@ -18,7 +16,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock Data
 const mockCourses = [
   { id: 1, name: 'Course A' },
   { id: 2, name: 'Course B' },
@@ -36,7 +33,6 @@ const mockFaqs = [
 describe('StudentFaqList Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Default successful API responses
     api.get.mockImplementation((url) => {
       if (url.includes('/courses')) {
         return Promise.resolve({ data: mockCourses });

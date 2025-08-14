@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import ChatPage from './ChatPage';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 const mockAssignmentId = '1';
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -22,15 +20,12 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock the scrollIntoView function because it doesn't exist in jsdom
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 describe('ChatPage Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock localStorage to simulate a logged-in user
     localStorage.setItem('user', JSON.stringify({ id: 1, email: 'student@test.com' }));
-    // Mock the initial assignment name fetch
     api.get.mockResolvedValue({ data: { name: 'Test Assignment' } });
   });
 
@@ -129,8 +124,7 @@ describe('ChatPage Component', () => {
         <ChatPage />
       </BrowserRouter>
     );
-    
-    // Wait for header to render to ensure button is present
+
     const backButton = await screen.findByRole('button', { name: /Back/i });
 
     // Act

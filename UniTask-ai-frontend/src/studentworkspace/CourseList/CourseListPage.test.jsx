@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import StudentCourseList from './CourseListPage';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
@@ -20,7 +18,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data for courses
 const mockCourses = [
   { id: 1, name: 'Introduction to AI', semester: 'T1', year: 2025 },
   { id: 2, name: 'Web Development Fundamentals', semester: 'T2', year: 2025 },
