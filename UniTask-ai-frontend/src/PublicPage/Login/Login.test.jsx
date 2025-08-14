@@ -5,10 +5,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Login from './Login';
 import api from '../../api';
 
-// Mock the API module to control its behavior during tests
 vi.mock('../../api');
 
-// Mock the react-router-dom module to track navigation calls
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
@@ -20,7 +18,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
 
 describe('Login Component', () => {
   beforeEach(() => {
-    // Clear all mocks before each test to ensure a clean state
     vi.clearAllMocks();
   });
 

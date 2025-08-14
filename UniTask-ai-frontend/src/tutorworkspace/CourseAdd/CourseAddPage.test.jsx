@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import CourseAddPage from './CourseAddPage';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
@@ -26,12 +24,9 @@ describe('CourseAddPage Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock window.confirm and window.alert
     confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    // Mock for a logged-in user
     localStorage.setItem('user', JSON.stringify({ id: 1, email: 'tutor@test.com' }));
-    // Default API mock for a successful post
     api.post.mockResolvedValue({ data: { message: 'Course created successfully' } });
   });
 

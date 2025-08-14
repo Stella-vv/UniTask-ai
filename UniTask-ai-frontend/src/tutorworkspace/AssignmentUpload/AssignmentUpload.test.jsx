@@ -6,10 +6,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import AssignmentUpload from './AssignmentUpload';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
@@ -19,7 +17,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data for courses
 const mockCourses = [
   { id: 1, name: 'COMP9900 - Capstone Project' },
   { id: 2, name: 'COMP6080 - Web Frontend' },
@@ -31,14 +28,11 @@ describe('AssignmentUpload Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock window.confirm and window.alert
     confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
-    // Mock localStorage for a logged-in user
     localStorage.setItem('user', JSON.stringify({ id: 1, email: 'tutor@test.com' }));
     
-    // Default API mocks
     api.get.mockResolvedValue({ data: mockCourses });
     api.post.mockResolvedValue({ data: { message: 'Success' } });
   });

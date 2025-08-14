@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import QandAListPage from './QandAListPage';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 const mockAssignmentId = 'a1';
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -22,7 +20,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data
 const mockAssignmentData = { id: mockAssignmentId, name: 'Assignment 1' };
 const mockQAList = [
   { id: 'q1', filename: 'QnA_file_1.pdf', filetype: 'application/pdf', created_at: '2025-08-14T01:00:00Z' },
@@ -36,14 +33,11 @@ describe('QandAListPage Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     
-    // Mock global objects
     confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
-    // Mock localStorage to simulate a logged-in user
     localStorage.setItem('user', JSON.stringify({ id: 1, email: 'tutor@test.com' }));
 
-    // Default API mocks for a common happy path
     api.get.mockImplementation((url) => {
       if (url.includes(`/assignments/detail/${mockAssignmentId}`)) {
         return Promise.resolve({ data: mockAssignmentData });

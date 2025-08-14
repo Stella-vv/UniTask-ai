@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Register from './Register';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock the react-router-dom module for navigation
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
@@ -22,7 +20,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
 
 describe('Register Component', () => {
   beforeEach(() => {
-    // Clear mocks before each test, no fake timers needed
     vi.clearAllMocks();
   });
 
@@ -99,8 +96,6 @@ describe('Register Component', () => {
 
     // Assert: Wait for the error message to appear
     expect(await screen.findByText(errorMessage)).toBeInTheDocument();
-
-    // Ensure navigation did not happen
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

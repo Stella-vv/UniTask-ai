@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import FaqUpload from './FaqUpload';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 const mockAssignmentId = 'a1';
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -22,7 +20,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data
 const mockAssignmentData = { id: mockAssignmentId, name: 'Assignment 1' };
 
 describe('FaqUpload Component', () => {
@@ -32,12 +29,9 @@ describe('FaqUpload Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock window.confirm and window.alert
     confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    // Mock localStorage to simulate a logged-in user
     localStorage.setItem('user', JSON.stringify({ id: 1, email: 'tutor@test.com' }));
-    // Default API mock for successful GET and POST
     api.get.mockResolvedValue({ data: mockAssignmentData });
     api.post.mockResolvedValue({ data: { message: 'FAQ uploaded successfully' } });
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

@@ -5,10 +5,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import CourseModifyPage from './CourseModifyPage';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 const mockCourseId = 'cs101';
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -20,7 +18,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data for the course
 const mockCourseData = {
   id: mockCourseId,
   name: 'Intro to Programming',
@@ -36,12 +33,9 @@ describe('CourseModifyPage Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock window.confirm and window.alert
     confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    // Mock localStorage to simulate a logged-in user
     localStorage.setItem('user', JSON.stringify({ id: 1, email: 'tutor@test.com' }));
-    // Default API mock for successful GET and PUT
     api.get.mockResolvedValue({ data: mockCourseData });
     api.put.mockResolvedValue({ data: { message: 'Course updated successfully' } });
   });

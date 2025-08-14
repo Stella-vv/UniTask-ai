@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import AssignmentForumPage from './AssignmentForumPage';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 const mockAssignmentId = 'a1';
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -22,7 +20,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data
 const mockForumData = { id: 'f1', title: 'Forum for Assignment 1' };
 const mockQuestionsData = [
   {
@@ -54,9 +51,7 @@ describe('Tutor AssignmentForumPage Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    // Mock localStorage for a logged-in tutor
     localStorage.setItem('user', JSON.stringify({ id: 1, email: 'tutor@test.com' }));
-    // Setup default successful API mocks
     api.get.mockImplementation((url) => {
       if (url.includes(`/forum/${mockAssignmentId}`)) {
         return Promise.resolve({ data: mockForumData });

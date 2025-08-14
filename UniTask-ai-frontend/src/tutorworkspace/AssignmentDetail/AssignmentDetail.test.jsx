@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import AssignmentDetail from './AssignmentDetail';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 const mockAssignmentId = '123';
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -27,7 +25,6 @@ const mockAssignmentData = {
   id: mockAssignmentId,
   name: 'Advanced Sorting Algorithms',
   description: 'Implement a Timsort algorithm.',
-  // Use midday UTC to prevent timezone rollover issues
   dueDate: '2025-10-15T12:00:00Z',
   courseName: 'Data Structures',
   rubric: { id: 1, filename: 'timsort_rubric.pdf' },
@@ -39,16 +36,12 @@ describe('Tutor AssignmentDetail Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Spy on window.confirm and mock its return value
     confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
-    // FIX: Add a mock user to localStorage to simulate a logged-in state
     localStorage.setItem('user', JSON.stringify({ id: 1, email: 'tutor@test.com' }));
   });
 
   afterEach(() => {
-    // Restore the original window.confirm function
     confirmSpy.mockRestore();
-    // Clean up localStorage
     localStorage.clear();
   });
 
@@ -73,7 +66,6 @@ describe('Tutor AssignmentDetail Component', () => {
 
   // Test Case 2: Sad Path - Displays an error message on API failure
   it('should display an error message if the API call fails', async () => {
-    // Arrange
     api.get.mockRejectedValue({ response: { status: 404 } });
 
     render(
@@ -82,13 +74,11 @@ describe('Tutor AssignmentDetail Component', () => {
       </BrowserRouter>
     );
 
-    // Assert
     expect(await screen.findByText(/Assignment not found/i)).toBeInTheDocument();
   });
 
   // Test Case 3: Navigation - Modify button
   it('should navigate to the modify page when the modify button is clicked', async () => {
-    // Arrange
     api.get.mockResolvedValue({ data: mockAssignmentData });
     render(
       <BrowserRouter>
@@ -97,16 +87,13 @@ describe('Tutor AssignmentDetail Component', () => {
     );
     const modifyButton = await screen.findByRole('button', { name: /Modify/i });
 
-    // Act
     fireEvent.click(modifyButton);
 
-    // Assert
     expect(mockNavigate).toHaveBeenCalledWith(`/tutor/assignment/modify/${mockAssignmentId}`);
   });
 
   // Test Case 4: Interaction - Delete button (Happy Path)
   it('should call the delete API and navigate on successful deletion', async () => {
-    // Arrange
     api.get.mockResolvedValue({ data: mockAssignmentData });
     api.delete.mockResolvedValue({ data: { message: 'Success' } });
     render(
@@ -116,10 +103,8 @@ describe('Tutor AssignmentDetail Component', () => {
     );
     const deleteButton = await screen.findByRole('button', { name: /Delete/i });
 
-    // Act
     fireEvent.click(deleteButton);
 
-    // Assert
     await waitFor(() => {
       expect(confirmSpy).toHaveBeenCalled();
       expect(api.delete).toHaveBeenCalledWith(`/assignments/${mockAssignmentId}`);

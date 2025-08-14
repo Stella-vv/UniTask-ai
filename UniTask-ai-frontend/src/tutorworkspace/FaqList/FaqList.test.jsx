@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import FaqList from './FaqList';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 const mockAssignmentId = 'a1';
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -22,7 +20,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock data
 const mockAssignmentData = { id: mockAssignmentId, name: 'Assignment 1' };
 const mockFaqData = [
   { id: 'f1', question: 'What is the deadline for this assignment?', answer: 'The deadline is next Friday.' },
@@ -32,7 +29,6 @@ const mockFaqData = [
 describe('Tutor FaqList Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Default mock for successful API calls
     api.get.mockImplementation((url) => {
       if (url.includes(`/assignments/detail/${mockAssignmentId}`)) {
         return Promise.resolve({ data: mockAssignmentData });

@@ -7,10 +7,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import AssignmentModifyPage from './AssignmentModifyPage';
 import api from '../../api';
 
-// Mock the API module
 vi.mock('../../api');
 
-// Mock react-router-dom hooks
 const mockNavigate = vi.fn();
 const mockAssignmentId = '42';
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -22,7 +20,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-// Mock initial data for the assignment
 const mockAssignmentData = {
   id: mockAssignmentId,
   name: 'Initial Title',
@@ -39,12 +36,9 @@ describe('AssignmentModifyPage Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock window.confirm for the cancel button
     confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
-    // Mock window.alert as it's not implemented in jsdom
     vi.spyOn(window, 'alert').mockImplementation(() => {});
 
-    // Default API mocks
     api.get.mockResolvedValue({ data: mockAssignmentData });
     api.put.mockResolvedValue({ data: { message: 'Success' } });
   });
