@@ -1,33 +1,58 @@
+# routes/real_ai.py
 from flask import Blueprint, request, jsonify, current_app
-from sqlalchemy import desc as sa_desc
 from models import Assignment, FAQ
 import os
 import requests
 from datetime import datetime
 import pytz
+import time
 
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
-USE_OLLAMA_HTTP = os.getenv("USE_OLLAMA_HTTP", "true").lower() == "true"
+# -------------------- Config --------------------
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434").rstrip("/")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "faq-mistral")
+
+# Whether to try the OpenAI compatible interface (as an alternative), the default is False. For safety first, use /api/generate
+USE_OPENAI_FORMAT = os.getenv("USE_OPENAI_FORMAT", "false").lower() == "true"
+
+# Generate relevant parameters (which can be overridden through environment variables)
+NUM_CTX = int(os.getenv("OLLAMA_NUM_CTX", "4096"))
+NUM_PREDICT = int(os.getenv("OLLAMA_NUM_PREDICT", "256"))  
+TEMPERATURE = float(os.getenv("OLLAMA_TEMPERATURE", "0.2"))
+
+# HTTP timeout Settings: (Connection timeout, read timeout)
+PRIMARY_TIMEOUT = (3, int(os.getenv("OLLAMA_READ_TIMEOUT", "180")))  
+
+# FAQ Control (Reducing Context Volume)
+FAQ_LIMIT = int(os.getenv("AI_FAQ_LIMIT", "10"))
+FAQ_Q_TRIM = int(os.getenv("AI_FAQ_Q_TRIM", "200"))
+FAQ_A_TRIM = int(os.getenv("AI_FAQ_A_TRIM", "300"))
+
 SYD = pytz.timezone("Australia/Sydney")
 
 real_ai_bp = Blueprint("real_ai", __name__, url_prefix="/api/ai")
 
+
+# -------------------- Utils --------------------
 def _fmt_date(d):
     if not d:
         return "N/A"
     try:
-        # Compatible with date or naive datetime
         if hasattr(d, "tzinfo") and d.tzinfo is not None:
             local_dt = d.astimezone(SYD)
         else:
-            # Treat it as naive and localize it again
-            local_dt = SYD.localize(datetime(d.year, d.month, d.day)) if not hasattr(d, "hour") \
-                else SYD.localize(d)
+            local_dt = SYD.localize(d if hasattr(d, "hour") else datetime(d.year, d.month, d.day))
         return local_dt.strftime("%Y-%m-%d %H:%M")
     except Exception:
         return str(d)
 
-def build_prompt_with_context(question, assignment_id: int):
+
+def _trim(s: str, n: int) -> str:
+    s = (s or "").strip()
+    return s if len(s) <= n else s[:n] + " ...[truncated]"
+
+
+# -------------------- Prompt builder --------------------
+def build_prompt_with_context(question: str, assignment_id: int) -> str:
     assignment = Assignment.query.get(assignment_id)
     if not assignment:
         return f"Assignment not found for id={assignment_id}."
@@ -38,14 +63,13 @@ def build_prompt_with_context(question, assignment_id: int):
     rubric = os.path.basename(getattr(assignment, "rubric", "") or "")
     attach = os.path.basename(getattr(assignment, "attachment", "") or "")
 
-    # Take the most recent 20 FAQs (if there is a created_at field, click it; if not, click the id).
+    # Recent FAQ: Prioritize by created_at in descending order; otherwise, use id in descending order
     faqs_q = FAQ.query.filter_by(assignment_id=assignment_id)
-    current_app.logger.info(f"type(desc)={type(sa_desc)}")
     if hasattr(FAQ, "created_at"):
-        faqs_q = faqs_q.order_by(sa_desc(FAQ.created_at))
+        faqs_q = faqs_q.order_by(FAQ.created_at.desc())
     else:
-        faqs_q = faqs_q.order_by(sa_desc(FAQ.id))
-    faqs = faqs_q.limit(20).all()
+        faqs_q = faqs_q.order_by(FAQ.id.desc())
+    faqs = faqs_q.limit(FAQ_LIMIT).all()
 
     system_prompt = (
         "You are a helpful teaching assistant. "
@@ -59,7 +83,7 @@ def build_prompt_with_context(question, assignment_id: int):
 Assignment Information:
 - Title: {title}
 - Due Date (AEST): {due}
-- Description: {description if len(description) <= 800 else description[:800] + ' ...[truncated]'}
+- Description: {_trim(description, 800)}
 
 Assignment Files (filenames only):
 - Rubric: {rubric or 'None'}
@@ -69,8 +93,8 @@ Assignment Files (filenames only):
     if faqs:
         context += "\nFrequently Asked Questions (recent):\n"
         for f in faqs:
-            q = (getattr(f, "question", "") or "").strip()
-            a = (getattr(f, "answer", "") or "").strip()
+            q = _trim((getattr(f, "question", "") or ""), FAQ_Q_TRIM)
+            a = _trim((getattr(f, "answer", "") or ""), FAQ_A_TRIM)
             if not q or not a:
                 continue
             context += f"- Q: {q}\n  A: {a}\n"
@@ -80,18 +104,60 @@ Assignment Files (filenames only):
     context += f"\nStudent Question: {question}\nAnswer concisely:"
     return context
 
+
+# -------------------- LLM callers --------------------
+def _call_ollama_generate(prompt: str, num_predict: int = NUM_PREDICT):
+    endpoint = f"{OLLAMA_HOST}/api/generate"
+    payload = {
+        "model": OLLAMA_MODEL,
+        "prompt": prompt,
+        "stream": False,
+        "options": {
+            "num_predict": int(num_predict),
+            "temperature": TEMPERATURE,
+            "num_ctx": NUM_CTX,
+        },
+        
+    }
+    t0 = time.time()
+    res = requests.post(endpoint, json=payload, timeout=PRIMARY_TIMEOUT)
+    dt = time.time() - t0
+    current_app.logger.info(f"[ollama/generate] status={res.status_code} dt={dt:.2f}s np={num_predict}")
+    res.raise_for_status()
+    data = res.json()
+    return (data.get("response") or "").strip()
+
+
+def _call_ollama_chat(prompt: str, num_predict: int = NUM_PREDICT):
+    # Be a candidate only when USE_OPENAI_FORMAT = true
+    endpoint = f"{OLLAMA_HOST}/v1/chat/completions"
+    payload = {
+        "model": OLLAMA_MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "stream": False,
+        "temperature": TEMPERATURE,
+        "max_tokens": int(num_predict),
+    }
+    t0 = time.time()
+    res = requests.post(endpoint, json=payload, timeout=PRIMARY_TIMEOUT)
+    dt = time.time() - t0
+    current_app.logger.info(f"[ollama/chat] status={res.status_code} dt={dt:.2f}s max_tokens={num_predict}")
+    res.raise_for_status()
+    data = res.json()
+    return (data["choices"][0]["message"]["content"] or "").strip()
+
+
+# -------------------- Route --------------------
 @real_ai_bp.route("/ask", methods=["POST"])
 def ask_real_ai():
     data = request.get_json() or {}
     query = (data.get("query") or "").strip()
     assignment_id_raw = data.get("assignment_id")
 
-    # Strong verification of assignment_id
     try:
         assignment_id = int(assignment_id_raw)
     except Exception:
         return jsonify({"error": "assignment_id must be an integer"}), 400
-
     if not query:
         return jsonify({"error": "Missing query"}), 400
 
@@ -100,50 +166,24 @@ def ask_real_ai():
         return jsonify({"error": prompt}), 404
 
     try:
-        model = os.getenv("OLLAMA_MODEL", "faq-mistral")
-
-        if USE_OLLAMA_HTTP:
-            # Determine to use the OpenAI interface structure
-            use_openai_api = os.getenv("USE_OPENAI_FORMAT", "true").lower() == "true"
-
-            if use_openai_api:
-                payload = {
-                    "model": model,
-                    "messages": [
-                        {"role": "user", "content": prompt}
-                    ],
-                    "stream": False
-                }
-                endpoint = f"{OLLAMA_HOST}/v1/chat/completions"
-            else:
-                payload = {
-                    "model": model,
-                    "prompt": prompt,
-                    "stream": False
-                }
-                endpoint = f"{OLLAMA_HOST}/api/generate"
-
-            res = requests.post(endpoint, json=payload, timeout=(3, 60))
-            res.raise_for_status()
-
-            # Extract the answer based on the API type
-            if use_openai_api:
-                answer = res.json()["choices"][0]["message"]["content"].strip()
-            else:
-                answer = (res.json().get("response") or "").strip()
-
-        else:
-            # fallback: Local ollama run CLI mode
-            import subprocess
-            result = subprocess.run(
-                ["ollama", "run", model],
-                input=prompt.encode("utf-8"),
-                capture_output=True,
-                timeout=120
-            )
-            if result.returncode != 0:
-                raise RuntimeError(result.stderr.decode("utf-8", "ignore"))
-            answer = result.stdout.decode("utf-8", "ignore").strip()
+        # Preferred: Native /api/generate (Stable)
+        try:
+            answer = _call_ollama_generate(prompt, NUM_PREDICT)
+            if not answer and NUM_PREDICT > 128:
+                # When the response is empty, shorten the generation length and try again
+                answer = _call_ollama_generate(prompt, 128)
+        except (requests.exceptions.Timeout, requests.exceptions.HTTPError) as e:
+            current_app.logger.warning(f"generate failed: {e}")
+            # Downgrade: Shorten the generation length and try again
+            try:
+                answer = _call_ollama_generate(prompt, 128)
+            except Exception as e2:
+                current_app.logger.warning(f"generate retry failed: {e2}")
+                # Alternative: OpenAI Compatible chat (only if allowed)
+                if USE_OPENAI_FORMAT:
+                    answer = _call_ollama_chat(prompt, 256)
+                else:
+                    raise
 
         if not answer:
             return jsonify({"error": "Model returned empty response"}), 502
