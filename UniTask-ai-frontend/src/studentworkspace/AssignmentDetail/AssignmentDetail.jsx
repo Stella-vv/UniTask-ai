@@ -132,7 +132,7 @@ const StudentAssignmentDetail = () => {
         <Box sx={assignmentDetailStyles.mainContentWrapper}>
           <Typography variant="h4" sx={assignmentDetailStyles.assignmentTitle}>{assignmentData.name}</Typography>
           <Box sx={assignmentDetailStyles.infoSection}>
-            <Typography variant="h6" sx={assignmentDetailStyles.infoLabel}>Due Date : <span style={{ fontWeight: 400 }}>{new Date(assignmentData.dueDate).toLocaleDateString()}</span></Typography>
+            <Typography variant="h6" sx={assignmentDetailStyles.infoLabel}>Due Date : <span style={{ fontWeight: 400 }}>{new Date(assignmentData.dueDate).toLocaleDateString('en-AU')}</span></Typography>
           </Box>
           <Box sx={assignmentDetailStyles.descriptionSection}>
             <Typography variant="h6" sx={assignmentDetailStyles.sectionTitle}>Assignment Description:</Typography>
